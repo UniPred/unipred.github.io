@@ -1,385 +1,360 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf8">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
+  <meta charset="utf8" />
   <title>UniPred</title>
+
   <style>
-    body{
-      margin:0;
-      padding:0;
-      font:16px/1.55 Arial;
-      background:#0f1220;
-      color:#f3f5ff;
+    :root {
+      --bg: #0b0f14;
+      --fg: #e9eef5;
+      --muted: #b7c2d0;
+      --card: #121826;
+      --accent: #6aa6ff;
+      --maxw: 1100px;
     }
-    a{ color:#b9c7ff; text-decoration:none; }
-    a:visited{ color:#b9c7ff; }
-    .top{
-      background:#121634;
-      border:1px solid rgba(255,255,255,0.08);
-      border-left:0;
-      border-right:0;
-      padding:16px 0;
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
     }
-    .wrap{
-      width:920px;
-      margin:0 auto;
-      padding:0 16px;
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 22px; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      background: rgba(11, 15, 20, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      z-index: 10;
     }
-    .brand{
-      margin:0;
-      padding:0;
-      font:700 34px/1.1 Arial;
+
+    .toprow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
-    .subtitle{
-      margin:10px 0 0 0;
-      padding:0;
-      font:400 18px/1.4 Arial;
-      opacity:0.92;
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
     }
-    .note{
-      margin:10px 0 0 0;
-      padding:0;
-      font:400 14px/1.4 Arial;
-      opacity:0.8;
+
+    .brand img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: #fff;
+      object-fit: cover;
     }
-    .nav{
-      margin:14px 0 0 0;
-      padding:10px 0 0 0;
-      border-top:1px solid rgba(255,255,255,0.08);
+
+    .nav a {
+      margin-left: 14px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 14px;
     }
-    .nav a{
-      display:inline-block;
-      margin:6px 12px 0 0;
-      padding:8px 10px;
-      background:rgba(255,255,255,0.06);
-      border:1px solid rgba(255,255,255,0.10);
-      border-radius:10px;
-      font:600 13px/1 Arial;
+
+    .nav a:hover { color: var(--fg); }
+
+    .hero {
+      padding: 56px 0 18px 0;
     }
-    .section{
-      padding:34px 0;
+
+    .title {
+      font-size: 52px;
+      margin: 0;
+      line-height: 1.05;
     }
-    .card{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.10);
-      border-radius:16px;
-      padding:18px 18px;
+
+    .subtitle {
+      margin: 14px 0 0 0;
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 900px;
     }
-    h2{
-      margin:0 0 10px 0;
-      padding:0;
-      font:700 22px/1.2 Arial;
+
+    .pillrow { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      color: var(--fg);
+      background: rgba(255,255,255,0.04);
+      font-weight: 700;
+      font-size: 14px;
     }
-    h3{
-      margin:18px 0 8px 0;
-      padding:0;
-      font:700 16px/1.2 Arial;
-      opacity:0.95;
+
+    .section {
+      padding: 32px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
     }
-    p{
-      margin:10px 0;
-      padding:0;
-      opacity:0.95;
+
+    .h2 {
+      font-size: 26px;
+      margin: 0 0 12px 0;
     }
-    .todo{
-      background:rgba(0,0,0,0.25);
-      border:1px solid rgba(255,255,255,0.12);
-      border-radius:12px;
-      padding:12px 12px;
-      margin:12px 0 0 0;
-      font:600 13px/1.5 Arial;
-      color:#e7ebff;
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
     }
-    .footer{
-      padding:28px 0 46px 0;
-      opacity:0.8;
+
+    @media (max-width: 900px) {
+      .grid2 { grid-template-columns: 1fr; }
+      .title { font-size: 40px; }
     }
-    .divider{
-      height:1px;
-      background:rgba(255,255,255,0.10);
-      margin:16px 0;
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .cap {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .cap b { color: var(--fg); }
+
+    video {
+      width: 100%;
+      height: auto;
+      border-radius: 14px;
+      display: block;
+      background: #000;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .triple {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .triple { grid-template-columns: 1fr; }
+    }
+
+    .footer {
+      padding: 28px 0 44px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .codebox {
+      white-space: pre-wrap;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px;
+      overflow: auto;
+      color: var(--fg);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 13px;
     }
   </style>
 </head>
 
 <body>
-
-  <div class="top">
-    <div class="wrap">
-      <div align="center">
-        <h1 class="brand">UniPred</h1>
-        <p class="subtitle">Unifying Deep Predicate Invention with Foundation Models</p>
-        <p class="note">TODO conference venue and year</p>
+  <div class="topbar">
+    <div class="wrap toprow">
+      <div class="brand">
+        <img src="metadata/logo.png" alt="UniPred logo" />
+        <span>UniPred</span>
       </div>
-
       <div class="nav">
-        <a href="#overview">Overview</a>
-        <a href="#teaser">Teaser</a>
         <a href="#demos">Demos</a>
-        <a href="#learning">Predicate Learning</a>
-        <a href="#induction">Induction</a>
-        <a href="#grounding">Grounding</a>
-        <a href="#realworld">Real World</a>
-        <a href="#code">Code</a>
-        <a href="#limitations">Limitations</a>
+        <a href="#recovery">Failure recovery</a>
+        <a href="#fails">Failures</a>
         <a href="#citation">Citation</a>
-        <a href="#qa">QA</a>
+        <a href="#license">License</a>
       </div>
     </div>
   </div>
 
-  <div class="section" id="overview">
-    <div class="wrap">
-      <div class="card">
-        <h2>Overview</h2>
-        <p>
-          UniPred is a framework for learning symbolic predicates from perception and interaction.
-          It aims to bridge high dimensional observations with abstraction, reasoning, and long horizon planning.
-        </p>
-        <p>
-          Instead of relying on manually defined symbolic abstractions, UniPred learns predicates from data and grounds them in observations.
-        </p>
-        <div class="todo">
-          TODO add a single sentence tagline describing the main contribution
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="wrap hero">
+    <h1 class="title">UniPred</h1>
+    <p class="subtitle">
+      Unifying Deep Predicate Invention with Foundation Models for Long Horizon Planning
+    </p>
 
-  <div class="section" id="teaser">
-    <div class="wrap">
-      <div class="card">
-        <h2>System Overview</h2>
-        <p>
-          This section presents a high level view of the UniPred pipeline.
-          The pipeline starts from raw sensory inputs and produces grounded predicates for planning and evaluation.
-        </p>
-        <div class="todo">
-          TODO teaser figure placeholder text only
-        </div>
-      </div>
+    <div class="pillrow">
+      <a class="pill" href="static/unipred_paper.pdf">Paper</a>
+      <a class="pill" href="https://arxiv.org">arXiv</a>
+      <a class="pill" href="https://youtube.com">Video</a>
+      <a class="pill" href="https://github.com">Code</a>
     </div>
   </div>
 
   <div class="section" id="demos">
     <div class="wrap">
-      <div class="card">
-        <h2>Demonstrations</h2>
-        <p>
-          This section will showcase results in both simulated and real world settings.
-        </p>
+      <h2 class="h2">Demo videos</h2>
 
-        <h3>Long Horizon Demo</h3>
-        <p>
-          A long duration demonstration showing stable execution and consistency over time.
-        </p>
-        <div class="todo">
-          TODO add main demo description
+      <div class="card">
+        <video playsinline autoplay muted loop controls>
+          <source src="metadata/main_demo.mp4" type="video/mp4" />
+        </video>
+        <div class="cap">
+          <b>Main demo.</b> UniPred performs long horizon planning with a learned neural symbolic world model.
+        </div>
+      </div>
+
+      <div style="height:16px;"></div>
+
+      <div class="grid2">
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="metadata/main_2.mp4" type="video/mp4" />
+          </video>
+          <div class="cap">
+            <b>Additional task demo.</b> Replace this caption with your task description.
+          </div>
         </div>
 
-        <div class="divider"></div>
-
-        <h3>Failure Recovery</h3>
-        <p>
-          Short demonstrations showing recovery from perception errors, action failures, and environment perturbations.
-        </p>
-        <div class="todo">
-          TODO add several short recovery demo descriptions
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="metadata/main_3.mp4" type="video/mp4" />
+          </video>
+          <div class="cap">
+            <b>Additional task demo.</b> Replace this caption with your task description.
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="section" id="learning">
+  <div class="section" id="recovery">
     <div class="wrap">
+      <h2 class="h2">Some failures UniPred can recover</h2>
+
       <div class="card">
-        <h2>Learning Predicates from Data</h2>
-        <p>
-          UniPred learns reusable predicates that capture semantic properties such as relations, affordances, and task relevant attributes.
-        </p>
-        <p>
-          Learned predicates provide a compact interface between perception and downstream reasoning.
-        </p>
-        <div class="todo">
-          TODO describe learning objective
-          <br>
-          TODO describe supervision or self supervision
-          <br>
-          TODO describe model components at a high level
+        <video playsinline autoplay muted loop controls>
+          <source src="metadata/recovery_main.mp4" type="video/mp4" />
+        </video>
+        <div class="cap">
+          <b>Demo showing failure recovery.</b>
+          UniPred continuously replans based on observation feedback, detects action failures during execution, and performs recovery replanning.
+          Through a total of 13 steps, the system successfully completes the task.
+        </div>
+      </div>
+
+      <div style="height:16px;"></div>
+
+      <div class="grid2">
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="metadata/recovery_1.mp4" type="video/mp4" />
+          </video>
+          <div class="cap">
+            <b>Recovery demo.</b> Replace this caption with your details.
+          </div>
+        </div>
+
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="metadata/recovery_3.mp4" type="video/mp4" />
+          </video>
+          <div class="cap">
+            <b>Recovery demo.</b> Replace this caption with your details.
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="section" id="induction">
+  <div class="section" id="fails">
     <div class="wrap">
-      <div class="card">
-        <h2>Predicate Induction and Abstraction</h2>
-        <p>
-          Given raw observations, UniPred induces discrete predicate representations that abstract away low level sensory details.
-        </p>
-        <p>
-          This abstraction supports generalization across scenes and enables long horizon reasoning.
-        </p>
-        <div class="todo">
-          TODO explain induction mechanism
-          <br>
-          TODO explain how abstractions transfer across environments
+      <h2 class="h2">Some failures cannot</h2>
+
+      <div class="triple">
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="metadata/fail1.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="metadata/fail2.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="metadata/fail3.mp4" type="video/mp4" />
+          </video>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div class="section" id="grounding">
-    <div class="wrap">
-      <div class="card">
-        <h2>Grounding Predicates for Planning</h2>
-        <p>
-          UniPred grounds learned predicates back into the world through perception models and state estimation.
-        </p>
-        <p>
-          Grounded predicates can be consumed by symbolic planners or neural symbolic systems for long horizon action generation.
-        </p>
-        <div class="todo">
-          TODO explain grounding interface
-          <br>
-          TODO explain planner integration
-          <br>
-          TODO describe how uncertainty is handled
-        </div>
-      </div>
-    </div>
-  </div>
+      <div style="height:10px;"></div>
 
-  <div class="section" id="realworld">
-    <div class="wrap">
-      <div class="card">
-        <h2>Real World Deployment</h2>
-        <p>
-          UniPred is designed for real world robotic operation with minimal task specific tuning.
-        </p>
-        <div class="todo">
-          TODO list supported sensors
-          <br>
-          TODO describe calibration assumptions
-          <br>
-          TODO describe real time constraints
-          <br>
-          TODO include safety and reset notes
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="code">
-    <div class="wrap">
-      <div class="card">
-        <h2>Code and Usage</h2>
-
-        <h3>Environment Setup</h3>
-        <div class="todo">
-          TODO install instructions
-          <br>
-          TODO dependency list
-          <br>
-          TODO hardware requirements
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>Basic Predicate Learning</h3>
-        <div class="todo">
-          TODO minimal example
-          <br>
-          TODO training command placeholder
-          <br>
-          TODO expected outputs placeholder
-        </div>
-
-        <div class="divider"></div>
-
-        <h3>Evaluation from Images</h3>
-        <div class="todo">
-          TODO evaluation protocol
-          <br>
-          TODO metrics
-          <br>
-          TODO qualitative visualization description
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="section" id="limitations">
-    <div class="wrap">
-      <div class="card">
-        <h2>Limitations and Future Work</h2>
-        <p>
-          UniPred currently makes assumptions about observability, interaction structure, and data coverage.
-        </p>
-        <div class="todo">
-          TODO list limitations
-          <br>
-          TODO list future extensions
-          <br>
-          TODO discuss expected failure modes
-        </div>
+      <div class="cap">
+        <b>Long horizon manipulation tasks are inherently challenging.</b>
+        Many unpredictable factors can lead to failure, including planning failures and accumulated execution errors at each action step.
       </div>
     </div>
   </div>
 
   <div class="section" id="citation">
     <div class="wrap">
-      <div class="card">
-        <h2>Citation</h2>
-        <p>
-          Please cite the UniPred paper if you use this project.
-        </p>
-        <div class="todo">
-          TODO add bibtex text
-        </div>
+      <h2 class="h2">Citation</h2>
+      <p class="subtitle" style="margin-top:0;">
+        If you use UniPred in your research please cite the corresponding paper
+      </p>
+
+      <div class="codebox">
+@inproceedings{unipred2025,
+  title={UniPred: Unifying Deep Predicate Invention with Foundation Models for Long Horizon Planning},
+  author={TODO},
+  booktitle={TODO},
+  year={2025}
+}
       </div>
+
+      <p class="cap">
+        Replace the BibTeX fields and link the paper button at the top to your pdf.
+      </p>
     </div>
   </div>
 
-  <div class="section" id="qa">
+  <div class="section" id="license">
     <div class="wrap">
+      <h2 class="h2">License</h2>
       <div class="card">
-        <h2>QA</h2>
-
-        <h3>What types of predicates can UniPred learn</h3>
-        <div class="todo">
-          TODO answer
-        </div>
-
-        <h3>How does UniPred differ from manually designed symbolic systems</h3>
-        <div class="todo">
-          TODO answer
-        </div>
-
-        <h3>How do you evaluate predicate quality</h3>
-        <div class="todo">
-          TODO answer
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">
-    <div class="wrap">
-      <div class="card">
-        <h2>Footer</h2>
-        <p>
-          TODO add template attribution text
-        </p>
-        <p>
-          TODO add license text
+        <p style="margin:0; color: var(--muted);">
+          TODO add license information
         </p>
       </div>
     </div>
   </div>
 
+  <div class="wrap footer">
+    <div class="card">
+      <p style="margin:0;">
+        Template credit: add your preferred attribution here.
+      </p>
+      <p style="margin:10px 0 0 0;">
+        Reminder: remove analytics snippets if you do not want tracking.
+      </p>
+    </div>
+  </div>
 </body>
 </html>
