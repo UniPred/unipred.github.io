@@ -1,350 +1,485 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf8">
+  <meta name="description" content="UniPred project page">
+  <meta name="keywords" content="Robotics, Planning, Predicates, Neural Symbolic, UniPred">
+  <meta name="viewport" content="width=devicewidth, initialscale=1">
   <title>UniPred</title>
 
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
-
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
   <link rel="icon" href="./static/images/favicon.svg">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
-
   <style>
-    /* Ensure the main demo is truly centered and not constrained oddly by surrounding elements */
-    .unipred-video-wrap {
-      display: flex;
-      justify-content: center;
+    :root{
+      --bg:#ffffff;
+      --fg:#111111;
+      --muted:#4a4a4a;
+      --muted2:#6f6f6f;
+      --card:#f7f7f7;
+      --border:rgba(0,0,0,0.12);
+      --shadow:0 10px 30px rgba(0,0,0,0.08);
+      --maxw:1040px;
+      --radius:14px;
     }
-    .unipred-video {
-      width: 100%;
-      max-width: 960px;
-      border-radius: 12px;
-      overflow: hidden;
+
+    html,body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--fg);
+      fontfamily:"Google Sans","Noto Sans",systemui,Segoe UI,Roboto,Arial,sansserif;
+      lineheight:1.55;
     }
-    .unipred-video video {
-      width: 100%;
-      height: auto;
-      display: block;
+
+    a{ color:inherit; textdecoration:none; }
+    a:hover{ textdecoration:underline; }
+
+    .nav{
+      position:sticky;
+      top:0;
+      background:rgba(255,255,255,0.92);
+      backdropfilter:blur(10px);
+      bordertop:1px solid rgba(255,255,255,0.0);
+      borderbottom:1px solid var(--border);
+      zindex:20;
+    }
+
+    .navinner{
+      maxwidth:var(--maxw);
+      margin:0 auto;
+      padding:10px 18px;
+      display:flex;
+      alignitems:center;
+      justifycontent:spacebetween;
+      gap:12px;
+    }
+
+    .navleft{
+      display:flex;
+      alignitems:center;
+      gap:10px;
+      fontweight:700;
+      letterspacing:0.2px;
+    }
+
+    .navleft img{
+      width:34px;
+      height:34px;
+      borderradius:10px;
+      objectfit:cover;
+      background:#fff;
+      border:1px solid var(--border);
+    }
+
+    .navright{
+      display:flex;
+      gap:14px;
+      flexwrap:wrap;
+      justifycontent:flexend;
+    }
+
+    .navright a{
+      fontsize:14px;
+      color:var(--muted2);
+      fontweight:600;
+    }
+
+    .navright a:hover{ color:var(--fg); }
+
+    .wrap{
+      maxwidth:var(--maxw);
+      margin:0 auto;
+      padding:0 18px;
+    }
+
+    .hero{
+      padding:46px 0 18px 0;
+      textalign:center;
+    }
+
+    .title{
+      fontfamily:"Castoro","Noto Sans",serif;
+      fontsize:48px;
+      lineheight:1.12;
+      margin:0;
+    }
+
+    .subtitle{
+      margin:12px auto 0 auto;
+      maxwidth:940px;
+      color:var(--muted);
+      fontsize:18px;
+    }
+
+    .authors{
+      margin:18px auto 0 auto;
+      maxwidth:980px;
+      fontsize:18px;
+      color:var(--fg);
+    }
+
+    .authors a{
+      color:var(--fg);
+      fontweight:600;
+    }
+
+    .affils{
+      margin:10px auto 0 auto;
+      maxwidth:980px;
+      fontsize:16px;
+      color:var(--muted);
+    }
+
+    .links{
+      margin:18px auto 0 auto;
+      display:flex;
+      justifycontent:center;
+      gap:10px;
+      flexwrap:wrap;
+    }
+
+    .btn{
+      display:inlineflex;
+      alignitems:center;
+      justifycontent:center;
+      padding:10px 14px;
+      borderradius:999px;
+      background:#111;
+      color:#fff;
+      fontweight:700;
+      fontsize:14px;
+      border:1px solid rgba(0,0,0,0.6);
+      boxshadow:0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    .btn.secondary{
+      background:#ffffff;
+      color:#111;
+      border:1px solid var(--border);
+      boxshadow:none;
+    }
+
+    .section{
+      padding:34px 0;
+    }
+
+    .sectiontitle{
+      fontfamily:"Castoro","Noto Sans",serif;
+      fontsize:28px;
+      margin:0 0 14px 0;
+      textalign:center;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      borderradius:var(--radius);
+      padding:16px;
+      boxshadow:var(--shadow);
+    }
+
+    .centerrow{
+      display:flex;
+      justifycontent:center;
+    }
+
+    .videowrap{
+      width:100%;
+      maxwidth:860px;
+    }
+
+    video{
+      width:100%;
+      height:auto;
+      display:block;
+      borderradius:12px;
+      background:#000;
+      border:1px solid var(--border);
+    }
+
+    .cap{
+      margin:10px auto 0 auto;
+      maxwidth:860px;
+      color:var(--muted);
+      fontsize:14px;
+    }
+
+    .grid2{
+      display:grid;
+      gridtemplatecolumns:1fr 1fr;
+      gap:16px;
+      margin:16px auto 0 auto;
+      maxwidth:980px;
+    }
+
+    .grid3{
+      display:grid;
+      gridtemplatecolumns:1fr 1fr 1fr;
+      gap:14px;
+      margin:16px auto 0 auto;
+      maxwidth:980px;
+    }
+
+    .smallcap{
+      margin:10px auto 0 auto;
+      maxwidth:980px;
+      color:var(--muted);
+      fontsize:14px;
+      textalign:center;
+    }
+
+    .abstract{
+      maxwidth:900px;
+      margin:0 auto;
+      textalign:left;
+      color:var(--muted);
+      fontsize:16px;
+    }
+
+    .codebox{
+      maxwidth:980px;
+      margin:0 auto;
+      padding:14px;
+      background:#ffffff;
+      border:1px solid var(--border);
+      borderradius:12px;
+      overflow:auto;
+      fontfamily:uimonospace,SFMonoRegular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      fontsize:13px;
+      color:#111;
+    }
+
+    .footnotes{
+      maxwidth:980px;
+      margin:18px auto 0 auto;
+      fontsize:14px;
+      color:var(--muted);
+      textalign:left;
+    }
+
+    .footer{
+      padding:30px 0 54px 0;
+      borderTop:1px solid var(--border);
+    }
+
+    .footerinner{
+      maxwidth:var(--maxw);
+      margin:0 auto;
+      padding:0 18px;
+      color:var(--muted);
+      fontsize:14px;
+      textalign:center;
+    }
+
+    @media (maxwidth:900px){
+      .title{ fontsize:40px; }
+      .grid2{ gridtemplatecolumns:1fr; }
+      .grid3{ gridtemplatecolumns:1fr; }
+      .navinner{ padding:10px 14px; }
     }
   </style>
 </head>
 
 <body>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-
-  <div class="navbar-menu">
-    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="#">
-        <span class="icon">
-          <i class="fas fa-home"></i>
-        </span>
-      </a>
-
-      <a class="navbar-item" href="#demos">Demos</a>
-      <a class="navbar-item" href="#recovery">Failure Recovery</a>
-      <a class="navbar-item" href="#fails">Failures</a>
-      <a class="navbar-item" href="#bibtex">BibTeX</a>
-    </div>
-  </div>
-</nav>
-
-<section class="hero">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">UniPred</h1>
-
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="#" target="_blank" rel="noopener">Author One</a><sup>1</sup>,
-            </span>
-            <span class="author-block">
-              <a href="#" target="_blank" rel="noopener">Author Two</a><sup>1</sup>,
-            </span>
-            <span class="author-block">
-              <a href="#" target="_blank" rel="noopener">Author Three</a><sup>2</sup>
-            </span>
-          </div>
-
-          <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>University Name,</span>
-            <span class="author-block"><sup>2</sup>Organization Name</span>
-          </div>
-
-          <div class="column has-text-centered">
-            <div class="publication-links">
-
-              <span class="link-block">
-                <a href="./static/unipred_paper.pdf"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Paper</span>
-                </a>
-              </span>
-
-              <span class="link-block">
-                <a href="https://arxiv.org"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>arXiv</span>
-                </a>
-              </span>
-
-              <span class="link-block">
-                <a href="https://youtube.com"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="fab fa-youtube"></i>
-                  </span>
-                  <span>Video</span>
-                </a>
-              </span>
-
-              <span class="link-block">
-                <a href="https://github.com"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code</span>
-                </a>
-              </span>
-
-              <span class="link-block">
-                <a href="#"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="far fa-images"></i>
-                  </span>
-                  <span>Data</span>
-                </a>
-              </span>
-
-            </div>
-          </div>
-
-          <div class="content has-text-centered" style="margin-top: 16px;">
-            <p style="max-width: 920px; margin: 0 auto;">
-              Unifying Deep Predicate Invention with Foundation Models for Long Horizon Planning
-            </p>
-          </div>
-
-        </div>
+  <div class="nav">
+    <div class="navinner">
+      <div class="navleft">
+        <img src="./static/images/logo.png" alt="logo">
+        <span>UniPred</span>
+      </div>
+      <div class="navright">
+        <a href="#abstract">Abstract</a>
+        <a href="#demos">Demo Videos</a>
+        <a href="#recovery">Failure Recovery</a>
+        <a href="#fails">Failures</a>
+        <a href="#bibtex">BibTeX</a>
       </div>
     </div>
   </div>
-</section>
 
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <div class="unipred-video-wrap">
-        <div class="unipred-video">
-          <video autoplay muted loop playsinline>
+  <div class="wrap">
+    <div class="hero">
+      <h1 class="title">UniPred</h1>
+      <div class="subtitle">Unifying Deep Predicate Invention with Foundation Models for Long Horizon Planning</div>
+
+      <div class="authors">
+        <span>Qianwei Wang</span><sup>1,2,∗</sup>,
+        <span>Bowen Li</span><sup>1,∗</sup>,
+        <span>Zhanpeng Luo</span><sup>1,3</sup>,
+        <span>Yifan Xu</span><sup>2</sup>,
+        <span>Alexander Gray</span><sup>4</sup>,
+        <span>Tom Silver</span><sup>5</sup>,
+        <span>Sebastian Scherer</span><sup>1</sup>,
+        <span>Katia Sycara</span><sup>1</sup>,
+        <span>Yaqi Xie</span><sup>1,†</sup>
+      </div>
+
+      <div class="affils">
+        <span><sup>1</sup>Robotics Institute, Carnegie Mellon University, Pittsburgh, PA, USA</span><br>
+        <span><sup>2</sup>Computer Science and Engineering Division, University of Michigan</span><br>
+        <span><sup>3</sup>Department of Computer Science, University of Pittsburgh</span><br>
+        <span><sup>4</sup>Centaur AI Institute</span><br>
+        <span><sup>5</sup>Department of Electrical and Computer Engineering, Princeton University</span>
+      </div>
+
+      <div class="links">
+        <a class="btn" href="./static/unipred_paper.pdf">Paper</a>
+        <a class="btn" href="https://arxiv.org">arXiv</a>
+        <a class="btn" href="https://youtube.com">Video</a>
+        <a class="btn" href="https://github.com">Code</a>
+        <a class="btn secondary" href="./static/data">Data</a>
+      </div>
+
+      <div class="footnotes">
+        <div>∗ Equal Contribution. † Corresponding author.</div>
+        <div>Contact: {bowenli2@andrew.cmu.edu}.</div>
+        <div>The work was partly done when Qianwei Wang and Zhanpeng Luo were Robotics Institute Summer Scholars associated with the Advanced Agent Robotics Technology Lab, CMU.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="abstract">
+    <div class="wrap">
+      <h2 class="sectiontitle">Abstract</h2>
+      <div class="abstract card">
+        Long horizon robotic tasks are hard due to contin
+        uous state action spaces and sparse feedback. Symbolic world
+        models help by decomposing tasks into discrete predicates that
+        capture object properties and relations. Existing methods learn
+        predicates either top down, by prompting foundation models
+        without data grounding, or bottom up, from demonstrations
+        without high level priors. We introduce UniPred, a bilevel
+        learning framework that unifies both. UniPred uses large lan
+        guage models (LLMs) to propose predicate effect distributions
+        that supervise neural predicate learning from low level data,
+        while learned feedback iteratively refines the LLM hypotheses.
+        Leveraging strong visual foundation model features, UniPred
+        learns robust predicate classifiers in cluttered scenes. We further
+        propose a predicate evaluation method that supports symbolic
+        models beyond STRIPS assumptions. Across five simulated and
+        one real robot domains, UniPred achieves 2 ∼ 4× higher success
+        rates than top down methods and 3 ∼ 4× faster learning than
+        bottom up approaches, advancing scalable and flexible symbolic
+        world modeling for robotics.
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="demos">
+    <div class="wrap">
+      <h2 class="sectiontitle">Demo Videos</h2>
+
+      <div class="centerrow">
+        <div class="videowrap card">
+          <video playsinline autoplay muted loop controls>
             <source src="./static/videos/main_demo.mp4" type="video/mp4">
           </video>
+          <div class="cap"><b>Main demo.</b> UniPred performs long horizon planning with a learned neural symbolic world model.</div>
         </div>
       </div>
-      <h2 class="subtitle has-text-centered" style="margin-top: 16px;">
-        UniPred performs long horizon planning with a learned neural symbolic world model
-      </h2>
-    </div>
-  </div>
-</section>
 
-<section class="section" id="abstract">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <p>
-            TODO you will fill this
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="hero is-light is-small" id="demos">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title is-3 has-text-centered" style="margin-bottom: 18px;">Demo Videos</h2>
-
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item">
-          <video autoplay controls muted loop playsinline height="100%">
-            <source src="./static/videos/main_demo.mp4" type="video/mp4">
-          </video>
-        </div>
-
-        <div class="item">
-          <video autoplay controls muted loop playsinline height="100%">
+      <div class="grid2">
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
             <source src="./static/videos/main_demo_1.mp4" type="video/mp4">
           </video>
+          <div class="cap"><b>Other task demo.</b></div>
         </div>
 
-        <div class="item">
-          <video autoplay controls muted loop playsinline height="100%">
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
             <source src="./static/videos/main_demo_2.mp4" type="video/mp4">
+          </video>
+          <div class="cap"><b>Other task demo.</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="recovery">
+    <div class="wrap">
+      <h2 class="sectiontitle">Failure Recovery</h2>
+
+      <div class="centerrow">
+        <div class="videowrap card">
+          <video playsinline autoplay muted loop controls>
+            <source src="./static/videos/recover_main.mp4" type="video/mp4">
+          </video>
+          <div class="cap">
+            <b>Demo showing failure recovery.</b>
+            UniPred continuously replans based on observation feedback, detects action failures during execution, and performs recovery replanning. Through a total of 13 steps, the system successfully completes the task.
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="./static/videos/recover_1.mp4" type="video/mp4">
+          </video>
+          <div class="cap"><b>Other recovery demo.</b></div>
+        </div>
+
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="./static/videos/recover_3.mp4" type="video/mp4">
+          </video>
+          <div class="cap"><b>Other recovery demo.</b></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="fails">
+    <div class="wrap">
+      <h2 class="sectiontitle">Failures</h2>
+
+      <div class="grid3">
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="./static/videos/fail1.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="./static/videos/fail2.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="card">
+          <video playsinline autoplay muted loop controls>
+            <source src="./static/videos/fail3.mp4" type="video/mp4">
           </video>
         </div>
       </div>
 
-      <div class="content has-text-centered" style="margin-top: 14px;">
-        <p>
-          You can add more items here if you want the carousel to show more demos
-        </p>
+      <div class="smallcap">
+        <b>Long horizon manipulation tasks are inherently challenging.</b>
+        Many unpredictable factors can lead to failure, including planning failures and accumulated execution errors at each action step.
       </div>
     </div>
   </div>
-</section>
 
-<section class="section" id="recovery">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Some failures UniPred can recover</h2>
-
-        <div class="content">
-          <div class="unipred-video-wrap">
-            <div class="unipred-video">
-              <video autoplay controls muted loop playsinline>
-                <source src="./static/videos/recover_main.mp4" type="video/mp4">
-              </video>
-            </div>
-          </div>
-
-          <p style="margin-top: 12px;">
-            UniPred continuously replans based on observation feedback, detects action failures during execution, and performs recovery replanning. Through a total of 13 steps, the system successfully completes the task.
-          </p>
-        </div>
-
-        <div class="columns is-centered" style="margin-top: 10px;">
-          <div class="column">
-            <div class="content">
-              <video autoplay controls muted loop playsinline height="100%">
-                <source src="./static/videos/recover_1.mp4" type="video/mp4">
-              </video>
-            </div>
-          </div>
-
-          <div class="column">
-            <div class="content">
-              <video autoplay controls muted loop playsinline height="100%">
-                <source src="./static/videos/recover_3.mp4" type="video/mp4">
-              </video>
-            </div>
-          </div>
-        </div>
-
+  <div class="section" id="bibtex">
+    <div class="wrap">
+      <h2 class="sectiontitle">BibTeX</h2>
+      <div class="codebox">
+@inproceedings{unipred2025,
+  title={UniPred: Unifying Deep Predicate Invention with Foundation Models for Long Horizon Planning},
+  author={Wang, Qianwei and Li, Bowen and Luo, Zhanpeng and Xu, Yifan and Gray, Alexander and Silver, Tom and Scherer, Sebastian and Sycara, Katia and Xie, Yaqi},
+  booktitle={TODO},
+  year={2025}
+}
       </div>
     </div>
   </div>
-</section>
 
-<section class="section" id="fails">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Some failures cannot</h2>
-
-        <div class="columns is-centered">
-          <div class="column">
-            <video autoplay controls muted loop playsinline height="100%">
-              <source src="./static/videos/fail1.mp4" type="video/mp4">
-            </video>
-          </div>
-
-          <div class="column">
-            <video autoplay controls muted loop playsinline height="100%">
-              <source src="./static/videos/fail2.mp4" type="video/mp4">
-            </video>
-          </div>
-
-          <div class="column">
-            <video autoplay controls muted loop playsinline height="100%">
-              <source src="./static/videos/fail3.mp4" type="video/mp4">
-            </video>
-          </div>
-        </div>
-
-        <div class="content" style="margin-top: 10px;">
-          <p>
-            Long horizon manipulation tasks are inherently challenging. Many unpredictable factors can lead to failure, including planning failures and accumulated execution errors at each action step.
-          </p>
-        </div>
-
-      </div>
+  <div class="footer">
+    <div class="footerinner">
+      This page layout is inspired by modern academic project pages. Please remove any tracking code if you add it later.
     </div>
   </div>
-</section>
-
-<section class="section" id="bibtex">
-  <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <pre><code>@inproceedings{unipred2025,
-  title     = {UniPred: Unifying Deep Predicate Invention with Foundation Models for Long Horizon Planning},
-  author    = {TODO},
-  booktitle = {TODO},
-  year      = {2025}
-}</code></pre>
-  </div>
-</section>
-
-<footer class="footer">
-  <div class="container">
-    <div class="content has-text-centered">
-      <a class="icon-link" href="./static/unipred_paper.pdf">
-        <i class="fas fa-file-pdf"></i>
-      </a>
-      <a class="icon-link" href="https://github.com" class="external-link" disabled>
-        <i class="fab fa-github"></i>
-      </a>
-    </div>
-
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-          <p>
-            Template credit: Nerfies website template
-          </p>
-          <p>
-            Reminder: do not include analytics snippets if you do not want tracking
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
 
 </body>
 </html>
