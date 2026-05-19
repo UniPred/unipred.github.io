@@ -277,38 +277,103 @@
     <div class="container">
       <h2 class="title is-3 has-text-centered" style="margin-bottom: 18px;">Demo Videos</h2>
 
-      <div id="results-carousel" class="carousel results-carousel">
+      <div class="demo-domain-grid">
+        <article class="demo-domain-card" data-demo-carousel>
+          <div class="demo-domain-heading">
+            <div>
+              <p class="demo-domain-kicker">Domain 1</p>
+              <h3 class="title is-5 demo-domain-title">Table Clean</h3>
+            </div>
+            <p class="demo-domain-status" data-demo-status>Example 1 / 2</p>
+          </div>
 
-        <div class="item">
-          <div class="content has-text-centered">
-            <div class="unipred-video-wrap">
-              <div class="unipred-video">
+          <div class="demo-video-stage">
+            <div class="demo-video-slide is-active" data-demo-label="Example 1 / 2">
+              <div class="demo-video-frame">
                 <video autoplay controls muted loop playsinline>
                   <source src="./static/videos/main_demo_1.mp4" type="video/mp4">
                 </video>
               </div>
             </div>
-            <p class="is-size-7" style="margin-top: 10px;">
-              Caption for main demo 1.
-            </p>
-          </div>
-        </div>
 
-        <div class="item">
-          <div class="content has-text-centered">
-            <div class="unipred-video-wrap">
-              <div class="unipred-video">
+            <div class="demo-video-slide" data-demo-label="Example 2 / 2">
+              <div class="demo-video-frame">
                 <video autoplay controls muted loop playsinline>
                   <source src="./static/videos/main_demo_2.mp4" type="video/mp4">
                 </video>
               </div>
             </div>
-            <p class="is-size-7" style="margin-top: 10px;">
-              Caption for main demo 2.
-            </p>
-          </div>
-        </div>
 
+            <button class="demo-video-nav demo-video-nav-prev" type="button" aria-label="Previous Table Clean video" data-demo-prev>
+              <span class="icon">
+                <i class="fas fa-chevron-left"></i>
+              </span>
+            </button>
+            <button class="demo-video-nav demo-video-nav-next" type="button" aria-label="Next Table Clean video" data-demo-next>
+              <span class="icon">
+                <i class="fas fa-chevron-right"></i>
+              </span>
+            </button>
+          </div>
+
+          <div class="demo-video-dots" aria-label="Table Clean video selection">
+            <button class="demo-video-dot is-active" type="button" aria-label="Show Table Clean example 1" data-demo-dot></button>
+            <button class="demo-video-dot" type="button" aria-label="Show Table Clean example 2" data-demo-dot></button>
+          </div>
+        </article>
+
+        <article class="demo-domain-card" data-demo-carousel>
+          <div class="demo-domain-heading">
+            <div>
+              <p class="demo-domain-kicker">Domain 2</p>
+              <h3 class="title is-5 demo-domain-title">Pick Target in Clutter</h3>
+            </div>
+            <p class="demo-domain-status" data-demo-status>Hard</p>
+          </div>
+
+          <div class="demo-video-stage">
+            <div class="demo-video-slide is-active" data-demo-label="Hard">
+              <div class="demo-video-frame">
+                <video autoplay controls muted loop playsinline>
+                  <source src="./static/videos/pick-clutter-hard.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <div class="demo-video-slide" data-demo-label="Mid">
+              <div class="demo-video-frame">
+                <video autoplay controls muted loop playsinline>
+                  <source src="./static/videos/pick-clutter-mid.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <div class="demo-video-slide" data-demo-label="Easy">
+              <div class="demo-video-frame">
+                <video autoplay controls muted loop playsinline>
+                  <source src="./static/videos/pick-clutter-easy.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+
+            <button class="demo-video-nav demo-video-nav-prev" type="button" aria-label="Previous Pick Target in Clutter video" data-demo-prev>
+              <span class="icon">
+                <i class="fas fa-chevron-left"></i>
+              </span>
+            </button>
+            <button class="demo-video-nav demo-video-nav-next" type="button" aria-label="Next Pick Target in Clutter video" data-demo-next>
+              <span class="icon">
+                <i class="fas fa-chevron-right"></i>
+              </span>
+            </button>
+          </div>
+
+          <div class="demo-video-dots" aria-label="Pick Target in Clutter video selection">
+            <button class="demo-video-dot is-active" type="button" aria-label="Show hard clutter video" data-demo-dot></button>
+            <button class="demo-video-dot" type="button" aria-label="Show mid clutter video" data-demo-dot></button>
+            <button class="demo-video-dot" type="button" aria-label="Show easy clutter video" data-demo-dot></button>
+          </div>
+        </article>
       </div>
     </div>
   </div>
