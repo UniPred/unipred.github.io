@@ -1,0 +1,13 @@
+WEBVTT
+
+00:00.000 --> 00:07.000
+UniPred learns the concepts that connect visual observations to robot plans.
+
+00:07.000 --> 00:14.000
+An LLM proposes how actions change predicates. Demonstration transitions provide pseudo-labels for neural predicate learning.
+
+00:14.000 --> 00:21.000
+Training and validation feedback refine the LLM hypotheses, improving supervision for the visual classifiers. This feature-space animation is schematic.
+
+00:21.000 --> 00:28.000
+At test time, learned predicates ground observations. A planner composes existing robot skills, then re-observes after each controller and replans when needed.

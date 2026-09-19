@@ -1,508 +1,975 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="description" content="">
-  <meta name="keywords" content="Robotic, Planning, Predicate, Foundation Models, LLM, Vision">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>UniPred</title>
-
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
-
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="icon" href="./static/images/favicon.svg">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
-
-  <style>
-    /* Ensure the main demo is truly centered and not constrained oddly by surrounding elements */
-    .unipred-video-wrap {
-      display: flex;
-      justify-content: center;
-    }
-    .unipred-video {
-      width: 100%;
-      max-width: 960px;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .unipred-video video {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-  </style>
-</head>
-
-<body>
-
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-
-  <div class="navbar-menu">
-    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="#">
-        <span class="icon">
-          <i class="fas fa-home"></i>
-        </span>
-      </a>
-
-      <a class="navbar-item" href="#demos">Demos</a>
-      <a class="navbar-item" href="#recovery">Failure Recovery</a>
-      <a class="navbar-item" href="#fails">Failures</a>
-      <a class="navbar-item" href="#bibtex">BibTeX</a>
-    </div>
-  </div>
-</nav>
-
-<section class="hero">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-          <h1 class="title is-1 publication-title">UniPred: Unifying Deep Predicate Invention with Foundation Models</h1>
-          <!-- <div class="subtitle">Unifying Deep Predicate Invention with Foundation Models</div> -->
-
-
-         <div class="is-size-6 publication-authors has-text-centered">
-  <span class="author-block">
-    <a href="https://weiqianwang123.github.io/" target="_blank" rel="noopener">Qianwei Wang</a><sup>1,2,∗</sup>,
-  </span>
-  <span class="author-block">
-    <a href="https://jaraxxus-me.github.io/" target="_blank" rel="noopener">Bowen Li</a><sup>1,∗</sup>,
-  </span>
-  <span class="author-block">
-    <a href="https://zhanpeng1202.github.io/" target="_blank" rel="noopener">Zhanpeng Luo</a><sup>1,3</sup>,
-  </span>
-  <span class="author-block">
-    <a href="https://scholar.google.com/citations?user=RYKMFp4AAAAJ&hl=en" target="_blank" rel="noopener">Yifan Xu</a><sup>2</sup>,
-  </span>
-  <span class="author-block">
-    <a href="https://scholar.google.com/citations?user=yZDEX68AAAAJ&hl=en" target="_blank" rel="noopener">Alexander Gray</a><sup>4</sup>,
-  </span>
-  <span class="author-block">
-    <a href="https://tomsilver.github.io/" target="_blank" rel="noopener">Tom Silver</a><sup>5</sup>,
-  </span>
-  <span class="author-block">
-    <a href="https://www.ri.cmu.edu/ri-faculty/sebastian-scherer/" target="_blank" rel="noopener">Sebastian Scherer</a><sup>1</sup>,
-  </span>
-  <span class="author-block">
-    <a href="https://www.ri.cmu.edu/ri-faculty/katia-sycara/" target="_blank" rel="noopener">Katia Sycara</a><sup>1</sup>,
-  </span>
-  <span class="author-block">
-    <a href="https://yaqi-xie.me/" target="_blank" rel="noopener">Yaqi Xie</a><sup>1,†</sup>
-  </span>
-</div>
-
-<div class="is-size-7 publication-authors has-text-centered">
-  <span class="author-block"><sup>1</sup>Robotics Institute, Carnegie Mellon University, Pittsburgh, PA, USA</span><br>
-  <span class="author-block"><sup>2</sup>Computer Science and Engineering Division, University of Michigan</span><br>
-  <span class="author-block"><sup>3</sup>Department of Computer Science, University of Pittsburgh</span><br>
-  <span class="author-block"><sup>4</sup>Centaur AI Institute</span><br>
-  <span class="author-block"><sup>5</sup>Department of Electrical and Computer Engineering, Princeton University</span>
-</div>
-
-<div class="is-size-7 content has-text-centered" style="margin-top: 10px;">
-  <p style="margin-bottom: 6px;">∗ Equal Contribution. † Corresponding author.</p>
-  <p style="margin-bottom: 6px;">Contact: <a href="mailto:bowenli2@andrew.cmu.edu">bowenli2@andrew.cmu.edu</a>.</p>
-  <p style="max-width: 980px; margin: 0 auto;">
-    The work was partly done when Qianwei Wang and Zhanpeng Luo were Robotics Institute Summer Scholars associated with the Advanced Agent Robotics Technology Lab, CMU.
-  </p>
-</div>
-
-
-          <div class="column has-text-centered">
-            <div class="publication-links">
-
-              <span class="link-block">
-                <a href="./static/unipred.pdf"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Paper</span>
-                </a>
-              </span>
-
-              <span class="link-block">
-                <a href="https://arxiv.org/pdf/2512.17992"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>arXiv</span>
-                </a>
-              </span>
-
-              <!-- <span class="link-block">
-                <a href="https://youtube.com"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="fab fa-youtube"></i>
-                  </span>
-                  <span>Video</span>
-                </a>
-              </span> -->
-
-              <span class="link-block">
-                <a href="https://github.com/weiqianwang123/UniPred"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code</span>
-                </a>
-              </span>
-<!-- 
-              <span class="link-block">
-                <a href="#"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="far fa-images"></i>
-                  </span>
-                  <span>Data</span>
-                </a>
-              </span> -->
-
-            </div>
-          </div>
-
-          <!-- <div class="content has-text-centered" style="margin-top: 16px;">
-            <p style="max-width: 920px; margin: 0 auto;">
-              Unifying Deep Predicate Invention with Foundation Models for Long Horizon Planning
-            </p>
-          </div> -->
-
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="UniPred unifies foundation-model priors and learning from robot demonstrations to invent visual predicates for long-horizon planning. Explore the method, real-robot demos, and failure recovery."
+    />
+    <meta name="theme-color" content="#f6f5ef" />
+    <meta
+      property="og:title"
+      content="UniPred — From pixels to predicates to plans"
+    />
+    <meta
+      property="og:description"
+      content="Unifying Deep Predicate Invention with Pre-trained Foundation Models. A visual guide and real-robot demonstrations."
+    />
+    <meta
+      property="og:image"
+      content="https://unipred.github.io/static/images/posters/unipred-overview.jpg"
+    />
+    <meta property="og:url" content="https://unipred.github.io/" />
+    <title>UniPred — Unifying Deep Predicate Invention</title>
+    <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="static/fonts/manrope-800.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin
+    />
+    <link rel="stylesheet" href="static/css/index.css" />
+    <script src="static/js/index.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="UniPred home"
+        ><svg viewBox="0 0 38 38" aria-hidden="true">
+          <path d="M8 9 28 19 8 29M8 9v20" />
+          <circle cx="8" cy="9" r="5" />
+          <circle cx="28" cy="19" r="5" />
+          <circle cx="8" cy="29" r="5" /></svg
+        >UniPred<span class="brand-dot">.</span></a
+      >
+      <button
+        class="menu-toggle"
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        Menu <span aria-hidden="true">＋</span>
+      </button>
+      <nav id="site-nav" aria-label="Main navigation">
+        <a href="#method">The idea</a><a href="#demos">Robot demos</a
+        ><a href="#recovery">Recovery & limits</a
+        ><a href="#paper" class="nav-paper"
+          >Read the paper <span aria-hidden="true">↗</span></a
+        >
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero page-width" aria-labelledby="hero-title">
+        <div class="eyebrow">
+          <span class="signal-dot"></span> Foundation models meet symbolic robot
+          learning
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+        <h1 id="hero-title">UniPred<span class="title-period">.</span></h1>
+        <p class="paper-title">
+          Unifying Deep Predicate Invention<br class="desktop-break" />
+          with Pre-trained Foundation Models
+        </p>
+        <p class="hero-tagline">
+          Learn the concepts. Connect them to actions. Plan beyond a single
+          step.
+        </p>
+        <div class="authors" aria-label="Authors in paper order">
+          <span
+            ><a href="https://weiqianwang123.github.io/">Qianwei Wang</a
+            ><sup>1,2,*</sup></span
+          >
+          <span
+            ><a href="https://jaraxxus-me.github.io/">Bowen Li</a
+            ><sup>1,*</sup></span
+          >
+          <span
+            ><a href="https://zhanpeng1202.github.io/">Zhanpeng Luo</a
+            ><sup>1,3</sup></span
+          >
+          <span
+            ><a href="https://yifan-cloud.github.io/">Yifan Xu</a
+            ><sup>2</sup></span
+          >
+          <span
+            ><a href="https://cee.engin.umich.edu/people/kamat-vineet-r/"
+              >Vineet Kamat</a
+            ><sup>6</sup></span
+          >
+          <span
+            ><a href="https://cee.engin.umich.edu/people/menassa-carol-c/"
+              >Carol Menassa</a
+            ><sup>6</sup></span
+          >
+          <span
+            ><a href="https://www.centaurinstitute.org/about.html"
+              >Alexander Gray</a
+            ><sup>4</sup></span
+          >
+          <span
+            ><a href="https://tomsilver.github.io/">Tom Silver</a
+            ><sup>5</sup></span
+          >
+          <span
+            ><a href="https://www.ri.cmu.edu/ri-faculty/sebastian-scherer/"
+              >Sebastian Scherer</a
+            ><sup>1</sup></span
+          >
+          <span
+            ><a href="https://www.ri.cmu.edu/ri-faculty/katia-sycara/"
+              >Katia Sycara</a
+            ><sup>1</sup></span
+          >
+          <span><a href="https://yaqi-xie.me/">Yaqi Xie</a><sup>1,†</sup></span>
+        </div>
+        <p class="contributions">
+          * Equal contribution. <span>† Corresponding author.</span>
+        </p>
+        <p class="institutions">
+          Carnegie Mellon <i>·</i> Michigan <i>·</i> Pittsburgh <i>·</i> Centaur
+          AI <i>·</i> Princeton
+        </p>
+        <details class="affiliations">
+          <summary>
+            Author affiliations <span aria-hidden="true">＋</span>
+          </summary>
+          <div>
+            <p>
+              <sup>1</sup> Robotics Institute, Carnegie Mellon University,
+              Pittsburgh, PA, USA
+            </p>
+            <p>
+              <sup>2</sup> Computer Science and Engineering Division, University
+              of Michigan
+            </p>
+            <p>
+              <sup>3</sup> Department of Computer Science, University of
+              Pittsburgh
+            </p>
+            <p><sup>4</sup> Centaur AI Institute</p>
+            <p>
+              <sup>5</sup> Department of Electrical and Computer Engineering,
+              Princeton University
+            </p>
+            <p>
+              <sup>6</sup> Department of Civil and Environmental Engineering,
+              University of Michigan
+            </p>
+          </div>
+        </details>
+        <div class="hero-actions">
+          <a class="button button-dark" href="static/unipred.pdf"
+            >Read the manuscript <span aria-hidden="true">↗</span></a
+          ><a
+            class="button button-outline"
+            href="https://arxiv.org/abs/2512.17992"
+            >arXiv <span aria-hidden="true">↗</span></a
+          ><a
+            class="button button-outline"
+            href="https://github.com/weiqianwang123/UniPred"
+            >Code <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
 
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <div class="unipred-video-wrap">
-        <div class="unipred-video">
-          <video autoplay muted loop playsinline>
-            <source src="./static/videos/main_demo.mp4" type="video/mp4">
+      <section
+        class="film-section page-width"
+        aria-label="UniPred overview film"
+      >
+        <div class="film-shell">
+          <div class="film-heading">
+            <span><span class="signal-dot"></span> The idea in motion</span
+            ><span>LEARN → GROUND → PLAN</span>
+          </div>
+          <video
+            id="overview-film"
+            controls
+            muted
+            playsinline
+            loop
+            preload="metadata"
+            poster="static/images/posters/unipred-overview.jpg"
+            aria-label="28-second animated overview of UniPred"
+            aria-describedby="film-caption"
+          >
+            <source src="static/videos/unipred-overview.mp4" type="video/mp4" />
+            <track
+              kind="captions"
+              src="static/videos/unipred-overview.vtt"
+              srclang="en"
+              label="English"
+            />
+            Your browser does not support video.
+            <a href="static/videos/unipred-overview.mp4"
+              >Download the overview.</a
+            >
           </video>
         </div>
-      </div>
-      <h2 class="subtitle has-text-centered" style="margin-top: 16px;">
-        UniPred performs long horizon planning with a learned neural-symbolic world model
-      </h2>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="abstract">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
+        <div class="film-caption" id="film-caption">
           <p>
-            Long horizon robotic tasks are hard due to contin
-        uous state action spaces and sparse feedback. Symbolic world
-        models help by decomposing tasks into discrete predicates that
-        capture object properties and relations. Existing methods learn
-        predicates either top down, by prompting foundation models
-        without data grounding, or bottom up, from demonstrations
-        without high level priors. We introduce UniPred, a bilevel
-        learning framework that unifies both. UniPred uses large lan
-        guage models (LLMs) to propose predicate effect distributions
-        that supervise neural predicate learning from low level data,
-        while learned feedback iteratively refines the LLM hypotheses.
-        Leveraging strong visual foundation model features, UniPred
-        learns robust predicate classifiers in cluttered scenes. We further
-        propose a predicate evaluation method that supports symbolic
-        models beyond STRIPS assumptions. Across five simulated and
-        one real robot domains, UniPred achieves 2 ∼ 4× higher success
-        rates than top down methods and 3 ∼ 4× faster learning than
-        bottom up approaches, advancing scalable and flexible symbolic
-        world modeling for robotics.
+            <strong>From pixels to predicates to plans.</strong>
+            Foundation-model priors and robot experience meet in one learning
+            loop.
           </p>
+          <a href="#method"
+            >Explore the method <span aria-hidden="true">↓</span></a
+          >
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-<section class="section" id="overview">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3 has-text-centered">Overview of UniPred</h2>
+      </section>
 
-        <div class="content">
+      <section class="intro-section page-width" aria-labelledby="intro-title">
+        <div>
+          <p class="eyebrow">The question</p>
+          <h2 id="intro-title">What must a robot<br />understand to act?</h2>
+        </div>
+        <div class="intro-copy">
           <p>
-            UniPred is a novel framework that integrates deep learning and symbolic reasoning for long-horizon planning tasks in robotics. By leveraging large language models (LLMs) and visual foundation models, UniPred can effectively learn and reason about complex object properties and relationships in cluttered environments.
+            Before a robot can clean a table, it needs to know more than where
+            the objects are.
+            <em
+              >Is the gripper empty? Is a toy still on the table? Is the table
+              clean?</em
+            >
           </p>
-
-          <!-- 如果你想放一张方法图 -->
-          
-          <figure class="image">
-            <img src="./static/images/framework.png" alt="UniPred overview">
-          </figure>
-          <p class="has-text-centered is-size-7">Figure 1: Overview of UniPred framework.</p>
-
-          <figure class="image">
-            <img src="./static/images/learning.png" alt="UniPred overview">
-          </figure>
-          <p class="has-text-centered is-size-7">Figure 2: Overview of unified bilevel learning.</p>
-
+          <p>
+            These concepts are <strong>predicates</strong>: the bridge between
+            continuous visual observations and a discrete plan. UniPred learns
+            that bridge by combining an LLM’s high-level hypotheses with
+            feedback from robot demonstrations.
+          </p>
+          <a class="text-link" href="#abstract"
+            >Read the abstract <span aria-hidden="true">↗</span></a
+          >
         </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
-<section class="hero is-light is-small" id="demos">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title is-3 has-text-centered" style="margin-bottom: 18px;">Demo Videos</h2>
-
-      <div class="demo-domain-grid">
-        <article class="demo-domain-card" data-demo-carousel>
-          <div class="demo-domain-heading">
+      <section
+        class="method-section section-space"
+        id="method"
+        aria-labelledby="method-title"
+      >
+        <div class="page-width">
+          <div class="section-heading">
             <div>
-              <p class="demo-domain-kicker">Domain 1</p>
-              <h3 class="title is-5 demo-domain-title">Table Clean</h3>
+              <p class="eyebrow">
+                <span class="section-number">01</span> Inside UniPred
+              </p>
+              <h2 id="method-title">
+                A hypothesis becomes<br />a grounded concept.
+              </h2>
             </div>
-            <p class="demo-domain-status" data-demo-status>Example 1 / 2</p>
+            <p>
+              Not every plausible concept is a useful predicate. Data tells us
+              which ones actually explain what the robot does.
+            </p>
           </div>
-
-          <div class="demo-video-stage">
-            <div class="demo-video-slide is-active" data-demo-label="Example 1 / 2">
-              <div class="demo-video-frame">
-                <video autoplay controls muted loop playsinline>
-                  <source src="./static/videos/main_demo_1.mp4" type="video/mp4">
-                </video>
+          <div class="method-tabs" role="tablist" aria-label="Method stages">
+            <button
+              role="tab"
+              id="tab-0"
+              aria-selected="true"
+              aria-controls="method-panel"
+              data-stage="0"
+            >
+              <span>01</span> Propose
+            </button>
+            <button
+              role="tab"
+              id="tab-1"
+              aria-selected="false"
+              aria-controls="method-panel"
+              tabindex="-1"
+              data-stage="1"
+            >
+              <span>02</span> Learn
+            </button>
+            <button
+              role="tab"
+              id="tab-2"
+              aria-selected="false"
+              aria-controls="method-panel"
+              tabindex="-1"
+              data-stage="2"
+            >
+              <span>03</span> Refine
+            </button>
+            <button
+              role="tab"
+              id="tab-3"
+              aria-selected="false"
+              aria-controls="method-panel"
+              tabindex="-1"
+              data-stage="3"
+            >
+              <span>04</span> Plan & act
+            </button>
+          </div>
+          <div
+            class="method-panel"
+            id="method-panel"
+            role="tabpanel"
+            aria-labelledby="tab-0"
+            tabindex="0"
+            data-current="0"
+          >
+            <div class="method-copy">
+              <span class="phase-tag" id="method-phase"
+                >TRAINING · FOUNDATION-MODEL PRIORS</span
+              >
+              <h3 id="method-step-title">Start with an informed guess.</h3>
+              <p id="method-step-description">
+                An LLM proposes predicates and hypotheses about how actions
+                change them. Demonstration transitions turn these effect
+                hypotheses into supervision for visual predicate learning.
+              </p>
+              <div class="method-example" id="method-example">
+                <span>EXAMPLE HYPOTHESIS</span
+                ><code>Pick(toy) → Holding(robot, toy)</code>
+              </div>
+              <div class="method-controls">
+                <button
+                  id="method-play"
+                  class="icon-button"
+                  aria-label="Play the method walkthrough"
+                >
+                  <span aria-hidden="true">▶</span> Play walkthrough</button
+                ><span id="method-counter">01 / 04</span>
               </div>
             </div>
-
-            <div class="demo-video-slide" data-demo-label="Example 2 / 2">
-              <div class="demo-video-frame">
-                <video autoplay controls muted loop playsinline>
-                  <source src="./static/videos/main_demo_2.mp4" type="video/mp4">
-                </video>
+            <div
+              class="method-visual"
+              aria-label="Illustration of the learning loop"
+            >
+              <div class="learning-visual">
+                <div class="loop-top">
+                  <div class="model-node">
+                    <span class="node-symbol" aria-hidden="true">✧</span
+                    ><span
+                      >LLM hypotheses<small id="hypothesis-label"
+                        >Proposed action effects</small
+                      ></span
+                    >
+                  </div>
+                  <span class="flow-arrow" aria-hidden="true">→</span>
+                  <div class="model-node">
+                    <span class="node-symbol neural" aria-hidden="true">⌘</span
+                    ><span
+                      >Visual predicates<small id="classifier-label"
+                        >Grounded in demonstrations</small
+                      ></span
+                    >
+                  </div>
+                </div>
+                <div class="feedback-line">
+                  <span aria-hidden="true">↶</span>
+                  <span id="feedback-label"
+                    >Training & validation feedback refines the hypothesis</span
+                  >
+                </div>
+                <div class="scatter-wrap">
+                  <svg
+                    id="predicate-scatter"
+                    viewBox="0 0 550 250"
+                    role="img"
+                    aria-label="Schematic illustration: visual features become separable as predicate hypotheses are refined"
+                  >
+                    <defs>
+                      <pattern
+                        id="dot-grid"
+                        width="22"
+                        height="22"
+                        patternUnits="userSpaceOnUse"
+                      >
+                        <circle cx="2" cy="2" r="1" fill="#d3d9d2" />
+                      </pattern>
+                    </defs>
+                    <rect width="550" height="250" fill="url(#dot-grid)" />
+                    <path
+                      class="decision-boundary"
+                      d="M280 14 Q250 120 278 235"
+                      fill="none"
+                      stroke="#48695e"
+                      stroke-width="2"
+                      stroke-dasharray="6 7"
+                    />
+                    <g id="scatter-points"></g>
+                    <text x="24" y="230" class="plot-label">
+                      Visual feature space · schematic
+                    </text>
+                  </svg>
+                  <div class="scatter-legend">
+                    <span><i class="empty-dot"></i> Empty gripper</span
+                    ><span><i class="holding-dot"></i> Holding towel</span>
+                  </div>
+                </div>
+                <div class="state-strip">
+                  <div>
+                    <img
+                      src="static/images/method/state-0.png"
+                      alt="Observed robot gripper with no object"
+                      width="157"
+                      height="154"
+                      loading="lazy"
+                    /><span>State 0</span>
+                  </div>
+                  <div>
+                    <img
+                      src="static/images/method/state-1.png"
+                      alt="Second observation of an empty gripper"
+                      width="158"
+                      height="162"
+                      loading="lazy"
+                    /><span>State 1</span>
+                  </div>
+                  <div class="state-holding">
+                    <img
+                      src="static/images/method/state-2.png"
+                      alt="Robot gripper holding the yellow towel"
+                      width="158"
+                      height="136"
+                      loading="lazy"
+                    /><span>State 2 · holding</span>
+                  </div>
+                  <div>
+                    <img
+                      src="static/images/method/state-3.png"
+                      alt="Robot gripper empty after releasing the towel"
+                      width="161"
+                      height="163"
+                      loading="lazy"
+                    /><span>State 3</span>
+                  </div>
+                </div>
+              </div>
+              <div class="planning-visual" hidden>
+                <div class="inference-label">
+                  <span class="signal-dot"></span> TEST TIME · LEARNED WORLD
+                  MODEL
+                </div>
+                <div class="observation-row">
+                  <img
+                    src="static/images/posters/main_demo_1.jpg"
+                    alt="Robot observing toy cars and a box on the table"
+                    width="960"
+                    height="540"
+                    loading="lazy"
+                  />
+                  <div>
+                    <span class="small-label">RGB → DINOv3 → predicates</span
+                    ><code>OnTable(toy)</code><code>HandEmpty(robot)</code
+                    ><small>Illustrative symbolic state</small>
+                  </div>
+                </div>
+                <div class="plan-goal">
+                  <span>GOAL</span> Toys in the box. Table clean.
+                </div>
+                <div class="plan-sequence">
+                  <span>Pick toy</span><b aria-hidden="true">→</b
+                  ><span>Place in box</span><b aria-hidden="true">→</b
+                  ><span>Wipe table</span>
+                </div>
+                <div class="execution-loop">
+                  <span>Observe</span><b>→</b><span>Ground</span><b>→</b
+                  ><span>Plan</span><b>→</b><span>Execute</span>
+                </div>
+                <p class="reobserve-note">
+                  ↶ Re-observe after each controller; replan when needed.
+                </p>
               </div>
             </div>
-
-            <button class="demo-video-nav demo-video-nav-prev" type="button" aria-label="Previous Table Clean video" data-demo-prev>
-              <span class="icon">
-                <i class="fas fa-chevron-left"></i>
-              </span>
-            </button>
-            <button class="demo-video-nav demo-video-nav-next" type="button" aria-label="Next Table Clean video" data-demo-next>
-              <span class="icon">
-                <i class="fas fa-chevron-right"></i>
-              </span>
-            </button>
           </div>
-
-          <div class="demo-video-dots" aria-label="Table Clean video selection">
-            <button class="demo-video-dot is-active" type="button" aria-label="Show Table Clean example 1" data-demo-dot></button>
-            <button class="demo-video-dot" type="button" aria-label="Show Table Clean example 2" data-demo-dot></button>
+          <p class="figure-note">
+            An interactive interpretation of the paper’s pipeline and bilevel
+            learning figures. Point motion is schematic; state images come from
+            the paper. Predicates support planning over a provided library of
+            low-level controllers.
+          </p>
+          <div class="method-takeaways">
+            <p>
+              <span>High-level prior</span>LLMs propose what actions should
+              change.
+            </p>
+            <p>
+              <span>Low-level evidence</span>Demonstrations determine what
+              predicates can learn.
+            </p>
+            <p>
+              <span>A planning interface</span>Selected predicates connect
+              perception to reusable skills.
+            </p>
           </div>
-        </article>
+        </div>
+      </section>
 
-        <article class="demo-domain-card" data-demo-carousel>
-          <div class="demo-domain-heading">
+      <section
+        class="demos-section section-space page-width"
+        id="demos"
+        aria-labelledby="demos-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">
+              <span class="section-number">02</span> Real robots, long horizons
+            </p>
+            <h2 id="demos-title">
+              One framework.<br />Different things to get done.
+            </h2>
+          </div>
+          <p>
+            A plan is only useful if it survives contact with a real scene.
+            Watch UniPred connect learned concepts to sequences of robot skills.
+          </p>
+        </div>
+        <div
+          class="domain-tabs"
+          role="tablist"
+          aria-label="Demonstration domain"
+        >
+          <button
+            role="tab"
+            id="domain-table"
+            aria-controls="demo-panel"
+            aria-selected="true"
+            data-domain="table"
+          >
+            <span>01</span> Table cleaning</button
+          ><button
+            role="tab"
+            id="domain-clutter"
+            aria-controls="demo-panel"
+            aria-selected="false"
+            tabindex="-1"
+            data-domain="clutter"
+          >
+            <span>02</span> Cluttered retrieval
+          </button>
+        </div>
+        <div
+          class="demo-panel"
+          id="demo-panel"
+          role="tabpanel"
+          aria-labelledby="domain-table"
+        >
+          <div class="demo-player">
+            <video
+              id="demo-video"
+              controls
+              muted
+              playsinline
+              preload="none"
+              poster="static/images/posters/main_demo_1.jpg"
+              aria-label="Table cleaning with three toys"
+              aria-describedby="demo-caption"
+            >
+              <source
+                src="static/videos/web/main_demo_1.mp4"
+                type="video/mp4"
+              />
+            </video>
+            <div class="demo-selector" aria-label="Choose demonstration">
+              <span>WATCH A RUN</span>
+              <div id="demo-options">
+                <button
+                  class="is-selected"
+                  aria-pressed="true"
+                  data-clip="main_demo_1"
+                >
+                  Three toys</button
+                ><button aria-pressed="false" data-clip="main_demo_2">
+                  Two toys
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="demo-description" aria-live="polite">
+            <div class="phase-tag" id="demo-domain-label">TABLE CLEAN REAL</div>
+            <h3 id="demo-title">Clear the toys.<br />Then clean the table.</h3>
+            <p id="demo-caption">
+              The robot picks up three toy vehicles and places them in the box,
+              then uses a towel to wipe the tabletop. The task requires
+              coordinating object transfers and wiping, rather than repeating a
+              single motion.
+            </p>
+            <dl>
+              <div>
+                <dt>Goal</dt>
+                <dd id="demo-goal">Toys stored; tabletop cleaned.</dd>
+              </div>
+              <div>
+                <dt>What to watch</dt>
+                <dd id="demo-watch">
+                  The transition from picking and placing toys to using the
+                  towel.
+                </dd>
+              </div>
+            </dl>
+            <p class="playback-note" id="demo-speed">
+              Original footage · displayed at 3× speed
+            </p>
+          </div>
+        </div>
+        <div class="evidence-strip">
+          <div>
+            <strong>5 + 2</strong><span>Simulated + real-robot domains</span>
+          </div>
+          <div>
+            <strong>20</strong><span>Real-robot evaluation tasks in total</span>
+          </div>
+          <div>
+            <strong>20</strong><span>Teleoperated demos per real domain</span>
+          </div>
+          <a href="static/unipred.pdf"
+            >Experimental details<br />in the manuscript
+            <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
+
+      <section
+        class="recovery-section section-space"
+        id="recovery"
+        aria-labelledby="recovery-title"
+      >
+        <div class="page-width">
+          <div class="section-heading">
             <div>
-              <p class="demo-domain-kicker">Domain 2</p>
-              <h3 class="title is-5 demo-domain-title">Pick Target in Clutter</h3>
+              <p class="eyebrow">
+                <span class="section-number">03</span> When the first attempt
+                fails
+              </p>
+              <h2 id="recovery-title">Observe again.<br />Make a new plan.</h2>
             </div>
-            <p class="demo-domain-status" data-demo-status>Hard</p>
+            <p>
+              After each controller finishes, UniPred re-grounds the observed
+              scene into predicates. If the action has failed, the updated
+              symbolic state can support replanning.
+            </p>
           </div>
-
-          <div class="demo-video-stage">
-            <div class="demo-video-slide is-active" data-demo-label="Hard">
-              <div class="demo-video-frame">
-                <video autoplay controls muted loop playsinline>
-                  <source src="./static/videos/pick-clutter-hard.mp4" type="video/mp4">
-                </video>
-              </div>
-            </div>
-
-            <div class="demo-video-slide" data-demo-label="Mid">
-              <div class="demo-video-frame">
-                <video autoplay controls muted loop playsinline>
-                  <source src="./static/videos/pick-clutter-mid.mp4" type="video/mp4">
-                </video>
-              </div>
-            </div>
-
-            <div class="demo-video-slide" data-demo-label="Easy">
-              <div class="demo-video-frame">
-                <video autoplay controls muted loop playsinline>
-                  <source src="./static/videos/pick-clutter-easy.mp4" type="video/mp4">
-                </video>
-              </div>
-            </div>
-
-            <button class="demo-video-nav demo-video-nav-prev" type="button" aria-label="Previous Pick Target in Clutter video" data-demo-prev>
-              <span class="icon">
-                <i class="fas fa-chevron-left"></i>
-              </span>
-            </button>
-            <button class="demo-video-nav demo-video-nav-next" type="button" aria-label="Next Pick Target in Clutter video" data-demo-next>
-              <span class="icon">
-                <i class="fas fa-chevron-right"></i>
-              </span>
-            </button>
-          </div>
-
-          <div class="demo-video-dots" aria-label="Pick Target in Clutter video selection">
-            <button class="demo-video-dot is-active" type="button" aria-label="Show hard clutter video" data-demo-dot></button>
-            <button class="demo-video-dot" type="button" aria-label="Show mid clutter video" data-demo-dot></button>
-            <button class="demo-video-dot" type="button" aria-label="Show easy clutter video" data-demo-dot></button>
-          </div>
-        </article>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<section class="section" id="recovery">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Some failures UniPred can recover</h2>
-
-        <div class="content">
-          <div class="unipred-video-wrap">
-            <div class="unipred-video">
-              <video autoplay controls muted loop playsinline>
-                <source src="./static/videos/recover_main.mp4" type="video/mp4">
+          <div class="recovery-main">
+            <figure>
+              <video
+                controls
+                muted
+                playsinline
+                preload="none"
+                poster="static/images/posters/recover_main.jpg"
+                aria-label="Full table-cleaning run with recovery"
+                aria-describedby="recovery-full-caption"
+              >
+                <source
+                  src="static/videos/web/recover_main.mp4"
+                  type="video/mp4"
+                />
               </video>
+              <figcaption id="recovery-full-caption">
+                <span class="caption-index">FULL RUN</span> Table cleaning with
+                recovery: unsuccessful manipulation attempts are followed by
+                further actions until the task is completed. Original footage at
+                3× speed.
+              </figcaption>
+            </figure>
+            <div class="recovery-explainer">
+              <p class="phase-tag">THE FEEDBACK LOOP</p>
+              <h3>The world changes.<br />The plan should too.</h3>
+              <ol>
+                <li>
+                  <span>01</span>
+                  <div>
+                    <strong>Execute a skill</strong>
+                    <p>A controller attempts the planned action.</p>
+                  </div>
+                </li>
+                <li>
+                  <span>02</span>
+                  <div>
+                    <strong>Check the resulting state</strong>
+                    <p>
+                      New visual observations are classified into ground
+                      predicates.
+                    </p>
+                  </div>
+                </li>
+                <li>
+                  <span>03</span>
+                  <div>
+                    <strong>Replan from what happened</strong>
+                    <p>
+                      The next action follows the updated state, rather than
+                      assuming success.
+                    </p>
+                  </div>
+                </li>
+              </ol>
             </div>
           </div>
-
-          <p style="margin-top: 12px;">
-            UniPred continuously replans based on observation feedback, detects action failures during execution, and performs recovery replanning. Through a total of 13 steps, the system successfully completes the task.
-          </p>
-        </div>
-
-        <div class="columns is-centered" style="margin-top: 10px;">
-          <div class="column">
-            <div class="content">
-              <video autoplay controls muted loop playsinline height="100%">
-                <source src="./static/videos/recover_1.mp4" type="video/mp4">
+          <div class="recovery-clips">
+            <figure>
+              <video
+                controls
+                muted
+                playsinline
+                preload="none"
+                poster="static/images/posters/recover_1.jpg"
+                aria-label="Recovery after a missed toy grasp"
+                aria-describedby="recover-toy-caption"
+              >
+                <source
+                  src="static/videos/web/recover_1.mp4"
+                  type="video/mp4"
+                />
               </video>
-            </div>
-          </div>
-
-          <div class="column">
-            <div class="content">
-              <video autoplay controls muted loop playsinline height="100%">
-                <source src="./static/videos/recover_3.mp4" type="video/mp4">
+              <figcaption id="recover-toy-caption">
+                <span class="caption-index">01 / TOY GRASP</span>
+                <h3>A missed pick is not the end.</h3>
+                <p>
+                  The toy remains on the tabletop after an unsuccessful grasp.
+                  Subsequent picking attempts recover the object transfer.
+                  Original footage at 3× speed.
+                </p>
+              </figcaption>
+            </figure>
+            <figure>
+              <video
+                controls
+                muted
+                playsinline
+                preload="none"
+                poster="static/images/posters/recover_3.jpg"
+                aria-label="Recovery while picking the towel"
+                aria-describedby="recover-towel-caption"
+              >
+                <source
+                  src="static/videos/web/recover_3.mp4"
+                  type="video/mp4"
+                />
               </video>
+              <figcaption id="recover-towel-caption">
+                <span class="caption-index">02 / TOWEL GRASP</span>
+                <h3>Retry the prerequisite skill.</h3>
+                <p>
+                  The robot retries grasping the yellow towel before continuing
+                  to wipe. Recovery depends on the object remaining observable
+                  and reachable by the available skills. Original footage at 3×
+                  speed.
+                </p>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="limits-section section-space page-width"
+        id="fails"
+        aria-labelledby="limits-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">
+              <span class="section-number">04</span> Understanding the limits
+            </p>
+            <h2 id="limits-title">
+              Replanning helps.<br />It does not solve everything.
+            </h2>
+          </div>
+          <p>
+            A new symbolic plan still depends on accurate perception and
+            successful low-level execution. These unsuccessful runs show where
+            that chain can break.
+          </p>
+        </div>
+        <div class="failure-grid">
+          <figure>
+            <video
+              controls
+              muted
+              playsinline
+              preload="none"
+              poster="static/images/posters/fail1.jpg"
+              aria-label="Unsuccessful table-cleaning run one"
+              aria-describedby="fail-caption-1"
+            >
+              <source src="static/videos/web/fail1.mp4" type="video/mp4" />
+            </video>
+            <figcaption id="fail-caption-1">
+              <span class="caption-index">FAILURE CLIP 01</span>
+              <h3>Was the object really picked?</h3>
+              <p>
+                An unsuccessful pick-and-place sequence leaves the task
+                unfinished.
+              </p>
+              <div class="failure-reason">
+                <strong>Why recovery can break</strong>
+                <p>
+                  Replanning needs a correct symbolic state. A misclassified
+                  predicate can make the next controller inappropriate for the
+                  actual scene.
+                </p>
+              </div>
+            </figcaption>
+          </figure>
+          <figure>
+            <video
+              controls
+              muted
+              playsinline
+              preload="none"
+              poster="static/images/posters/fail2.jpg"
+              aria-label="Unsuccessful table-cleaning run two"
+              aria-describedby="fail-caption-2"
+            >
+              <source src="static/videos/web/fail2.mp4" type="video/mp4" />
+            </video>
+            <figcaption id="fail-caption-2">
+              <span class="caption-index">FAILURE CLIP 02</span>
+              <h3>A plan cannot guarantee a grasp.</h3>
+              <p>
+                A toy manipulation attempt fails to complete the intended
+                transfer.
+              </p>
+              <div class="failure-reason">
+                <strong>Why recovery can break</strong>
+                <p>
+                  The planner selects from existing skills. Grasp and placement
+                  errors can persist even with a valid plan; planning does not
+                  improve the motor skill itself.
+                </p>
+              </div>
+            </figcaption>
+          </figure>
+          <figure>
+            <video
+              controls
+              muted
+              playsinline
+              preload="none"
+              poster="static/images/posters/fail3.jpg"
+              aria-label="Unsuccessful table-cleaning run three"
+              aria-describedby="fail-caption-3"
+            >
+              <source src="static/videos/web/fail3.mp4" type="video/mp4" />
+            </video>
+            <figcaption id="fail-caption-3">
+              <span class="caption-index">FAILURE CLIP 03</span>
+              <h3>Trying again has its limits.</h3>
+              <p>
+                Towel manipulation and wiping do not bring this run to a
+                successful completion.
+              </p>
+              <div class="failure-reason">
+                <strong>Why recovery can break</strong>
+                <p>
+                  Contact, actuation, and perception remain limiting factors.
+                  Repeating an available action may still fail to produce the
+                  physical state the task requires.
+                </p>
+              </div>
+            </figcaption>
+          </figure>
+        </div>
+        <p class="figure-note">
+          The explanations describe failure mechanisms discussed in the paper,
+          not a diagnosis from per-frame execution logs. The paper identifies
+          out-of-distribution predicate errors and perception or actuation
+          limitations as remaining challenges.
+        </p>
+      </section>
+
+      <section
+        class="paper-section section-space"
+        id="paper"
+        aria-labelledby="paper-section-title"
+      >
+        <div class="page-width">
+          <div class="paper-grid">
+            <div>
+              <p class="eyebrow">
+                <span class="section-number">05</span> The research
+              </p>
+              <h2 id="paper-section-title">The full picture.</h2>
+              <p class="paper-resource-description">
+                Method, experiments, ablations,<br />and what remains open.
+              </p>
+              <a class="button button-dark" href="static/unipred.pdf"
+                >Read the manuscript <span aria-hidden="true">↗</span></a
+              >
+              <p class="manuscript-note">
+                Current manuscript · 11 authors<br /><a
+                  href="https://arxiv.org/abs/2512.17992"
+                  >Published arXiv version ↗</a
+                >
+              </p>
+            </div>
+            <div id="abstract">
+              <h3>Abstract</h3>
+              <p>
+                Long-horizon robotic tasks are hard due to continuous
+                state-action spaces and sparse feedback. Symbolic world models
+                help by decomposing tasks into discrete predicates that capture
+                object properties and relations. Existing methods learn
+                predicates either top-down, by prompting foundation models
+                without data grounding, or bottom-up, from demonstrations
+                without high-level priors. We introduce UniPred, a bilevel
+                learning framework that unifies both. UniPred uses large
+                language models (LLMs) to propose predicate effect distributions
+                that supervise neural predicate learning from low-level data,
+                while learned feedback iteratively refines the LLM hypotheses.
+                Leveraging strong visual foundation model features, UniPred
+                learns robust predicate classifiers in cluttered scenes. We
+                further propose a predicate evaluation method that supports
+                symbolic models beyond STRIPS assumptions. Across five simulated
+                and two real-robot domains, UniPred achieves 2–4× higher success
+                rates than top-down methods and 3–4× faster learning than
+                bottom-up approaches, advancing scalable and flexible symbolic
+                world modeling for robotics.
+              </p>
             </div>
           </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="fails">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <h2 class="title is-3">Some failures cannot</h2>
-
-        <div class="columns is-centered">
-          <div class="column">
-            <video autoplay controls muted loop playsinline height="100%">
-              <source src="./static/videos/fail1.mp4" type="video/mp4">
-            </video>
-          </div>
-
-          <div class="column">
-            <video autoplay controls muted loop playsinline height="100%">
-              <source src="./static/videos/fail2.mp4" type="video/mp4">
-            </video>
-          </div>
-
-          <div class="column">
-            <video autoplay controls muted loop playsinline height="100%">
-              <source src="./static/videos/fail3.mp4" type="video/mp4">
-            </video>
+          <div class="citation-block" id="bibtex">
+            <div class="citation-heading">
+              <div>
+                <h3>Cite the arXiv preprint</h3>
+                <p>
+                  Citation metadata below corresponds to the published arXiv
+                  version.
+                </p>
+              </div>
+              <button class="button button-outline" id="copy-citation">
+                Copy BibTeX <span aria-hidden="true">↗</span>
+              </button>
+            </div>
+            <pre><code id="citation-text">@misc{wang2025unifyingdeeppredicateinvention,
+  title={Unifying Deep Predicate Invention with Pre-trained Foundation Models},
+  author={Qianwei Wang and Bowen Li and Zhanpeng Luo and Yifan Xu and Alexander Gray and Tom Silver and Sebastian Scherer and Katia Sycara and Yaqi Xie},
+  year={2025},
+  eprint={2512.17992},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2512.17992}
+}</code></pre>
+            <span id="copy-status" role="status" class="sr-only"></span>
           </div>
         </div>
-
-        <div class="content" style="margin-top: 10px;">
-          <p>
-            Long horizon manipulation tasks are inherently challenging. Many unpredictable factors can lead to failure, including planning failures and accumulated execution errors at each action step.
-          </p>
-        </div>
-
+      </section>
+    </main>
+    <footer class="page-width">
+      <div class="footer-top">
+        <a class="brand" href="#">UniPred<span class="brand-dot">.</span></a>
+        <p>From pixels to predicates to plans.</p>
+        <a href="mailto:bowenli2@andrew.cmu.edu"
+          >Get in touch <span aria-hidden="true">↗</span></a
+        >
       </div>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="bibtex">
-  <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <pre><code>@misc
-    {
-      wang2025unifyingdeeppredicateinvention,
-      title={Unifying Deep Predicate Invention with Pre-trained Foundation Models}, 
-      author={Qianwei Wang and Bowen Li and Zhanpeng Luo and Yifan Xu and Alexander Gray and Tom Silver and Sebastian Scherer and Katia Sycara and Yaqi Xie},
-      year={2025},
-      eprint={2512.17992},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO},
-      url={https://arxiv.org/abs/2512.17992}, 
-    }
-  </code></pre>
-  </div>
-</section>
-
-<footer class="footer">
-  <div class="container">
-    <div class="content has-text-centered">
-      <a class="icon-link" href="./static/unipred_paper.pdf">
-        <i class="fas fa-file-pdf"></i>
-      </a>
-      <a class="icon-link" href="https://github.com" class="external-link" disabled>
-        <i class="fab fa-github"></i>
-      </a>
-    </div>
-
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-          <p>
-            Template credit: Nerfies website template
-          </p>
-          <p>
-            Reminder: do not include analytics snippets if you do not want tracking
-          </p>
-        </div>
+      <div class="footer-bottom">
+        <p>
+          The work was partly done when Qianwei Wang and Zhanpeng Luo were
+          Robotics Institute Summer Scholars associated with the Advanced Agent
+          Robotics Technology Lab, CMU.
+        </p>
+        <a href="https://github.com/UniPred/unipred.github.io"
+          >Website source ↗</a
+        >
       </div>
-    </div>
-  </div>
-</footer>
-
-</body>
+    </footer>
+  </body>
 </html>
