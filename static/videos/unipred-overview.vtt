@@ -1,13 +1,19 @@
 WEBVTT
 
-00:00.000 --> 00:06.000
-An agentic approach to learning concepts from human demonstrations for long-horizon manipulation. Here, the goal is to put every toy in the box and wipe the table.
+00:00.000 --> 00:07.000
+Start with an LLM agent. It proposes a concept and how actions change it. For example: the gripper is no longer empty after picking, and empty after placing.
 
-00:06.000 --> 00:20.000
-An LLM agent proposes predicate effect vectors. Demonstrated transitions supervise neural classifiers. Learning and validation feedback returns to the agent's exploration history, guiding its next proposal. The agent operates in the training loop; the feature-space animation is schematic.
+00:07.000 --> 00:14.000
+Learn from what changes. Demonstrated transitions supervise the visual classifier, without hand-labeled concept annotations.
 
-00:20.000 --> 00:26.000
-The planner uses the goal, ground atoms, and learned preconditions. Wiping requires the toys to be cleared and the towel to be grasped first.
+00:14.000 --> 00:23.000
+Feedback makes it a loop. The agent reads learning and validation feedback, revises its next proposal, and repeats. The feature animation is schematic.
 
-00:26.000 --> 01:12.500
+00:23.000 --> 00:29.000
+The result is a concept the robot can recognize: a visual predicate that provides facts for a planner. These outputs illustrate the concept.
+
+00:29.000 --> 00:36.000
+Use learned concepts to plan. To store the toys and clean the table, first clear the toys, then grasp the towel, then wipe. Learned preconditions constrain the order.
+
+00:36.000 --> 01:22.500
 Complete table-cleaning demonstration: pick and place three toys into the box, grasp the towel, then wipe away the debris. Original footage at three times recorded speed.

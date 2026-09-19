@@ -62,12 +62,26 @@ const path = require("node:path");
     }
     for (const width of [360, 390, 768, 1440]) {
       await page.setViewportSize({ width, height: 1000 });
-      assert.ok(
-        await page.evaluate(
-          () => document.documentElement.scrollWidth <= innerWidth,
-        ),
-        `Overflow at ${width}`,
-      );
+      for (let step = 0; step < 4; step++) {
+        await page.locator(`[data-step="${step}"]`).click();
+        assert.equal(await page.locator(".story-scene:visible").count(), 1);
+        assert.equal(
+          await page.locator(`#learning-scene-${step}`).isVisible(),
+          true,
+        );
+        assert.ok(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth,
+          ),
+          `Overflow at ${width}, step ${step}`,
+        );
+        assert.ok(
+          await page
+            .locator(".story-scene:visible")
+            .evaluate((scene) => scene.scrollHeight <= scene.clientHeight + 1),
+          `Scene overflow at ${width}, step ${step}`,
+        );
+      }
     }
     assert.ok(
       (
@@ -86,20 +100,20 @@ const path = require("node:path");
       () => document.querySelector("#overview-film").currentTime > 0.15,
     );
     const duration = await film.evaluate((v) => v.duration);
-    assert.ok(duration > 72 && duration < 73);
+    assert.ok(duration > 82 && duration < 83);
     await film.evaluate((v) => v.pause());
     // Check decoded frames in the execution segment, not just currentTime.
     // A server without HTTP Range support can report seeked without a new frame.
     await film.evaluate(async (v) => {
-      v.currentTime = 25;
+      v.currentTime = 35;
       await v.play();
     });
     await page.waitForFunction(
-      () => document.querySelector("#overview-film").currentTime > 28,
+      () => document.querySelector("#overview-film").currentTime > 38,
     );
     await film.evaluate((v) => v.pause());
     const frameHashes = [];
-    for (const time of [30, 44, 68]) {
+    for (const time of [40, 54, 78]) {
       frameHashes.push(
         await film.evaluate(async (v, time) => {
           await new Promise((resolve) => {
@@ -186,6 +200,28 @@ const path = require("node:path");
       await auto.locator("#learning-diagram").getAttribute("data-phase"),
       pausedPhase,
     );
+    await auto.locator('[data-step="2"]').click();
+    await auto.locator("#learning-toggle").click();
+    const signalPosition = () =>
+      auto.locator("#feedback-signal").getAttribute("cx");
+    const signalStart = await signalPosition();
+    await auto.waitForTimeout(1000);
+    assert.notEqual(
+      await signalPosition(),
+      signalStart,
+      "Feedback should animate when playing",
+    );
+    await auto.locator("#learning-toggle").click();
+    const signalPaused = await signalPosition();
+    await auto.waitForTimeout(700);
+    assert.equal(
+      await signalPosition(),
+      signalPaused,
+      "Pause must freeze the feedback animation",
+    );
+    await auto.locator('[data-step="3"]').focus();
+    await auto.keyboard.press("Enter");
+    assert.equal(await auto.locator("#learning-scene-3").isVisible(), true);
     await auto.locator(".two-column").scrollIntoViewIfNeeded();
     await auto.waitForFunction(() =>
       [...document.querySelectorAll(".two-column video")].every(
@@ -218,9 +254,12 @@ const path = require("node:path");
           checks: [
             "five demos directly visible",
             "complete state images",
-            "72-second film",
+            "82-second film",
             "all video playback",
             "automatic learning animation",
+            "one visible scene at each step",
+            "manual and keyboard scene selection",
+            "pause freezes feedback motion",
             "simultaneous visible demos",
             "global pause and resume",
             "offscreen pause",

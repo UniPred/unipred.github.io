@@ -35,36 +35,49 @@ const points = Array.from({ length: 44 }, (_, i) => {
   document.querySelector("#scatter-points").append(circle);
   return { circle, holding, i };
 });
-let phase = reducedMotion.matches ? 2 : 0;
-function drawLearning(next) {
-  phase = next;
-  diagram.dataset.phase = String(phase);
-  document.querySelector("#learning-stage").textContent = [
-    "Agent proposes",
-    "Neural model learns",
-    "Feedback → agent revises",
-  ][phase];
-  document.querySelector("#agent-action").textContent = [
-    "Propose a candidate effect vector",
-    "Candidate evaluated through neural learning",
-    "Read feedback, update history, revise proposal",
-  ][phase];
-  document.querySelector("#feature-stage").textContent = [
-    "Initial representation",
-    "Learning from transition constraints",
-    "Refined hidden representation",
-  ][phase];
+const storyScenes = [...document.querySelectorAll(".story-scene")];
+const storySteps = [...document.querySelectorAll(".story-steps button")];
+const stageDuration = [6000, 6500, 8000, 6500];
+const feedbackRoute = document.querySelector("#feedback-route");
+const feedbackSignal = document.querySelector("#feedback-signal");
+const feedbackLength = feedbackRoute.getTotalLength();
+let phase = 0,
+  phaseElapsed = 0,
+  lastFrame = null;
+function renderFeedback(progress) {
+  const p = progress * progress * (3 - 2 * progress);
   points.forEach(({ circle, holding, i }) => {
     const a = i * 2.39996,
       r = 15 + ((i * 17) % 77);
     const ix = 210 + Math.cos(a) * r * 1.8,
       iy = 107 + Math.sin(a) * r;
-    const fx = (holding ? 319 : 115) + Math.cos(a) * r * 0.75,
-      fy = 107 + Math.sin(a) * r;
-    const p = [0, 0.43, 1][phase];
+    const fx = (holding ? 319 : 115) + Math.cos(a) * r * 0.75;
     circle.setAttribute("cx", String(ix + (fx - ix) * p));
-    circle.setAttribute("cy", String(iy + (fy - iy) * p));
+    circle.setAttribute("cy", String(iy));
   });
+  document.querySelector("#decision-boundary").style.opacity = String(p);
+  const point = feedbackRoute.getPointAtLength(feedbackLength * progress);
+  feedbackSignal.setAttribute("cx", point.x);
+  feedbackSignal.setAttribute("cy", point.y);
+  document.querySelector("#agent-action").textContent =
+    progress < 0.35
+      ? "Propose a candidate."
+      : progress < 0.7
+        ? "Read the learning feedback."
+        : "Revise the next proposal.";
+}
+function drawLearning(next) {
+  phase = next;
+  phaseElapsed = 0;
+  diagram.dataset.phase = String(phase);
+  document.querySelector("#learning-stage").textContent = `0${phase + 1} / 04`;
+  storyScenes.forEach((scene, i) => {
+    scene.hidden = i !== phase;
+  });
+  storySteps.forEach((button, i) =>
+    button.setAttribute("aria-pressed", String(i === phase)),
+  );
+  renderFeedback(reducedMotion.matches ? 1 : 0);
 }
 drawLearning(phase);
 let diagramVisible = false,
@@ -89,9 +102,17 @@ function playVideo(video) {
     video.play().catch(() => {});
   }
 }
+function advanceStory(now) {
+  if (lastFrame !== null) phaseElapsed += Math.min(now - lastFrame, 100);
+  lastFrame = now;
+  if (phaseElapsed >= stageDuration[phase]) drawLearning((phase + 1) % 4);
+  if (phase === 2) renderFeedback(Math.min(1, phaseElapsed / 7200));
+  diagramTimer = requestAnimationFrame(advanceStory);
+}
 function updateDiagram() {
-  clearInterval(diagramTimer);
+  cancelAnimationFrame(diagramTimer);
   diagramTimer = null;
+  lastFrame = null;
   const paused = diagramPaused || motionPaused;
   learningButton.textContent = paused ? "Play ▶" : "Pause Ⅱ";
   learningButton.setAttribute(
@@ -100,8 +121,17 @@ function updateDiagram() {
   );
   learningButton.setAttribute("aria-pressed", String(paused));
   if (diagramVisible && !paused && !document.hidden)
-    diagramTimer = setInterval(() => drawLearning((phase + 1) % 3), 4500);
+    diagramTimer = requestAnimationFrame(advanceStory);
 }
+storySteps.forEach((button) =>
+  button.addEventListener("click", () => {
+    drawLearning(Number(button.dataset.step));
+    diagramPaused = true;
+    // A manually selected scene remains available to read until Play is pressed.
+    if (phase === 2) renderFeedback(1);
+    updateDiagram();
+  }),
+);
 function updateMotion() {
   motionButton.textContent = motionPaused ? "Play motion" : "Pause motion";
   motionButton.setAttribute("aria-pressed", String(motionPaused));
@@ -155,10 +185,11 @@ if ("IntersectionObserver" in window) {
   videos.forEach((video) => mediaObserver.observe(video));
   new IntersectionObserver(
     (entries) => {
-      diagramVisible = entries[0].isIntersecting;
+      diagramVisible =
+        entries[0].isIntersecting && entries[0].intersectionRatio >= 0.5;
       updateDiagram();
     },
-    { threshold: 0.15 },
+    { threshold: [0, 0.5] },
   ).observe(diagram);
 }
 document.addEventListener("visibilitychange", () => {

@@ -17,7 +17,7 @@ Open `http://localhost:8007`. This server supports HTTP byte ranges, which are r
 - `index.html`: ordered author list, distinct UMich CSE/CEE affiliations, contribution marks, acceptance notice, sections, abstract, and all video captions. The IEEE T-RO 2026 acceptance status was supplied by the authors; no DOI or journal issue metadata has been invented.
 - `static/css/index.css`: responsive layout, locally hosted fonts, and reduced-motion styles.
 - `static/images/unipred-mark.svg`: a crisp vector reinterpretation of the original colorful node-network logo, used in the header, hero, footer, film, and favicon. The original `logo.png` remains available.
-- `static/js/index.js`: automatically animated unified learning figure, lazy video metadata loading, independent playback of visible clips, global pause/resume, mobile menu, and citation copy.
+- `static/js/index.js`: four-step learning story with automatic playback and manual scene selection, lazy video metadata loading, independent playback of visible clips, global pause/resume, mobile menu, and citation copy.
 - `static/unipred.pdf`: the September 16 manuscript snapshot from `unipred-paper/output/pdf/unipred-tro-draft.pdf`, including all 11 authors. It is copied without changing the paper. Replace it when a new manuscript is ready.
 - `static/images/method/state-{0,1,2,3}.png`: original state crops extracted from the paper's `imgs/Fig6.pdf` (the unified bilevel learning figure). State 2 holds a towel; the other states show an empty gripper.
 - `static/images/method/observation-top-down.png`: the actual 640×480 workspace-camera image extracted from `imgs/Fig6.pdf`, used in both the film and the inference diagram.
@@ -48,20 +48,20 @@ ffmpeg -i static/videos/CLIP.mp4 -map 0:v:0 -map '0:a?' \
 
 ## Main overview film
 
-`static/videos/unipred-overview.mp4` is approximately 72 seconds of H.264 video at 1440×810 and 24 fps. The first 26 seconds show the actual top-down camera image, an agent-in-the-loop effect-proposal / transition-supervision / classifier-feedback diagram, and how goals and preconditions constrain a plan. The LLM agent panel shows the propose/evaluate/revise stages and an animated return path carries learning feedback back to the agent. The final 46 seconds include the entire `main_demo_1.mp4` robot run, preserving its original speed. It is silent, with on-screen explanations and an English `.vtt` track.
+`static/videos/unipred-overview.mp4` is approximately 82 seconds of H.264 video at 1440×810 and 24 fps. The first 29 seconds tell the learning story one scene at a time: an LLM agent proposes a concept and its action effects (0–7 s), demonstrations supervise learning (7–14 s), feedback returns to the agent (14–23 s), and a learned concept recognizes observations (23–29 s). A separate scene connects learned facts and preconditions to a robot plan (29–36 s). Each scene has a single focus and enlarged visuals. The final 46 seconds include the entire `main_demo_1.mp4` robot run, preserving its original speed. It is silent, with on-screen explanations and an English `.vtt` track.
 
 The robot stream is composited directly with ffmpeg onto the execution layout. It is not reconstructed by seeking a browser video for each canvas frame. This preserves continuous motion through grasping, transfers, and wiping. The static plan structure explains the task; it is not presented as synchronized execution telemetry.
 
 The editable canvas animation is `scripts/overview-scene.js`; the renderer is `scripts/render-overview.html`. To export, first start the static server. Use Node 20+, Playwright, Chrome/Chromium, and ffmpeg:
 
 ```sh
-node scripts/render-overview.cjs --preview  # four PNG keyframes in /tmp/unipred-site-review/film-v2
+node scripts/render-overview.cjs --preview  # six PNG keyframes in /tmp/unipred-site-review/film-v4
 node scripts/render-overview.cjs            # overwrite MP4 and JPEG poster
 ```
 
 Optional environment variables: `NODE_PATH` for the Playwright installation, `CHROME_PATH` for the browser executable, `FFMPEG_PATH`, and `OVERVIEW_ORIGIN` (default `http://127.0.0.1:8007`). Update the `.vtt` file when changing scene timing or narration text.
 
-All visible videos play independently, muted and looping, unless reduced motion or a pause control is active. Native controls remain available. Clips pause offscreen; manually paused clips stay paused when brought back into view. The unified learning diagram starts automatically while visible and has its own pause button. The navigation’s motion control pauses or resumes all motion.
+All visible videos play independently, muted and looping, unless reduced motion or a pause control is active. Native controls remain available. Clips pause offscreen; manually paused clips stay paused when brought back into view. The learning story starts with the agent and advances while at least half of it is visible. Each of the four steps shows only one scene. Selecting a step pauses on that scene; Play resumes. The pause button freezes both the scene clock and feature/feedback motion. Reduced-motion visitors get manual scene navigation by default. The navigation’s motion control pauses or resumes all motion.
 
 ## Validation
 
@@ -71,4 +71,4 @@ With the preview server running and Node 20+/Playwright available:
 node scripts/check-site.cjs
 ```
 
-The smoke check verifies author count, affiliation and acceptance notices, local assets and anchors, all 12 video files, the 72-second film, direct visibility of all five demos, uncropped state images, automatic learning animation, simultaneous demo playback, global motion controls, clipboard copying, mobile navigation, reduced-motion behavior, and offscreen pausing. It checks page overflow at 360, 390, 768, and 1440 px and saves desktop/mobile screenshots under `/tmp/unipred-site-review/`. Use `SITE_ORIGIN` and `CHROME_PATH` to override the defaults.
+The smoke check verifies author count, affiliation and acceptance notices, local assets and anchors, all 12 video files, the 82-second film, direct visibility of all five demos, uncropped state images, single-scene visibility and layout at every step, keyboard scene selection, automatic learning animation, feedback animation pausing, simultaneous demo playback, global motion controls, clipboard copying, mobile navigation, reduced-motion behavior, and offscreen pausing. It checks page overflow at 360, 390, 768, and 1440 px and saves desktop/mobile screenshots under `/tmp/unipred-site-review/`. Use `SITE_ORIGIN` and `CHROME_PATH` to override the defaults.

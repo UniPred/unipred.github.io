@@ -354,243 +354,244 @@ sup {
 .learning-diagram {
   border: 1px solid var(--line);
   border-radius: 5px;
-  padding: 22px 24px 19px;
-  background: #fff;
+  padding: 24px 32px 28px;
+  background: white;
 }
 .diagram-heading {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-.diagram-heading h3 {
-  font-size: 18px;
+  gap: 16px;
+  margin-bottom: 18px;
 }
 .diagram-eyebrow {
   font-size: 10px;
   color: var(--muted);
-  margin-bottom: 5px;
   letter-spacing: 0.6px;
   text-transform: uppercase;
 }
 .diagram-controls {
   display: flex;
-  gap: 15px;
+  gap: 16px;
   align-items: center;
+  color: var(--muted);
   font-size: 11px;
-  color: var(--accent);
+  font-variant-numeric: tabular-nums;
 }
 .diagram-controls button {
   background: white;
   border: 1px solid var(--line);
   border-radius: 4px;
-  padding: 4px 10px;
-  font-size: 10px;
+  padding: 5px 11px;
+  font-size: 11px;
   color: var(--muted);
 }
-.state-strip {
+.story-steps {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
-  padding: 0 55px 22px;
   border-bottom: 1px solid var(--line);
+  gap: 20px;
 }
-.state-strip figure {
-  background: #fafbfc;
-  border: 1px solid #e6eaf0;
-  border-radius: 4px;
-  padding: 10px;
-}
-.state-strip img {
-  width: 100%;
-  height: 138px;
-  object-fit: contain;
-}
-.state-strip figcaption {
-  display: flex;
-  justify-content: center;
-  align-items: baseline;
-  gap: 8px;
-  font-size: 10px;
-  padding-top: 6px;
+.story-steps button {
+  position: relative;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 10px 0 14px;
   color: var(--muted);
+  font-size: 14px;
+  text-align: left;
 }
-.state-strip b {
-  font-weight: 500;
-  color: var(--ink);
-}
-.learning-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.15fr;
-  gap: 24px;
-  padding-top: 24px;
-}
-.diagram-node {
-  min-width: 0;
-  border-top: 2px solid transparent;
-  padding-top: 10px;
-  transition: border-color 0.5s;
-}
-.learning-diagram[data-phase="0"] [data-node="0"],
-.learning-diagram[data-phase="1"] [data-node="1"],
-.learning-diagram[data-phase="2"] [data-node="2"] {
-  border-color: #6c9cae;
-}
-.diagram-node > p {
+.story-steps button > span {
   font-size: 11px;
-  color: var(--muted);
-  margin-top: 6px;
+  margin-right: 10px;
+  opacity: 0.7;
 }
-.agent-heading {
-  display: flex;
-  gap: 7px;
-  align-items: center;
+.story-steps button[aria-pressed="true"] {
+  border-color: var(--accent);
   color: var(--accent);
+  font-weight: 500;
 }
-.agent-heading > span {
-  display: inline-grid;
-  place-items: center;
-  width: 25px;
-  height: 25px;
-  border: 1px solid #ccdde7;
-  border-radius: 50%;
-  font-size: 20px;
-  line-height: 1;
+.story-stage {
+  height: 490px;
+  margin-top: 28px;
 }
-.agent-state {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 10px;
-  line-height: 1.5;
+.story-scene {
+  height: 100%;
+  position: relative;
+  padding-bottom: 38px;
+}
+.story-scene h3 {
+  font-size: 34px;
+  line-height: 1.25;
+  letter-spacing: -0.8px;
+  text-align: center;
+}
+.scene-subtitle {
+  text-align: center;
   margin-top: 10px;
-  min-height: 30px;
-  color: var(--accent);
+  color: var(--muted);
+  font-size: 16px;
 }
-.agent-state-dot {
-  width: 5px;
-  height: 5px;
-  flex-shrink: 0;
-  background: currentColor;
-  border-radius: 50%;
-}
-.learning-diagram[data-phase="2"] .effect-panel {
-  border-color: #6c9cae;
-}
-.learning-diagram[data-phase="2"] .agent-heading > span {
-  background: #e8f2f7;
-}
-.effect-example {
-  margin-top: 13px;
-  background: #f7f9fb;
-  border-radius: 4px;
-  padding: 12px 14px;
-}
-.effect-example > code {
+.scene-note {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: var(--muted);
+  text-align: center;
   font-size: 13px;
 }
-.effect-example > span {
-  display: block;
-  font-size: 9px;
-  color: var(--muted);
-  margin-top: 3px;
-}
-.effect-example table {
-  font-size: 11px;
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 8px;
-}
-.effect-example th {
-  text-align: left;
-  font-size: 9px;
-  font-weight: 500;
-  color: var(--muted);
-  padding: 5px 0;
-  border-bottom: 1px solid var(--line);
-}
-.effect-example td {
-  padding: 5px 0;
-}
-.effect-example small {
-  color: var(--muted);
-  font-size: 9px;
-  margin-left: 6px;
-}
-.transition-example {
+.proposal-scene,
+.feedback-scene {
   display: grid;
-  grid-template-columns: 1fr 65px 1fr;
-  gap: 9px 4px;
+  grid-template-columns: 1fr 65px 1.2fr;
+  align-items: center;
+  gap: 26px;
+  max-width: 880px;
+  margin: 35px auto 0;
+  min-height: 300px;
+}
+.agent-portrait {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: 20px;
-  font-size: 10px;
+  gap: 9px;
 }
-.transition-example b {
-  font-size: 11px;
+.agent-portrait img {
+  width: 140px;
+  height: 140px;
+}
+.agent-portrait strong {
+  font-size: 30px;
   font-weight: 500;
   color: var(--accent);
+  letter-spacing: -0.6px;
 }
-.transition-example code {
-  font-size: 10px;
-  background: #eef4f7;
-  padding: 7px 4px;
-  border-radius: 3px;
+.agent-portrait > span {
+  font-size: 12px;
+  color: var(--muted);
 }
-.constraint-note {
-  font-size: 11px !important;
-  margin-top: 17px !important;
-  line-height: 1.8;
+.scene-arrow {
+  color: #8ca5b8;
+  font-size: 38px;
+  text-align: center;
 }
-.encoder-line {
+.visual-label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.concept-proposal h4 {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: -0.7px;
+}
+.concept-proposal > code {
+  display: block;
+  color: var(--muted);
+  font-size: 15px;
+  margin-top: 7px;
+}
+.effect-pair {
+  margin-top: 27px;
   border-top: 1px solid var(--line);
-  padding-top: 12px;
-  font-size: 11px;
-  margin-top: 16px;
+  padding-top: 16px;
+  display: flex;
+  gap: 35px;
 }
-.no-labels {
-  font-size: 10px !important;
-  color: var(--green) !important;
-  margin-top: 8px !important;
+.effect-pair p {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 18px;
+}
+.effect-pair b {
+  font-weight: 500;
+}
+.effect-pair span {
+  font-size: 15px;
+  color: var(--muted);
+}
+.demonstration-scene {
+  display: grid;
+  grid-template-columns: 1fr 110px 1fr;
+  gap: 25px;
+  max-width: 760px;
+  margin: 28px auto 0;
+  align-items: center;
+  text-align: center;
+}
+.demonstration-scene img {
+  width: 100%;
+  height: 248px;
+  object-fit: contain;
+}
+.demonstration-scene figcaption {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: baseline;
+  margin-top: 10px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.demonstration-scene strong {
+  font-size: 22px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.action-between {
+  color: var(--accent);
+  font-size: 20px;
+  display: grid;
+}
+.action-between b {
+  font-size: 40px;
+  font-weight: 400;
+}
+.feedback-scene {
+  min-height: 260px;
+  margin-top: 23px;
+}
+.feedback-scene .agent-portrait img {
+  width: 122px;
+  height: 122px;
+}
+.concept-learning .visual-label {
+  text-align: center;
+  font-size: 15px;
 }
 #predicate-scatter {
+  display: block;
   width: 100%;
   height: auto;
-  display: block;
-  margin-top: 9px;
 }
 .scatter-point {
   stroke: white;
   stroke-width: 1.2;
-  transition:
-    cx 2.6s ease-in-out,
-    cy 2.6s ease-in-out;
 }
 #decision-boundary {
   opacity: 0;
-  transition: opacity 1s;
-}
-.learning-diagram[data-phase="2"] #decision-boundary {
-  opacity: 0.9;
 }
 .scatter-legend {
   display: flex;
-  gap: 15px;
-  align-items: center;
-  font-size: 10px;
+  gap: 25px;
+  justify-content: center;
+  font-size: 12px;
   color: var(--muted);
+  margin-top: 10px;
 }
 .scatter-legend > span {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 7px;
 }
 .scatter-legend i {
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  display: inline-block;
 }
 .empty-dot {
   background: var(--green);
@@ -598,114 +599,170 @@ sup {
 .holding-dot {
   background: var(--orange);
 }
-.scatter-legend > small {
-  font-size: 9px;
-  margin-left: auto;
-}
-.feedback-path {
+.feedback-return {
   position: relative;
-  border: 1px solid #b6cbd2;
-  border-top: 0;
-  border-radius: 0 0 15px 15px;
-  max-width: 85%;
-  margin: 17px auto 0;
+  color: var(--accent);
+  max-width: 770px;
+  margin: 13px auto 0;
   text-align: center;
-  padding: 8px 8px 5px;
-  font-size: 11px;
-  color: #487787;
-  transition: background-color 0.5s;
+  height: 47px;
 }
-.feedback-path::before {
-  content: "↑";
+.feedback-return svg {
+  width: 100%;
+  height: 47px;
+  display: block;
+}
+.feedback-return > span {
   position: absolute;
-  left: -6px;
-  top: -14px;
-  font-size: 20px;
-  line-height: 1;
-  background: white;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  white-space: nowrap;
 }
-.learning-diagram[data-phase="2"] .feedback-path {
-  background: #f1f6f9;
-}
-.feedback-path strong {
-  font-weight: 500;
-}
-.feedback-path > span {
-  font-size: 19px;
-  vertical-align: middle;
-  margin-right: 7px;
-}
-.inference-heading {
-  margin-top: 31px;
+.learned-concept {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 30px;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 27px;
 }
-.inference-heading h3 {
-  font-size: 18px;
+.learned-concept code {
+  font-size: 22px;
+  color: var(--accent);
 }
-.inference-heading p {
-  font-size: 12px;
-  max-width: 445px;
+.learned-concept > span {
+  font-size: 15px;
   color: var(--muted);
 }
-.inference-pipeline {
+.state-strip {
   display: grid;
-  grid-template-columns: 240px 25px 1fr 25px 1fr;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+  margin: 24px auto 0;
+  max-width: 910px;
+}
+.state-strip img {
+  display: block;
+  width: 100%;
+  height: 188px;
+  object-fit: contain;
+}
+.state-strip figcaption {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 19px;
-  margin-top: 20px;
-  padding: 20px 0;
-  border-block: 1px solid var(--line);
+  gap: 5px;
+  margin-top: 10px;
+}
+.state-strip figcaption > span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.state-strip strong {
+  font-size: 21px;
+  font-weight: 500;
+  color: var(--green);
+}
+.state-strip .holding-result {
+  color: var(--orange);
+}
+.planning-section {
+  padding-top: 48px;
+}
+.planning-section > h3 {
+  font-size: 29px;
+  letter-spacing: -0.65px;
+}
+.planning-observation {
+  display: grid;
+  grid-template-columns: 1fr 70px 1fr;
+  gap: 35px;
+  align-items: center;
+  margin: 26px auto 0;
+  max-width: 960px;
 }
 .camera-observation img {
   width: 100%;
-  max-height: 160px;
+  height: 275px;
   object-fit: contain;
-  border-radius: 3px;
 }
 .camera-observation figcaption {
-  font-size: 10px;
-  color: var(--muted);
   text-align: center;
-  margin-top: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 8px;
 }
-.pipeline-arrow {
-  color: #7994ac;
+.scene-facts p {
+  font-size: 25px;
+  line-height: 1.4;
+  margin-top: 15px;
+  letter-spacing: -0.45px;
+}
+.fact-detail {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 350px;
+  margin-top: 24px;
+}
+.plan-goal {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  margin-top: 35px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+.plan-goal .visual-label {
+  margin: 0;
+}
+.plan-goal strong {
+  font-size: 24px;
+  font-weight: 500;
+}
+.robot-plan {
+  padding: 0;
+  margin: 23px 0 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 35px;
+}
+.robot-plan li {
+  display: flex;
+  align-items: baseline;
+  gap: 15px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+.robot-plan li:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  right: -24px;
+  top: 16px;
+  color: #8ca5b8;
   font-size: 25px;
 }
-.inference-pipeline h4 {
-  font-size: 14px;
-}
-.inference-pipeline p {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 7px;
-}
-.inference-pipeline code {
-  font-size: 11px;
-  display: block;
-  margin-top: 9px;
-  background: #f4f7f9;
-  padding: 8px 10px;
-  border-radius: 3px;
-}
-.inference-pipeline small {
-  display: block;
-  font-size: 10px;
-  color: var(--muted);
-  margin-top: 7px;
-}
-.plan-example {
-  font-size: 12px;
+.robot-plan li > span {
   color: var(--accent);
-  margin-top: 15px;
+  font-size: 18px;
+}
+.robot-plan strong {
+  font-size: 22px;
+  font-weight: 500;
+}
+.robot-plan p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
 }
 .execution-note {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted);
-  margin-top: 12px;
+  margin-top: 10px;
 }
 .domain-heading {
   display: flex;
@@ -879,25 +936,16 @@ footer {
   display: none;
 }
 @media (max-width: 1000px) {
-  .state-strip {
-    padding-inline: 10px;
-    gap: 14px;
+  .proposal-scene,
+  .feedback-scene {
+    gap: 16px;
   }
-  .learning-grid {
-    gap: 17px;
+  .concept-proposal h4 {
+    font-size: 25px;
   }
-  .learning-diagram {
-    padding-inline: 20px;
-  }
-  .state-strip img {
-    height: 120px;
-  }
-  .inference-pipeline {
-    grid-template-columns: 190px 16px 1fr 16px 1fr;
-    gap: 14px;
-  }
-  .inference-heading p {
-    max-width: 360px;
+  .planning-observation {
+    gap: 15px;
+    grid-template-columns: 1fr 40px 1fr;
   }
   .paper-grid {
     gap: 40px;
@@ -1008,13 +1056,6 @@ footer {
     font-size: 16px;
     margin: 13px auto 18px;
   }
-  .agent-state {
-    font-size: 9px;
-    align-items: flex-start;
-  }
-  .agent-state-dot {
-    margin-top: 4px;
-  }
   .section-space {
     padding-top: 35px;
   }
@@ -1027,158 +1068,257 @@ footer {
     margin-bottom: 18px;
   }
   .learning-diagram {
-    padding: 15px 12px;
+    padding: 16px 14px 22px;
   }
   .diagram-heading {
-    display: block;
-    margin-bottom: 14px;
+    gap: 8px;
+    margin-bottom: 12px;
   }
-  .diagram-heading h3 {
-    font-size: 16px;
+  .diagram-eyebrow {
+    font-size: 8px;
+    max-width: 145px;
   }
   .diagram-controls {
-    margin-top: 8px;
-    justify-content: space-between;
+    gap: 9px;
+    font-size: 10px;
   }
-  .state-strip {
-    gap: 6px;
-    padding: 0 0 13px;
+  .diagram-controls button {
+    padding: 4px 8px;
+    font-size: 10px;
   }
-  .state-strip figure {
-    padding: 5px 3px;
+  .story-steps {
+    gap: 8px;
   }
-  .state-strip img {
-    height: 90px;
+  .story-steps button {
+    font-size: 10px;
+    padding: 9px 0 11px;
   }
-  .state-strip figcaption {
+  .story-steps button > span {
     display: block;
-    font-size: 8px;
-    line-height: 1.5;
+    margin: 0 0 4px;
+    font-size: 9px;
+  }
+  .story-stage {
+    height: 600px;
+    margin-top: 24px;
+  }
+  .story-scene h3 {
+    font-size: 26px;
+    letter-spacing: -0.65px;
+    max-width: 330px;
+    margin: auto;
+  }
+  .scene-subtitle {
+    font-size: 13px;
+    margin: 10px auto 0;
+    max-width: 320px;
+  }
+  .scene-note {
+    font-size: 12px;
+  }
+  .proposal-scene {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 24px;
+    min-height: 0;
     text-align: center;
   }
-  .state-strip figcaption span {
-    display: block;
-    font-size: 7px;
+  .agent-portrait img {
+    width: 102px;
+    height: 102px;
   }
-  .learning-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 18px 14px;
-    padding-top: 15px;
+  .agent-portrait strong {
+    font-size: 25px;
   }
-  .classifier-panel {
-    grid-column: 1/-1;
-    padding-top: 8px;
-    border-top: 1px solid var(--line);
-  }
-  .diagram-node h4 {
+  .agent-portrait > span {
     font-size: 11px;
-    line-height: 1.5;
   }
-  .diagram-node > p {
-    font-size: 9px;
+  .proposal-scene > .scene-arrow {
+    transform: rotate(90deg);
+    line-height: 1;
+    font-size: 28px;
   }
-  .effect-example {
-    padding: 9px 8px;
+  .concept-proposal h4 {
+    font-size: 23px;
   }
-  .effect-example > code {
-    font-size: 10px;
-    letter-spacing: -0.25px;
-  }
-  .effect-example > span {
-    font-size: 8px;
-  }
-  .effect-example table {
-    font-size: 9px;
-  }
-  .effect-example td {
-    padding: 4px 0;
-  }
-  .effect-example small {
-    font-size: 7px;
-    margin-left: 2px;
-  }
-  .effect-example th {
-    font-size: 8px;
-  }
-  .transition-example {
-    grid-template-columns: 1fr 40px 1fr;
-    gap: 7px 2px;
-    font-size: 8px;
-    margin-top: 14px;
-  }
-  .transition-example b {
-    font-size: 8px;
-  }
-  .transition-example code {
-    font-size: 7px;
-    padding: 5px 0;
-  }
-  .constraint-note {
-    font-size: 9px !important;
-    margin-top: 10px !important;
-  }
-  .encoder-line {
-    font-size: 9px;
-    margin-top: 10px;
-    padding-top: 8px;
-  }
-  .no-labels {
-    font-size: 8px !important;
-  }
-  .classifier-panel h4 {
+  .concept-proposal > code {
     font-size: 13px;
   }
-  .classifier-panel > p {
-    font-size: 10px;
+  .visual-label {
+    font-size: 11px;
+    margin-bottom: 8px;
   }
-  #predicate-scatter {
-    max-height: 220px;
+  .effect-pair {
+    max-width: 260px;
+    margin: 16px auto 0;
+    padding-top: 12px;
+    justify-content: center;
+    gap: 40px;
   }
-  .feedback-path {
-    max-width: 100%;
-    font-size: 9px;
-    margin-top: 12px;
-    padding: 7px 8px;
-  }
-  .inference-heading {
-    display: block;
-    margin-top: 26px;
-  }
-  .inference-heading h3 {
+  .effect-pair p {
     font-size: 17px;
   }
-  .inference-heading p {
-    font-size: 12px;
-    max-width: 100%;
-    margin-top: 7px;
+  .effect-pair span {
+    font-size: 13px;
   }
-  .inference-pipeline {
+  .demonstration-scene {
+    grid-template-columns: 1fr 40px 1fr;
+    gap: 8px;
+    margin-top: 75px;
+  }
+  .demonstration-scene img {
+    height: 190px;
+  }
+  .demonstration-scene figcaption {
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+    font-size: 12px;
+  }
+  .demonstration-scene strong {
+    font-size: 20px;
+  }
+  .action-between {
+    font-size: 14px;
+  }
+  .action-between b {
+    font-size: 30px;
+  }
+  .feedback-scene {
     grid-template-columns: 1fr;
     gap: 12px;
-    padding: 15px 10px;
+    min-height: 0;
+    margin-top: 20px;
+  }
+  .feedback-scene .agent-portrait {
+    display: grid;
+    grid-template-columns: 68px 1fr;
+    grid-template-rows: auto auto;
+    text-align: left;
+    column-gap: 14px;
+    row-gap: 0;
+    max-width: 290px;
+    margin: auto;
+  }
+  .feedback-scene .agent-portrait img {
+    width: 68px;
+    height: 68px;
+    grid-row: 1/3;
+  }
+  .feedback-scene .agent-portrait strong {
+    font-size: 24px;
+  }
+  .feedback-scene .agent-portrait > span {
+    font-size: 11px;
+  }
+  .feedback-scene > .scene-arrow {
+    transform: rotate(90deg);
+    line-height: 1;
+    font-size: 25px;
+  }
+  .concept-learning .visual-label {
+    font-size: 12px;
+  }
+  #predicate-scatter {
+    max-height: 195px;
+  }
+  .scatter-legend {
+    font-size: 11px;
+  }
+  .feedback-return {
+    margin-top: 19px;
+    height: 42px;
+  }
+  .feedback-return > span {
+    font-size: 10px;
+    top: 2px;
+  }
+  .learned-concept {
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 23px;
+  }
+  .learned-concept code {
+    font-size: 20px;
+  }
+  .learned-concept > span {
+    font-size: 13px;
+  }
+  .state-strip {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 12px;
+    margin-top: 23px;
+  }
+  .state-strip img {
+    height: 115px;
+  }
+  .state-strip figcaption {
+    margin-top: 6px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+  }
+  .state-strip strong {
+    font-size: 18px;
+  }
+  .planning-section {
+    padding-top: 36px;
+  }
+  .planning-section > h3 {
+    font-size: 25px;
+  }
+  .planning-observation {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 22px;
   }
   .camera-observation img {
-    max-height: 190px;
+    height: 240px;
   }
-  .pipeline-arrow {
+  .planning-observation > .scene-arrow {
     transform: rotate(90deg);
-    text-align: center;
-    font-size: 21px;
+    font-size: 30px;
     line-height: 1;
   }
-  .inference-pipeline > div {
+  .scene-facts {
     text-align: center;
-    max-width: 310px;
-    margin-inline: auto;
   }
-  .inference-pipeline p {
-    font-size: 11px;
+  .scene-facts p {
+    font-size: 22px;
+    margin-top: 10px;
   }
-  .inference-pipeline code {
-    font-size: 10px;
+  .fact-detail {
+    margin: 17px auto 0;
+    font-size: 12px;
   }
+  .plan-goal {
+    display: block;
+    margin-top: 25px;
+    padding-top: 22px;
+  }
+  .plan-goal strong {
+    font-size: 23px;
+    display: block;
+    margin-top: 6px;
+  }
+  .robot-plan {
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-top: 18px;
+  }
+  .robot-plan li {
+    gap: 18px;
+    padding: 17px 0;
+  }
+  .robot-plan li:not(:last-child)::after {
+    display: none;
+  }
+  .robot-plan strong {
+    font-size: 21px;
+  }
+  .robot-plan p,
   .execution-note {
-    font-size: 11px;
+    font-size: 12px;
   }
   .domain-heading {
     display: block;
@@ -1294,12 +1434,6 @@ footer {
   }
   .state-strip img {
     height: 130px;
-  }
-  .learning-grid h4 {
-    font-size: 14px;
-  }
-  .learning-grid p {
-    font-size: 11px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
