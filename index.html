@@ -2,49 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
       name="description"
-      content="UniPred unifies foundation-model priors and learning from robot demonstrations to invent visual predicates for long-horizon planning. Explore the method, real-robot demos, and failure recovery."
+      content="UniPred: Unifying Deep Predicate Invention with Pre-trained Foundation Models. Accepted by IEEE Transactions on Robotics (T-RO), 2026."
     />
-    <meta name="theme-color" content="#f6f5ef" />
-    <meta
-      property="og:title"
-      content="UniPred — From pixels to predicates to plans"
-    />
+    <meta name="theme-color" content="#ffffff" />
+    <meta property="og:title" content="UniPred | IEEE T-RO 2026" />
     <meta
       property="og:description"
-      content="Unifying Deep Predicate Invention with Pre-trained Foundation Models. A visual guide and real-robot demonstrations."
+      content="Learning neural predicates from foundation-model priors and robot demonstrations for long-horizon planning."
     />
     <meta
       property="og:image"
-      content="https://unipred.github.io/static/images/posters/unipred-overview.jpg"
+      content="https://unipred.github.io/static/images/posters/unipred-overview.jpg?v=tro2026-r2"
     />
     <meta property="og:url" content="https://unipred.github.io/" />
-    <title>UniPred — Unifying Deep Predicate Invention</title>
+    <title>UniPred | IEEE T-RO 2026</title>
     <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml" />
-    <link
-      rel="preload"
-      href="static/fonts/manrope-800.ttf"
-      as="font"
-      type="font/ttf"
-      crossorigin
-    />
-    <link rel="stylesheet" href="static/css/index.css" />
-    <script src="static/js/index.js" defer></script>
+    <link rel="stylesheet" href="static/css/index.css?v=tro2026-r2" />
+    <script src="static/js/index.js?v=tro2026-r2" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
-      <a class="brand" href="#" aria-label="UniPred home"
-        ><svg viewBox="0 0 38 38" aria-hidden="true">
-          <path d="M8 9 28 19 8 29M8 9v20" />
-          <circle cx="8" cy="9" r="5" />
-          <circle cx="28" cy="19" r="5" />
-          <circle cx="8" cy="29" r="5" /></svg
-        >UniPred<span class="brand-dot">.</span></a
-      >
-      <button
+      <a class="brand" href="#" aria-label="UniPred home">UniPred</a
+      ><button
         class="menu-toggle"
         aria-expanded="false"
         aria-controls="site-nav"
@@ -52,27 +35,20 @@
         Menu <span aria-hidden="true">＋</span>
       </button>
       <nav id="site-nav" aria-label="Main navigation">
-        <a href="#method">The idea</a><a href="#demos">Robot demos</a
-        ><a href="#recovery">Recovery & limits</a
-        ><a href="#paper" class="nav-paper"
-          >Read the paper <span aria-hidden="true">↗</span></a
-        >
+        <a href="#method">Method</a><a href="#demos">Demos</a
+        ><a href="#recovery">Recovery</a><a href="#paper">Paper</a
+        ><button id="motion-toggle" aria-pressed="false">Pause motion</button>
       </nav>
     </header>
     <main id="main">
       <section class="hero page-width" aria-labelledby="hero-title">
-        <div class="eyebrow">
-          <span class="signal-dot"></span> Foundation models meet symbolic robot
-          learning
-        </div>
-        <h1 id="hero-title">UniPred<span class="title-period">.</span></h1>
+        <p class="acceptance">
+          Accepted by IEEE Transactions on Robotics (T-RO), 2026
+        </p>
+        <h1 id="hero-title">UniPred</h1>
         <p class="paper-title">
           Unifying Deep Predicate Invention<br class="desktop-break" />
           with Pre-trained Foundation Models
-        </p>
-        <p class="hero-tagline">
-          Learn the concepts. Connect them to actions. Plan beyond a single
-          step.
         </p>
         <div class="authors" aria-label="Authors in paper order">
           <span
@@ -158,723 +134,581 @@
           </div>
         </details>
         <div class="hero-actions">
-          <a class="button button-dark" href="static/unipred.pdf"
-            >Read the manuscript <span aria-hidden="true">↗</span></a
-          ><a
-            class="button button-outline"
-            href="https://arxiv.org/abs/2512.17992"
-            >arXiv <span aria-hidden="true">↗</span></a
-          ><a
-            class="button button-outline"
-            href="https://github.com/weiqianwang123/UniPred"
-            >Code <span aria-hidden="true">↗</span></a
+          <a class="button button-dark" href="static/unipred.pdf">Paper ↗</a
+          ><a class="button" href="https://arxiv.org/abs/2512.17992">arXiv ↗</a
+          ><a class="button" href="https://github.com/weiqianwang123/UniPred"
+            >Code ↗</a
           >
         </div>
       </section>
-
       <section
         class="film-section page-width"
-        aria-label="UniPred overview film"
+        aria-label="Method and complete robot demonstration"
       >
-        <div class="film-shell">
-          <div class="film-heading">
-            <span><span class="signal-dot"></span> The idea in motion</span
-            ><span>LEARN → GROUND → PLAN</span>
-          </div>
-          <video
-            id="overview-film"
-            controls
-            muted
-            playsinline
-            loop
-            preload="metadata"
-            poster="static/images/posters/unipred-overview.jpg"
-            aria-label="28-second animated overview of UniPred"
-            aria-describedby="film-caption"
-          >
-            <source src="static/videos/unipred-overview.mp4" type="video/mp4" />
-            <track
-              kind="captions"
-              src="static/videos/unipred-overview.vtt"
-              srclang="en"
-              label="English"
-            />
-            Your browser does not support video.
-            <a href="static/videos/unipred-overview.mp4"
-              >Download the overview.</a
-            >
-          </video>
-        </div>
-        <div class="film-caption" id="film-caption">
-          <p>
-            <strong>From pixels to predicates to plans.</strong>
-            Foundation-model priors and robot experience meet in one learning
-            loop.
-          </p>
-          <a href="#method"
-            >Explore the method <span aria-hidden="true">↓</span></a
-          >
-        </div>
+        <video
+          id="overview-film"
+          controls
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          data-autoplay
+          poster="static/images/posters/unipred-overview.jpg?v=tro2026-r2"
+          aria-label="UniPred method followed by a complete table-cleaning demonstration"
+          aria-describedby="film-caption"
+        >
+          <source
+            src="static/videos/unipred-overview.mp4?v=tro2026-r2"
+            type="video/mp4"
+          />
+          <track
+            kind="captions"
+            src="static/videos/unipred-overview.vtt?v=tro2026-r2"
+            srclang="en"
+            label="English"
+          />
+        </video>
+        <p id="film-caption" class="figure-caption">
+          <strong>Learning and planning with UniPred.</strong> A visual
+          explanation followed by a complete table-cleaning run: store the toys,
+          pick up the towel, and wipe the table.
+          <a href="#demos">All demonstrations ↓</a>
+        </p>
       </section>
-
-      <section class="intro-section page-width" aria-labelledby="intro-title">
-        <div>
-          <p class="eyebrow">The question</p>
-          <h2 id="intro-title">What must a robot<br />understand to act?</h2>
-        </div>
-        <div class="intro-copy">
-          <p>
-            Before a robot can clean a table, it needs to know more than where
-            the objects are.
-            <em
-              >Is the gripper empty? Is a toy still on the table? Is the table
-              clean?</em
-            >
-          </p>
-          <p>
-            These concepts are <strong>predicates</strong>: the bridge between
-            continuous visual observations and a discrete plan. UniPred learns
-            that bridge by combining an LLM’s high-level hypotheses with
-            feedback from robot demonstrations.
-          </p>
-          <a class="text-link" href="#abstract"
-            >Read the abstract <span aria-hidden="true">↗</span></a
-          >
-        </div>
-      </section>
-
       <section
-        class="method-section section-space"
+        class="method-section section-space page-width"
         id="method"
         aria-labelledby="method-title"
       >
-        <div class="page-width">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">
-                <span class="section-number">01</span> Inside UniPred
-              </p>
-              <h2 id="method-title">
-                A hypothesis becomes<br />a grounded concept.
-              </h2>
-            </div>
-            <p>
-              Not every plausible concept is a useful predicate. Data tells us
-              which ones actually explain what the robot does.
-            </p>
-          </div>
-          <div class="method-tabs" role="tablist" aria-label="Method stages">
-            <button
-              role="tab"
-              id="tab-0"
-              aria-selected="true"
-              aria-controls="method-panel"
-              data-stage="0"
-            >
-              <span>01</span> Propose
-            </button>
-            <button
-              role="tab"
-              id="tab-1"
-              aria-selected="false"
-              aria-controls="method-panel"
-              tabindex="-1"
-              data-stage="1"
-            >
-              <span>02</span> Learn
-            </button>
-            <button
-              role="tab"
-              id="tab-2"
-              aria-selected="false"
-              aria-controls="method-panel"
-              tabindex="-1"
-              data-stage="2"
-            >
-              <span>03</span> Refine
-            </button>
-            <button
-              role="tab"
-              id="tab-3"
-              aria-selected="false"
-              aria-controls="method-panel"
-              tabindex="-1"
-              data-stage="3"
-            >
-              <span>04</span> Plan & act
-            </button>
-          </div>
-          <div
-            class="method-panel"
-            id="method-panel"
-            role="tabpanel"
-            aria-labelledby="tab-0"
-            tabindex="0"
-            data-current="0"
-          >
-            <div class="method-copy">
-              <span class="phase-tag" id="method-phase"
-                >TRAINING · FOUNDATION-MODEL PRIORS</span
+        <h2 id="method-title">Learning predicates from action effects</h2>
+        <p class="section-intro">
+          UniPred combines symbolic priors from an LLM with neural learning from
+          demonstrations. The LLM proposes
+          <strong>predicate effect vectors</strong>; action transitions induce
+          supervision for the visual classifiers, and learning feedback guides
+          the next proposal.
+        </p>
+        <div class="learning-diagram" id="learning-diagram" data-phase="0">
+          <div class="diagram-heading">
+            <h3>Unified bilevel learning</h3>
+            <div class="diagram-controls">
+              <span id="learning-stage">Propose effects</span
+              ><button
+                id="learning-toggle"
+                aria-pressed="false"
+                aria-label="Pause learning animation"
               >
-              <h3 id="method-step-title">Start with an informed guess.</h3>
-              <p id="method-step-description">
-                An LLM proposes predicates and hypotheses about how actions
-                change them. Demonstration transitions turn these effect
-                hypotheses into supervision for visual predicate learning.
-              </p>
-              <div class="method-example" id="method-example">
-                <span>EXAMPLE HYPOTHESIS</span
-                ><code>Pick(toy) → Holding(robot, toy)</code>
-              </div>
-              <div class="method-controls">
-                <button
-                  id="method-play"
-                  class="icon-button"
-                  aria-label="Play the method walkthrough"
-                >
-                  <span aria-hidden="true">▶</span> Play walkthrough</button
-                ><span id="method-counter">01 / 04</span>
+                Pause Ⅱ
+              </button>
+            </div>
+          </div>
+          <div class="state-strip">
+            <figure>
+              <img
+                src="static/images/method/state-0.png"
+                width="157"
+                height="154"
+                alt="State 0: empty gripper observation"
+                loading="lazy"
+              />
+              <figcaption><b>State 0</b><span>Empty</span></figcaption>
+            </figure>
+            <figure>
+              <img
+                src="static/images/method/state-1.png"
+                width="158"
+                height="162"
+                alt="State 1: empty gripper observation"
+                loading="lazy"
+              />
+              <figcaption><b>State 1</b><span>Empty</span></figcaption>
+            </figure>
+            <figure>
+              <img
+                src="static/images/method/state-2.png"
+                width="158"
+                height="136"
+                alt="State 2: holding towel gripper observation"
+                loading="lazy"
+              />
+              <figcaption><b>State 2</b><span>Holding towel</span></figcaption>
+            </figure>
+            <figure>
+              <img
+                src="static/images/method/state-3.png"
+                width="161"
+                height="163"
+                alt="State 3: empty gripper observation"
+                loading="lazy"
+              />
+              <figcaption><b>State 3</b><span>Empty</span></figcaption>
+            </figure>
+          </div>
+          <div class="learning-grid">
+            <div class="effect-panel diagram-node" data-node="0">
+              <h4>1. Propose symbolic effects</h4>
+              <p>LLM + partial PDDL + learning history</p>
+              <div class="effect-example">
+                <code>HandEmpty(robot)</code><span>Illustrative candidate</span>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Controller</th>
+                      <th>Effect</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Pick</td>
+                      <td>−1 <small>delete</small></td>
+                    </tr>
+                    <tr>
+                      <td>Place</td>
+                      <td>+1 <small>add</small></td>
+                    </tr>
+                    <tr>
+                      <td>Unaffected action</td>
+                      <td>0 <small>unchanged</small></td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div
-              class="method-visual"
-              aria-label="Illustration of the learning loop"
-            >
-              <div class="learning-visual">
-                <div class="loop-top">
-                  <div class="model-node">
-                    <span class="node-symbol" aria-hidden="true">✧</span
-                    ><span
-                      >LLM hypotheses<small id="hypothesis-label"
-                        >Proposed action effects</small
-                      ></span
-                    >
-                  </div>
-                  <span class="flow-arrow" aria-hidden="true">→</span>
-                  <div class="model-node">
-                    <span class="node-symbol neural" aria-hidden="true">⌘</span
-                    ><span
-                      >Visual predicates<small id="classifier-label"
-                        >Grounded in demonstrations</small
-                      ></span
-                    >
-                  </div>
-                </div>
-                <div class="feedback-line">
-                  <span aria-hidden="true">↶</span>
-                  <span id="feedback-label"
-                    >Training & validation feedback refines the hypothesis</span
-                  >
-                </div>
-                <div class="scatter-wrap">
-                  <svg
-                    id="predicate-scatter"
-                    viewBox="0 0 550 250"
-                    role="img"
-                    aria-label="Schematic illustration: visual features become separable as predicate hypotheses are refined"
-                  >
-                    <defs>
-                      <pattern
-                        id="dot-grid"
-                        width="22"
-                        height="22"
-                        patternUnits="userSpaceOnUse"
-                      >
-                        <circle cx="2" cy="2" r="1" fill="#d3d9d2" />
-                      </pattern>
-                    </defs>
-                    <rect width="550" height="250" fill="url(#dot-grid)" />
-                    <path
-                      class="decision-boundary"
-                      d="M280 14 Q250 120 278 235"
-                      fill="none"
-                      stroke="#48695e"
-                      stroke-width="2"
-                      stroke-dasharray="6 7"
-                    />
-                    <g id="scatter-points"></g>
-                    <text x="24" y="230" class="plot-label">
-                      Visual feature space · schematic
-                    </text>
-                  </svg>
-                  <div class="scatter-legend">
-                    <span><i class="empty-dot"></i> Empty gripper</span
-                    ><span><i class="holding-dot"></i> Holding towel</span>
-                  </div>
-                </div>
-                <div class="state-strip">
-                  <div>
-                    <img
-                      src="static/images/method/state-0.png"
-                      alt="Observed robot gripper with no object"
-                      width="157"
-                      height="154"
-                      loading="lazy"
-                    /><span>State 0</span>
-                  </div>
-                  <div>
-                    <img
-                      src="static/images/method/state-1.png"
-                      alt="Second observation of an empty gripper"
-                      width="158"
-                      height="162"
-                      loading="lazy"
-                    /><span>State 1</span>
-                  </div>
-                  <div class="state-holding">
-                    <img
-                      src="static/images/method/state-2.png"
-                      alt="Robot gripper holding the yellow towel"
-                      width="158"
-                      height="136"
-                      loading="lazy"
-                    /><span>State 2 · holding</span>
-                  </div>
-                  <div>
-                    <img
-                      src="static/images/method/state-3.png"
-                      alt="Robot gripper empty after releasing the towel"
-                      width="161"
-                      height="163"
-                      loading="lazy"
-                    /><span>State 3</span>
-                  </div>
-                </div>
+            <div class="supervision-panel diagram-node" data-node="1">
+              <h4>2. Learn from transitions</h4>
+              <p>Effect-based supervision</p>
+              <div class="transition-example">
+                <span>Before</span><b>Pick →</b><span>After</span
+                ><code>empty</code><i></i><code>not empty</code>
               </div>
-              <div class="planning-visual" hidden>
-                <div class="inference-label">
-                  <span class="signal-dot"></span> TEST TIME · LEARNED WORLD
-                  MODEL
-                </div>
-                <div class="observation-row">
-                  <img
-                    src="static/images/posters/main_demo_1.jpg"
-                    alt="Robot observing toy cars and a box on the table"
-                    width="960"
-                    height="540"
-                    loading="lazy"
-                  />
-                  <div>
-                    <span class="small-label">RGB → DINOv3 → predicates</span
-                    ><code>OnTable(toy)</code><code>HandEmpty(robot)</code
-                    ><small>Illustrative symbolic state</small>
-                  </div>
-                </div>
-                <div class="plan-goal">
-                  <span>GOAL</span> Toys in the box. Table clean.
-                </div>
-                <div class="plan-sequence">
-                  <span>Pick toy</span><b aria-hidden="true">→</b
-                  ><span>Place in box</span><b aria-hidden="true">→</b
-                  ><span>Wipe table</span>
-                </div>
-                <div class="execution-loop">
-                  <span>Observe</span><b>→</b><span>Ground</span><b>→</b
-                  ><span>Plan</span><b>→</b><span>Execute</span>
-                </div>
-                <p class="reobserve-note">
-                  ↶ Re-observe after each controller; replan when needed.
-                </p>
+              <p class="constraint-note">
+                Added / deleted atoms must change.<br />Unaffected atoms must
+                stay consistent.
+              </p>
+              <div class="encoder-line">Object crops → DINOv3 → MLP</div>
+              <p class="no-labels">No ground-truth atom labels are required.</p>
+            </div>
+            <div class="classifier-panel diagram-node" data-node="2">
+              <h4>3. Evaluate and refine</h4>
+              <p id="feature-stage">Initial representation</p>
+              <svg
+                id="predicate-scatter"
+                viewBox="0 0 420 225"
+                role="img"
+                aria-label="Schematic learned feature space: holding and empty-gripper observations become separable"
+              >
+                <defs>
+                  <pattern
+                    id="plot-grid"
+                    width="25"
+                    height="25"
+                    patternUnits="userSpaceOnUse"
+                  >
+                    <circle cx="1" cy="1" r=".8" fill="#d9dfe5" />
+                  </pattern>
+                </defs>
+                <rect width="420" height="225" fill="url(#plot-grid)" />
+                <path
+                  id="decision-boundary"
+                  d="M225 18 Q205 100 225 204"
+                  stroke="#748c9a"
+                  stroke-dasharray="5 6"
+                  fill="none"
+                />
+                <g id="scatter-points"></g>
+              </svg>
+              <div class="scatter-legend">
+                <span><i class="empty-dot"></i>Empty</span
+                ><span><i class="holding-dot"></i>Holding</span
+                ><small>Schematic</small>
               </div>
             </div>
           </div>
-          <p class="figure-note">
-            An interactive interpretation of the paper’s pipeline and bilevel
-            learning figures. Point motion is schematic; state images come from
-            the paper. Predicates support planning over a provided library of
-            low-level controllers.
-          </p>
-          <div class="method-takeaways">
-            <p>
-              <span>High-level prior</span>LLMs propose what actions should
-              change.
-            </p>
-            <p>
-              <span>Low-level evidence</span>Demonstrations determine what
-              predicates can learn.
-            </p>
-            <p>
-              <span>A planning interface</span>Selected predicates connect
-              perception to reusable skills.
-            </p>
+          <div class="feedback-path">
+            <span aria-hidden="true">↶</span> Training and validation loss →
+            update the effect proposal → retrain the classifier
           </div>
         </div>
+        <p class="figure-caption">
+          The four observations are taken from the paper’s unified bilevel
+          learning figure. The animation illustrates refinement of the
+          classifier’s hidden representation; point positions are schematic.
+        </p>
+        <div class="inference-heading">
+          <h3>From learned predicates to a robot plan</h3>
+          <p>
+            Predicate selection and operator learning produce the symbolic world
+            model used at test time.
+          </p>
+        </div>
+        <div class="inference-pipeline">
+          <figure class="camera-observation">
+            <img
+              src="static/images/method/observation-top-down.png"
+              width="640"
+              height="480"
+              loading="lazy"
+              alt="Actual top-down RGB observation from the robot's workspace camera"
+            />
+            <figcaption>Actual top-down camera observation</figcaption>
+          </figure>
+          <span class="pipeline-arrow" aria-hidden="true">→</span>
+          <div>
+            <h4>Ground the scene</h4>
+            <p>
+              Object crops → visual features → learned predicate classifiers
+            </p>
+            <code>HandEmpty(robot)<br />OnTable(toy, table)</code
+            ><small>Illustrative predicate names</small>
+          </div>
+          <span class="pipeline-arrow" aria-hidden="true">→</span>
+          <div>
+            <h4>Search for a valid plan</h4>
+            <p>
+              The goal and learned preconditions determine the skill sequence.
+            </p>
+            <div class="plan-example">Clear toys → pick towel → wipe</div>
+            <small>Wiping requires all toys to be cleared.</small>
+          </div>
+        </div>
+        <p class="execution-note">
+          After each controller: observe again, update the ground atoms, and
+          replan when needed. The videos below show execution with the provided
+          robot skills.
+        </p>
       </section>
-
       <section
-        class="demos-section section-space page-width"
+        class="section-space page-width demos-section"
         id="demos"
         aria-labelledby="demos-title"
       >
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">
-              <span class="section-number">02</span> Real robots, long horizons
-            </p>
-            <h2 id="demos-title">
-              One framework.<br />Different things to get done.
-            </h2>
-          </div>
+        <h2 id="demos-title">Real-robot demonstrations</h2>
+        <p class="section-intro">
+          Two real-robot domains, 20 evaluation tasks, and 20 teleoperated
+          demonstrations per domain. Every example is shown below; videos play
+          while in view.
+        </p>
+        <div class="domain-heading">
+          <h3>Table cleaning</h3>
           <p>
-            A plan is only useful if it survives contact with a real scene.
-            Watch UniPred connect learned concepts to sequences of robot skills.
+            Put every toy in the box, then remove the tabletop debris with a
+            towel. The planner must satisfy clearing and reachability conditions
+            before wiping.
           </p>
         </div>
-        <div
-          class="domain-tabs"
-          role="tablist"
-          aria-label="Demonstration domain"
-        >
-          <button
-            role="tab"
-            id="domain-table"
-            aria-controls="demo-panel"
-            aria-selected="true"
-            data-domain="table"
-          >
-            <span>01</span> Table cleaning</button
-          ><button
-            role="tab"
-            id="domain-clutter"
-            aria-controls="demo-panel"
-            aria-selected="false"
-            tabindex="-1"
-            data-domain="clutter"
-          >
-            <span>02</span> Cluttered retrieval
-          </button>
-        </div>
-        <div
-          class="demo-panel"
-          id="demo-panel"
-          role="tabpanel"
-          aria-labelledby="domain-table"
-        >
-          <div class="demo-player">
+        <div class="video-grid two-column">
+          <figure class="video-item">
             <video
-              id="demo-video"
               controls
               muted
+              loop
               playsinline
               preload="none"
+              data-autoplay
               poster="static/images/posters/main_demo_1.jpg"
-              aria-label="Table cleaning with three toys"
-              aria-describedby="demo-caption"
+              aria-label="Three toys"
+              aria-describedby="caption-main_demo_1"
             >
               <source
                 src="static/videos/web/main_demo_1.mp4"
                 type="video/mp4"
               />
             </video>
-            <div class="demo-selector" aria-label="Choose demonstration">
-              <span>WATCH A RUN</span>
-              <div id="demo-options">
-                <button
-                  class="is-selected"
-                  aria-pressed="true"
-                  data-clip="main_demo_1"
-                >
-                  Three toys</button
-                ><button aria-pressed="false" data-clip="main_demo_2">
-                  Two toys
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="demo-description" aria-live="polite">
-            <div class="phase-tag" id="demo-domain-label">TABLE CLEAN REAL</div>
-            <h3 id="demo-title">Clear the toys.<br />Then clean the table.</h3>
-            <p id="demo-caption">
-              The robot picks up three toy vehicles and places them in the box,
-              then uses a towel to wipe the tabletop. The task requires
-              coordinating object transfers and wiping, rather than repeating a
-              single motion.
-            </p>
-            <dl>
-              <div>
-                <dt>Goal</dt>
-                <dd id="demo-goal">Toys stored; tabletop cleaned.</dd>
-              </div>
-              <div>
-                <dt>What to watch</dt>
-                <dd id="demo-watch">
-                  The transition from picking and placing toys to using the
-                  towel.
-                </dd>
-              </div>
-            </dl>
-            <p class="playback-note" id="demo-speed">
-              Original footage · displayed at 3× speed
-            </p>
-          </div>
+            <figcaption id="caption-main_demo_1">
+              <h4>Three toys</h4>
+              <p>
+                The robot transfers three toy vehicles to the box, then grasps
+                the towel and wipes the tabletop. The complete sequence is
+                shown.
+              </p>
+              <span class="speed-note">3× recorded speed</span>
+            </figcaption>
+          </figure>
+          <figure class="video-item">
+            <video
+              controls
+              muted
+              loop
+              playsinline
+              preload="none"
+              data-autoplay
+              poster="static/images/posters/main_demo_2.jpg"
+              aria-label="Two toys"
+              aria-describedby="caption-main_demo_2"
+            >
+              <source
+                src="static/videos/web/main_demo_2.mp4"
+                type="video/mp4"
+              />
+            </video>
+            <figcaption id="caption-main_demo_2">
+              <h4>Two toys</h4>
+              <p>
+                A second arrangement requires two toy transfers before the towel
+                can be used to finish cleaning.
+              </p>
+              <span class="speed-note">3× recorded speed</span>
+            </figcaption>
+          </figure>
         </div>
-        <div class="evidence-strip">
-          <div>
-            <strong>5 + 2</strong><span>Simulated + real-robot domains</span>
-          </div>
-          <div>
-            <strong>20</strong><span>Real-robot evaluation tasks in total</span>
-          </div>
-          <div>
-            <strong>20</strong><span>Teleoperated demos per real domain</span>
-          </div>
-          <a href="static/unipred.pdf"
-            >Experimental details<br />in the manuscript
-            <span aria-hidden="true">↗</span></a
-          >
+        <div class="domain-heading">
+          <h3>Cluttered retrieval</h3>
+          <p>
+            Retrieve the target snack packets into the box. Bottles can be
+            picked up; obstructing containers may need to be repositioned to
+            make targets accessible.
+          </p>
+        </div>
+        <div class="video-grid three-column">
+          <figure class="video-item">
+            <video
+              controls
+              muted
+              loop
+              playsinline
+              preload="none"
+              data-autoplay
+              poster="static/images/posters/pick-clutter-easy.jpg"
+              aria-label="Light clutter"
+              aria-describedby="caption-pick-clutter-easy"
+            >
+              <source
+                src="static/videos/web/pick-clutter-easy.mp4"
+                type="video/mp4"
+              />
+            </video>
+            <figcaption id="caption-pick-clutter-easy">
+              <h4>Light clutter</h4>
+              <p>
+                A more direct retrieval sequence with fewer obstructions around
+                the targets.
+              </p>
+              <span class="speed-note">4× recorded speed</span>
+            </figcaption>
+          </figure>
+          <figure class="video-item">
+            <video
+              controls
+              muted
+              loop
+              playsinline
+              preload="none"
+              data-autoplay
+              poster="static/images/posters/pick-clutter-mid.jpg"
+              aria-label="Moderate clutter"
+              aria-describedby="caption-pick-clutter-mid"
+            >
+              <source
+                src="static/videos/web/pick-clutter-mid.mp4"
+                type="video/mp4"
+              />
+            </video>
+            <figcaption id="caption-pick-clutter-mid">
+              <h4>Moderate clutter</h4>
+              <p>
+                The robot moves an obstructing bottle before retrieving the
+                target packet.
+              </p>
+              <span class="speed-note">4× recorded speed</span>
+            </figcaption>
+          </figure>
+          <figure class="video-item">
+            <video
+              controls
+              muted
+              loop
+              playsinline
+              preload="none"
+              data-autoplay
+              poster="static/images/posters/pick-clutter-hard.jpg"
+              aria-label="Heavy clutter"
+              aria-describedby="caption-pick-clutter-hard"
+            >
+              <source
+                src="static/videos/web/pick-clutter-hard.mp4"
+                type="video/mp4"
+              />
+            </video>
+            <figcaption id="caption-pick-clutter-hard">
+              <h4>Heavy clutter</h4>
+              <p>
+                Several obstructions require preparatory rearrangements before
+                target retrieval.
+              </p>
+            </figcaption>
+          </figure>
         </div>
       </section>
-
       <section
-        class="recovery-section section-space"
+        class="section-space page-width"
         id="recovery"
         aria-labelledby="recovery-title"
       >
-        <div class="page-width">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">
-                <span class="section-number">03</span> When the first attempt
-                fails
+        <h2 id="recovery-title">Failure recovery</h2>
+        <p class="section-intro">
+          Re-grounding the scene after each controller allows the robot to
+          replan from the observed outcome. Here, missed grasps are followed by
+          further attempts that recover the task.
+        </p>
+        <div class="video-grid three-column">
+          <figure class="video-item">
+            <video
+              controls
+              muted
+              loop
+              playsinline
+              preload="none"
+              data-autoplay
+              poster="static/images/posters/recover_main.jpg"
+              aria-label="Complete run with recovery"
+              aria-describedby="caption-recover_main"
+            >
+              <source
+                src="static/videos/web/recover_main.mp4"
+                type="video/mp4"
+              />
+            </video>
+            <figcaption id="caption-recover_main">
+              <h4>Complete run with recovery</h4>
+              <p>
+                The table-cleaning task continues through unsuccessful
+                manipulation attempts to completion.
               </p>
-              <h2 id="recovery-title">Observe again.<br />Make a new plan.</h2>
-            </div>
-            <p>
-              After each controller finishes, UniPred re-grounds the observed
-              scene into predicates. If the action has failed, the updated
-              symbolic state can support replanning.
-            </p>
-          </div>
-          <div class="recovery-main">
-            <figure>
-              <video
-                controls
-                muted
-                playsinline
-                preload="none"
-                poster="static/images/posters/recover_main.jpg"
-                aria-label="Full table-cleaning run with recovery"
-                aria-describedby="recovery-full-caption"
-              >
-                <source
-                  src="static/videos/web/recover_main.mp4"
-                  type="video/mp4"
-                />
-              </video>
-              <figcaption id="recovery-full-caption">
-                <span class="caption-index">FULL RUN</span> Table cleaning with
-                recovery: unsuccessful manipulation attempts are followed by
-                further actions until the task is completed. Original footage at
-                3× speed.
-              </figcaption>
-            </figure>
-            <div class="recovery-explainer">
-              <p class="phase-tag">THE FEEDBACK LOOP</p>
-              <h3>The world changes.<br />The plan should too.</h3>
-              <ol>
-                <li>
-                  <span>01</span>
-                  <div>
-                    <strong>Execute a skill</strong>
-                    <p>A controller attempts the planned action.</p>
-                  </div>
-                </li>
-                <li>
-                  <span>02</span>
-                  <div>
-                    <strong>Check the resulting state</strong>
-                    <p>
-                      New visual observations are classified into ground
-                      predicates.
-                    </p>
-                  </div>
-                </li>
-                <li>
-                  <span>03</span>
-                  <div>
-                    <strong>Replan from what happened</strong>
-                    <p>
-                      The next action follows the updated state, rather than
-                      assuming success.
-                    </p>
-                  </div>
-                </li>
-              </ol>
-            </div>
-          </div>
-          <div class="recovery-clips">
-            <figure>
-              <video
-                controls
-                muted
-                playsinline
-                preload="none"
-                poster="static/images/posters/recover_1.jpg"
-                aria-label="Recovery after a missed toy grasp"
-                aria-describedby="recover-toy-caption"
-              >
-                <source
-                  src="static/videos/web/recover_1.mp4"
-                  type="video/mp4"
-                />
-              </video>
-              <figcaption id="recover-toy-caption">
-                <span class="caption-index">01 / TOY GRASP</span>
-                <h3>A missed pick is not the end.</h3>
-                <p>
-                  The toy remains on the tabletop after an unsuccessful grasp.
-                  Subsequent picking attempts recover the object transfer.
-                  Original footage at 3× speed.
-                </p>
-              </figcaption>
-            </figure>
-            <figure>
-              <video
-                controls
-                muted
-                playsinline
-                preload="none"
-                poster="static/images/posters/recover_3.jpg"
-                aria-label="Recovery while picking the towel"
-                aria-describedby="recover-towel-caption"
-              >
-                <source
-                  src="static/videos/web/recover_3.mp4"
-                  type="video/mp4"
-                />
-              </video>
-              <figcaption id="recover-towel-caption">
-                <span class="caption-index">02 / TOWEL GRASP</span>
-                <h3>Retry the prerequisite skill.</h3>
-                <p>
-                  The robot retries grasping the yellow towel before continuing
-                  to wipe. Recovery depends on the object remaining observable
-                  and reachable by the available skills. Original footage at 3×
-                  speed.
-                </p>
-              </figcaption>
-            </figure>
-          </div>
+              <span class="speed-note">3× recorded speed</span>
+            </figcaption>
+          </figure>
+          <figure class="video-item">
+            <video
+              controls
+              muted
+              loop
+              playsinline
+              preload="none"
+              data-autoplay
+              poster="static/images/posters/recover_1.jpg"
+              aria-label="Retrying a toy grasp"
+              aria-describedby="caption-recover_1"
+            >
+              <source src="static/videos/web/recover_1.mp4" type="video/mp4" />
+            </video>
+            <figcaption id="caption-recover_1">
+              <h4>Retrying a toy grasp</h4>
+              <p>
+                The toy remains on the table after a missed pick. Further
+                picking attempts recover the transfer.
+              </p>
+              <span class="speed-note">3× recorded speed</span>
+            </figcaption>
+          </figure>
+          <figure class="video-item">
+            <video
+              controls
+              muted
+              loop
+              playsinline
+              preload="none"
+              data-autoplay
+              poster="static/images/posters/recover_3.jpg"
+              aria-label="Retrying a towel grasp"
+              aria-describedby="caption-recover_3"
+            >
+              <source src="static/videos/web/recover_3.mp4" type="video/mp4" />
+            </video>
+            <figcaption id="caption-recover_3">
+              <h4>Retrying a towel grasp</h4>
+              <p>
+                The robot retries the towel grasp before proceeding to wipe the
+                table.
+              </p>
+              <span class="speed-note">3× recorded speed</span>
+            </figcaption>
+          </figure>
         </div>
       </section>
-
       <section
-        class="limits-section section-space page-width"
+        class="section-space page-width"
         id="fails"
         aria-labelledby="limits-title"
       >
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">
-              <span class="section-number">04</span> Understanding the limits
-            </p>
-            <h2 id="limits-title">
-              Replanning helps.<br />It does not solve everything.
-            </h2>
-          </div>
-          <p>
-            A new symbolic plan still depends on accurate perception and
-            successful low-level execution. These unsuccessful runs show where
-            that chain can break.
-          </p>
-        </div>
-        <div class="failure-grid">
-          <figure>
+        <h2 id="limits-title">Remaining failure cases</h2>
+        <p class="section-intro">
+          Replanning depends on correct predicates and reliable motor skills. It
+          cannot guarantee recovery from perception or execution errors.
+        </p>
+        <div class="video-grid three-column">
+          <figure class="video-item">
             <video
               controls
               muted
+              loop
               playsinline
               preload="none"
+              data-autoplay
               poster="static/images/posters/fail1.jpg"
-              aria-label="Unsuccessful table-cleaning run one"
-              aria-describedby="fail-caption-1"
+              aria-label="Unsuccessful pick and place"
+              aria-describedby="caption-fail1"
             >
               <source src="static/videos/web/fail1.mp4" type="video/mp4" />
             </video>
-            <figcaption id="fail-caption-1">
-              <span class="caption-index">FAILURE CLIP 01</span>
-              <h3>Was the object really picked?</h3>
+            <figcaption id="caption-fail1">
+              <h4>Unsuccessful pick and place</h4>
               <p>
-                An unsuccessful pick-and-place sequence leaves the task
-                unfinished.
+                The task remains unfinished. If a predicate misclassifies the
+                resulting scene, the next controller may be inappropriate.
               </p>
-              <div class="failure-reason">
-                <strong>Why recovery can break</strong>
-                <p>
-                  Replanning needs a correct symbolic state. A misclassified
-                  predicate can make the next controller inappropriate for the
-                  actual scene.
-                </p>
-              </div>
             </figcaption>
           </figure>
-          <figure>
+          <figure class="video-item">
             <video
               controls
               muted
+              loop
               playsinline
               preload="none"
+              data-autoplay
               poster="static/images/posters/fail2.jpg"
-              aria-label="Unsuccessful table-cleaning run two"
-              aria-describedby="fail-caption-2"
+              aria-label="Failed object transfer"
+              aria-describedby="caption-fail2"
             >
               <source src="static/videos/web/fail2.mp4" type="video/mp4" />
             </video>
-            <figcaption id="fail-caption-2">
-              <span class="caption-index">FAILURE CLIP 02</span>
-              <h3>A plan cannot guarantee a grasp.</h3>
+            <figcaption id="caption-fail2">
+              <h4>Failed object transfer</h4>
               <p>
-                A toy manipulation attempt fails to complete the intended
-                transfer.
+                A valid high-level plan cannot guarantee a successful grasp or
+                placement. Physical execution errors may persist across
+                attempts.
               </p>
-              <div class="failure-reason">
-                <strong>Why recovery can break</strong>
-                <p>
-                  The planner selects from existing skills. Grasp and placement
-                  errors can persist even with a valid plan; planning does not
-                  improve the motor skill itself.
-                </p>
-              </div>
             </figcaption>
           </figure>
-          <figure>
+          <figure class="video-item">
             <video
               controls
               muted
+              loop
               playsinline
               preload="none"
+              data-autoplay
               poster="static/images/posters/fail3.jpg"
-              aria-label="Unsuccessful table-cleaning run three"
-              aria-describedby="fail-caption-3"
+              aria-label="Incomplete wiping"
+              aria-describedby="caption-fail3"
             >
               <source src="static/videos/web/fail3.mp4" type="video/mp4" />
             </video>
-            <figcaption id="fail-caption-3">
-              <span class="caption-index">FAILURE CLIP 03</span>
-              <h3>Trying again has its limits.</h3>
+            <figcaption id="caption-fail3">
+              <h4>Incomplete wiping</h4>
               <p>
-                Towel manipulation and wiping do not bring this run to a
-                successful completion.
+                Towel contact and actuation can fail to produce the required
+                clean-table state, even when the available skill is retried.
               </p>
-              <div class="failure-reason">
-                <strong>Why recovery can break</strong>
-                <p>
-                  Contact, actuation, and perception remain limiting factors.
-                  Repeating an available action may still fail to produce the
-                  physical state the task requires.
-                </p>
-              </div>
             </figcaption>
           </figure>
         </div>
-        <p class="figure-note">
-          The explanations describe failure mechanisms discussed in the paper,
-          not a diagnosis from per-frame execution logs. The paper identifies
-          out-of-distribution predicate errors and perception or actuation
-          limitations as remaining challenges.
+        <p class="figure-caption">
+          These are failure mechanisms discussed in the paper, rather than
+          diagnoses from per-frame execution logs.
         </p>
       </section>
-
       <section
         class="paper-section section-space"
         id="paper"
@@ -883,10 +717,8 @@
         <div class="page-width">
           <div class="paper-grid">
             <div>
-              <p class="eyebrow">
-                <span class="section-number">05</span> The research
-              </p>
-              <h2 id="paper-section-title">The full picture.</h2>
+              <p class="eyebrow">IEEE Transactions on Robotics · 2026</p>
+              <h2 id="paper-section-title">Paper</h2>
               <p class="paper-resource-description">
                 Method, experiments, ablations,<br />and what remains open.
               </p>
@@ -894,7 +726,7 @@
                 >Read the manuscript <span aria-hidden="true">↗</span></a
               >
               <p class="manuscript-note">
-                Current manuscript · 11 authors<br /><a
+                Accepted by IEEE T-RO 2026 · 11 authors<br /><a
                   href="https://arxiv.org/abs/2512.17992"
                   >Published arXiv version ↗</a
                 >

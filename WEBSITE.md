@@ -7,18 +7,19 @@ A standalone static research website. There is no build step or runtime dependen
 From this directory:
 
 ```sh
-python3 -m http.server 8007
+npx --yes http-server@14.1.1 . -p 8007 -c-1
 ```
 
-Open `http://localhost:8007`. The repository's existing GitHub Pages workflow deploys on a push to its configured branch; previewing does not publish anything.
+Open `http://localhost:8007`. This server supports HTTP byte ranges, which are required for reliable video seeking in Chromium. Avoid Python’s basic `http.server` when verifying the film or seeking to later actions. The repository's existing GitHub Pages workflow deploys on a push to its configured branch; previewing does not publish anything.
 
 ## Content and sources
 
-- `index.html`: ordered author list, distinct UMich CSE/CEE affiliations, contribution marks, sections, abstract, and static captions.
+- `index.html`: ordered author list, distinct UMich CSE/CEE affiliations, contribution marks, acceptance notice, sections, abstract, and all video captions. The IEEE T-RO 2026 acceptance status was supplied by the authors; no DOI or journal issue metadata has been invented.
 - `static/css/index.css`: responsive layout, locally hosted fonts, and reduced-motion styles.
-- `static/js/index.js`: four-stage method walkthrough, illustrative feature-space animation, domain/clip selection, lazy video metadata loading, playback management, mobile menu, and citation copy.
+- `static/js/index.js`: automatically animated unified learning figure, lazy video metadata loading, independent playback of visible clips, global pause/resume, mobile menu, and citation copy.
 - `static/unipred.pdf`: the September 16 manuscript snapshot from `unipred-paper/output/pdf/unipred-tro-draft.pdf`, including all 11 authors. It is copied without changing the paper. Replace it when a new manuscript is ready.
 - `static/images/method/state-{0,1,2,3}.png`: original state crops extracted from the paper's `imgs/Fig6.pdf` (the unified bilevel learning figure). State 2 holds a towel; the other states show an empty gripper.
+- `static/images/method/observation-top-down.png`: the actual 640×480 workspace-camera image extracted from `imgs/Fig6.pdf`, used in both the film and the inference diagram.
 - `static/videos/web/`: browser-compatible H.264 derivatives of all 11 original demonstration/recovery/failure clips. Original footage in `static/videos/` remains intact. Web copies preserve duration and source speed annotations and are capped at 1280 px wide.
 - `static/images/posters/`: video poster frames. Each poster uses its video's basename.
 - `static/fonts/`: self-hosted DM Sans and Manrope, with their SIL Open Font Licenses.
@@ -29,7 +30,7 @@ The BibTeX entry is explicitly for arXiv:2512.17992, preserving the author metad
 
 ### Updating demo copy or footage
 
-Table-cleaning clips are `main_demo_1` (three toys) and `main_demo_2` (two toys). Cluttered retrieval uses `pick-clutter-hard`, `pick-clutter-mid`, and `pick-clutter-easy`. Edit the `clips` and `domains` objects in `static/js/index.js`; keep the default table-cleaning caption in `index.html` aligned with the initial clip. Recovery and failure captions are in `index.html`.
+Table-cleaning clips are `main_demo_1` (three toys) and `main_demo_2` (two toys). Cluttered retrieval uses `pick-clutter-hard`, `pick-clutter-mid`, and `pick-clutter-easy`. All five demonstrations, three recoveries, and three failures are individual figures in `index.html`; no clip is hidden behind a tab. Edit the video source, poster, and adjacent caption there.
 
 Failure explanations distinguish observed outcomes from mechanisms discussed in the paper. Use execution logs or author confirmation before assigning a definite internal cause to an individual recording.
 
@@ -44,18 +45,20 @@ ffmpeg -i static/videos/CLIP.mp4 -map 0:v:0 -map '0:a?' \
 
 ## Main overview film
 
-`static/videos/unipred-overview.mp4` is a real 28-second H.264 video, rendered at 1440×810 and 24 fps. It has four seven-second scenes: concepts, effect hypotheses and observations, bilevel refinement, and planning with robot footage. It is silent, with on-screen text and an English `.vtt` caption track.
+`static/videos/unipred-overview.mp4` is approximately 72 seconds of H.264 video at 1440×810 and 24 fps. The first 26 seconds show the actual top-down camera image, a unified effect-proposal / transition-supervision / classifier-feedback diagram, and how goals and preconditions constrain a plan. The final 46 seconds include the entire `main_demo_1.mp4` robot run, preserving its original speed. It is silent, with on-screen explanations and an English `.vtt` track.
+
+The robot stream is composited directly with ffmpeg onto the execution layout. It is not reconstructed by seeking a browser video for each canvas frame. This preserves continuous motion through grasping, transfers, and wiping. The static plan structure explains the task; it is not presented as synchronized execution telemetry.
 
 The editable canvas animation is `scripts/overview-scene.js`; the renderer is `scripts/render-overview.html`. To export, first start the static server. Use Node 20+, Playwright, Chrome/Chromium, and ffmpeg:
 
 ```sh
-node scripts/render-overview.cjs --preview  # four PNG keyframes in /tmp/unipred-site-review/film
+node scripts/render-overview.cjs --preview  # four PNG keyframes in /tmp/unipred-site-review/film-v2
 node scripts/render-overview.cjs            # overwrite MP4 and JPEG poster
 ```
 
 Optional environment variables: `NODE_PATH` for the Playwright installation, `CHROME_PATH` for the browser executable, `FFMPEG_PATH`, and `OVERVIEW_ORIGIN` (default `http://127.0.0.1:8007`). Update the `.vtt` file when changing scene timing or narration text.
 
-The overview plays automatically only when visible and reduced motion is not requested. All videos have native playback controls, pause offscreen, and pause when another video starts. The interactive walkthrough starts manually and has its own pause control.
+All visible videos play independently, muted and looping, unless reduced motion or a pause control is active. Native controls remain available. Clips pause offscreen; manually paused clips stay paused when brought back into view. The unified learning diagram starts automatically while visible and has its own pause button. The navigation’s motion control pauses or resumes all motion.
 
 ## Validation
 
@@ -65,4 +68,4 @@ With the preview server running and Node 20+/Playwright available:
 node scripts/check-site.cjs
 ```
 
-The smoke check verifies author order, affiliation presence, local assets and anchors, all 12 video files, domain/clip switching, keyboard tab navigation, clipboard copying, mobile navigation, reduced-motion behavior, and viewport-based playback. It checks page overflow at 360, 390, 768, and 1440 px and saves desktop/mobile screenshots under `/tmp/unipred-site-review/`. Use `SITE_ORIGIN` and `CHROME_PATH` to override the defaults.
+The smoke check verifies author count, affiliation and acceptance notices, local assets and anchors, all 12 video files, the 72-second film, direct visibility of all five demos, uncropped state images, automatic learning animation, simultaneous demo playback, global motion controls, clipboard copying, mobile navigation, reduced-motion behavior, and offscreen pausing. It checks page overflow at 360, 390, 768, and 1440 px and saves desktop/mobile screenshots under `/tmp/unipred-site-review/`. Use `SITE_ORIGIN` and `CHROME_PATH` to override the defaults.

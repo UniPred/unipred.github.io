@@ -1,106 +1,85 @@
-/* Deterministic, editable 28 s scientific explainer. See WEBSITE.md for export. */
+/* Scientific overview: 26 s explanation, followed by the complete robot video.
+   The film export composites the robot stream directly with ffmpeg so no
+   browser seek or canvas snapshot can freeze the execution footage. */
 "use strict";
 const canvas = document.querySelector("#film");
 const ctx = canvas.getContext("2d");
-const robot = document.querySelector("#robot");
-const W = 1440,
-  H = 810;
 const C = {
-  bg: "#102b29",
-  card: "#1a3731",
-  grid: "#314c40",
-  text: "#edf1df",
-  muted: "#a3bca8",
-  green: "#c8dda3",
-  orange: "#ed9a71",
-  line: "#43604e",
-  pale: "#f2f1e6",
+  bg: "#ffffff",
+  ink: "#26323c",
+  muted: "#657783",
+  line: "#d8e0e6",
+  blue: "#3c799c",
+  green: "#518871",
+  orange: "#cf8a59",
+  soft: "#f5f8fa",
 };
+const assets = {};
 const clamp = (v) => Math.max(0, Math.min(1, v));
 const ease = (v) => {
   v = clamp(v);
   return v * v * (3 - 2 * v);
 };
-const lerp = (a, b, t) => a + (b - a) * t;
-const assets = {};
-function round(x, y, w, h, r = 14, fill = C.card, stroke = null) {
+const mix = (a, b, t) => a + (b - a) * t;
+function box(x, y, w, h, fill = C.soft, stroke = C.line, r = 8) {
   ctx.beginPath();
   ctx.roundRect(x, y, w, h, r);
-  if (fill) {
-    ctx.fillStyle = fill;
-    ctx.fill();
-  }
+  ctx.fillStyle = fill;
+  ctx.fill();
   if (stroke) {
     ctx.strokeStyle = stroke;
     ctx.lineWidth = 1;
     ctx.stroke();
   }
 }
-function txt(
-  text,
-  x,
-  y,
-  size = 24,
-  color = C.text,
-  weight = 400,
-  font = "Manrope",
-  align = "left",
-) {
-  ctx.font = `${weight} ${size}px "${font}"`;
+function text(s, x, y, size = 24, color = C.ink, weight = 400, align = "left") {
+  ctx.font = `${weight} ${size}px "DM Sans"`;
   ctx.fillStyle = color;
   ctx.textAlign = align;
-  ctx.fillText(text, x, y);
+  ctx.fillText(s, x, y);
   ctx.textAlign = "left";
 }
-function lines(
-  text,
-  x,
-  y,
-  size = 24,
-  color = C.muted,
-  lineHeight = 35,
-  weight = 400,
-) {
-  text
-    .split("\n")
-    .forEach((s, i) =>
-      txt(s, x, y + i * lineHeight, size, color, weight, "DM Sans"),
-    );
+function lines(s, x, y, size = 22, color = C.muted, gap = 32) {
+  s.split("\n").forEach((line, i) => text(line, x, y + i * gap, size, color));
 }
-function label(text, x, y, color = C.muted) {
-  ctx.save();
-  ctx.letterSpacing = "2px";
-  txt(text, x, y, 12, color, 500, "DM Sans");
-  ctx.restore();
-}
-function arrow(x1, y1, x2, y2, color = C.green, width = 2) {
+function line(x1, y1, x2, y2, color = C.line, width = 1) {
   ctx.beginPath();
   ctx.moveTo(x1, y1);
   ctx.lineTo(x2, y2);
   ctx.strokeStyle = color;
   ctx.lineWidth = width;
   ctx.stroke();
-  let a = Math.atan2(y2 - y1, x2 - x1);
-  ctx.beginPath();
-  ctx.moveTo(x2 - 9 * Math.cos(a - 0.5), y2 - 9 * Math.sin(a - 0.5));
-  ctx.lineTo(x2, y2);
-  ctx.lineTo(x2 - 9 * Math.cos(a + 0.5), y2 - 9 * Math.sin(a + 0.5));
-  ctx.stroke();
 }
-function circle(x, y, r, color) {
+function arrow(x1, y1, x2, y2, color = C.blue) {
+  line(x1, y1, x2, y2, color, 2);
+  const a = Math.atan2(y2 - y1, x2 - x1);
+  line(
+    x2,
+    y2,
+    x2 - 10 * Math.cos(a - 0.5),
+    y2 - 10 * Math.sin(a - 0.5),
+    color,
+    2,
+  );
+  line(
+    x2,
+    y2,
+    x2 - 10 * Math.cos(a + 0.5),
+    y2 - 10 * Math.sin(a + 0.5),
+    color,
+    2,
+  );
+}
+function dot(x, y, r, color) {
   ctx.beginPath();
   ctx.arc(x, y, r, 0, Math.PI * 2);
   ctx.fillStyle = color;
   ctx.fill();
 }
-function photo(img, x, y, w, h, r = 10) {
-  ctx.save();
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, r);
-  ctx.clip();
-  const iw = img.videoWidth || img.naturalWidth,
-    ih = img.videoHeight || img.naturalHeight;
-  let s = Math.max(w / iw, h / ih);
+function imageFit(img, x, y, w, h) {
+  const iw = img.naturalWidth,
+    ih = img.naturalHeight;
+  const s = Math.min(w / iw, h / ih);
   ctx.drawImage(
     img,
     x + (w - iw * s) / 2,
@@ -108,333 +87,260 @@ function photo(img, x, y, w, h, r = 10) {
     iw * s,
     ih * s,
   );
-  ctx.restore();
 }
-function chip(text, x, y, w, color = C.green) {
-  round(x, y, w, 36, 18, color);
-  txt(text, x + w / 2, y + 24, 13, C.bg, 600, "Manrope", "center");
-}
-function base(t) {
+function base(section, title, subtitle) {
   ctx.fillStyle = C.bg;
-  ctx.fillRect(0, 0, W, H);
-  for (let x = 25; x < W; x += 32)
-    for (let y = 26; y < H; y += 32) circle(x, y, 0.6, "#264239");
-  label("UNIPRED / A VISUAL INTRODUCTION", 72, 57, C.green);
-  txt(
-    "Learning a world model for long-horizon action",
-    1368,
-    57,
-    13,
-    C.muted,
-    400,
-    "DM Sans",
-    "right",
-  );
-  ctx.strokeStyle = "#355045";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(72, 84);
-  ctx.lineTo(1368, 84);
-  ctx.stroke();
-  const names = [
-    "THE MISSING LAYER",
-    "PROPOSE & LEARN",
-    "REFINE WITH FEEDBACK",
-    "PLAN & ACT",
-  ];
-  names.forEach((name, i) => {
-    let x = 72 + i * 331;
-    round(x, 735, 307, 2, 1, "#385345");
-    round(x, 735, 307 * clamp((t - i * 7) / 7), 2, 1, C.green);
-    label(
-      `0${i + 1}  ${name}`,
-      x,
-      768,
-      i === Math.floor(t / 7) ? C.green : "#789780",
-    );
-  });
-}
-function heading(title, subtitle) {
-  txt(title, 72, 161, 49, C.text, 600);
-  txt(subtitle, 74, 205, 20, C.muted, 400, "DM Sans");
-}
-function sceneIntro(t) {
-  heading(
-    "From pixels to predicates to plans.",
-    "A robot needs concepts that explain the world — and what its actions will change.",
-  );
-  const a = ease(t / 1.2);
-  ctx.globalAlpha = a;
-  label("01 / OBSERVE", 91, 267);
-  round(72, 287, 401, 340);
-  photo(assets.table, 91, 321, 363, 204);
-  txt("Objects, appearances, geometry.", 93, 583, 17, C.muted, 400, "DM Sans");
-  ctx.globalAlpha = 1;
-  ctx.globalAlpha = ease((t - 0.6) / 1.2);
-  label("02 / UNDERSTAND", 559, 267);
-  round(540, 287, 351, 340);
-  label("LEARNED PREDICATES", 563, 327, C.green);
-  [
-    ["HandEmpty(robot)", true],
-    ["OnTable(toy)", true],
-    ["InBox(toy, box)", false],
-  ].forEach(([s, v], i) => {
-    round(561, 355 + i * 70, 309, 52, 8, "#254336");
-    circle(583, 381 + i * 70, 4.5, v ? C.green : "#6e8876");
-    txt(s, 600, 387 + i * 70, 17, v ? C.text : C.muted, 400, "DM Sans");
-  });
-  txt("A symbolic view of the scene.", 562, 600, 16, C.muted, 400, "DM Sans");
-  ctx.globalAlpha = 1;
-  ctx.globalAlpha = ease((t - 1.2) / 1.2);
-  label("03 / ACT", 978, 267);
-  round(958, 287, 410, 340);
-  ["Pick the toy", "Place it in the box", "Wipe the table"].forEach((s, i) => {
-    circle(
-      991,
-      343 + i * 90,
-      14,
-      i === Math.floor(t * 0.65) % 3 ? C.orange : "#3e5944",
-    );
-    txt(
-      `0${i + 1}`,
-      991,
-      348 + i * 90,
-      10,
-      i === Math.floor(t * 0.65) % 3 ? C.bg : C.text,
-      600,
-      "Manrope",
-      "center",
-    );
-    txt(s, 1021, 350 + i * 90, 19, C.text, 400);
-    if (i < 2) arrow(991, 363 + i * 90, 991, 406 + i * 90, "#57734f", 1.5);
-  });
-  ctx.globalAlpha = 1;
-  arrow(487, 451, 525, 451);
-  arrow(905, 451, 943, 451);
-  chip("THE BRIDGE: A LEARNED NEURAL–SYMBOLIC WORLD MODEL", 398, 661, 644);
-}
-function scenePropose(t) {
-  heading(
-    "Start with a hypothesis.",
-    "Language supplies a prior. Robot experience supplies the evidence.",
-  );
-  round(72, 265, 361, 398);
-  label("FOUNDATION-MODEL PRIOR", 98, 305, C.green);
-  txt("✧", 103, 369, 58, C.orange);
-  txt("LLM", 175, 365, 37, C.text, 600);
-  lines(
-    "What should change\nafter a successful pick?",
-    99,
-    420,
-    24,
-    C.text,
-    35,
-  );
-  round(97, 487, 312, 115, 9, "#294737");
-  label("EFFECT HYPOTHESIS", 117, 516);
-  txt("Holding(robot, object)", 117, 552, 20, C.green, 400, "DM Sans");
-  txt("becomes true after Pick.", 117, 582, 17, C.muted, 400, "DM Sans");
-  arrow(448, 461, 510, 461);
-  round(528, 265, 840, 398);
-  label("DEMONSTRATION TRANSITIONS", 556, 305, C.green);
-  txt("Ground a hypothesis in observed states.", 556, 351, 27, C.text, 600);
-  const names = ["Empty", "Empty", "Holding towel", "Empty"];
-  for (let i = 0; i < 4; i++) {
-    const x = 556 + i * 198;
-    ctx.globalAlpha = ease((t - i * 0.23) / 0.8);
-    photo(assets["state" + i], x, 382, 173, 148);
-    label("STATE " + i, x, 556);
-    txt(names[i], x, 585, 15, i === 2 ? C.orange : C.muted, 400);
-    ctx.globalAlpha = 1;
-  }
-  txt(
-    "Effect hypotheses → pseudo-labels → neural predicate classifiers",
-    556,
-    638,
+  ctx.fillRect(0, 0, 1440, 810);
+  text("UniPred", 48, 46, 21, C.ink, 500);
+  text(
+    "IEEE Transactions on Robotics · 2026",
+    1390,
+    46,
     16,
     C.muted,
     400,
-    "DM Sans",
+    "right",
+  );
+  line(48, 67, 1392, 67);
+  text(section, 48, 104, 13, C.blue, 500);
+  text(title, 48, 151, 38, C.ink, 500);
+  if (subtitle) text(subtitle, 48, 185, 19, C.muted);
+}
+function footer(s) {
+  line(48, 757, 1392, 757);
+  text(s, 48, 785, 14, C.muted);
+}
+function sceneObserve(t) {
+  base(
+    "ROBOT OBSERVATIONS",
+    "Table cleaning as a long-horizon task",
+    "Goal: put every toy in the box and wipe away the tabletop debris.",
+  );
+  box(48, 219, 556, 469, "#fafbfc");
+  imageFit(assets.overhead, 64, 232, 524, 393);
+  text(
+    "Actual top-down camera observation",
+    326,
+    665,
+    18,
+    C.muted,
+    400,
+    "center",
+  );
+  arrow(620, 443, 677, 443);
+  text("Learned predicates describe the state", 714, 251, 26, C.ink, 500);
+  [
+    ["HandEmpty(robot)", "Is the gripper empty?"],
+    ["OnTable(toy, table)", "Which toys still need to be cleared?"],
+    ["Clean(table)", "Has wiping achieved the goal?"],
+  ].forEach(([code, desc], i) => {
+    const y = 289 + i * 114;
+    ctx.globalAlpha = ease((t - i * 0.45) / 0.8);
+    box(713, y, 677, 88, "#f5f8fa");
+    text(code, 735, y + 33, 25, C.blue, 500);
+    text(desc, 735, y + 65, 19, C.muted);
+    ctx.globalAlpha = 1;
+  });
+  footer(
+    "Predicate names are illustrative. The observation is taken from the paper.",
   );
 }
-function scatter(t) {
-  round(673, 265, 695, 398);
-  label("VISUAL FEATURE SPACE", 700, 302, C.green);
-  txt("Holding or empty?", 700, 341, 24, C.text, 600);
-  let p = ease((t - 0.7) / 4.6);
-  for (let x = 700; x < 1346; x += 24)
-    for (let y = 363; y < 617; y += 24) circle(x, y, 0.7, "#405d4c");
-  for (let i = 0; i < 52; i++) {
-    let holding = i % 4 === 2,
+function scatter(t, x, y, w, h) {
+  const p = ease((t - 2.5) / 7);
+  for (let gx = x + 20; gx < x + w; gx += 28)
+    for (let gy = y + 16; gy < y + h; gy += 28) dot(gx, gy, 0.8, "#dbe2e7");
+  for (let i = 0; i < 44; i++) {
+    const holding = i % 4 === 2,
       a = i * 2.39996,
-      r = 20 + ((i * 17) % 91);
-    let ix = 1020 + Math.cos(a) * r * 2.4,
-      iy = 479 + Math.sin(a) * r;
-    let fx = (holding ? 1202 : 857) + Math.cos(a) * r * 0.95,
-      fy = 479 + Math.sin(a) * r;
-    circle(
-      lerp(ix, fx, p),
-      lerp(iy, fy, p),
-      i % 9 === 0 ? 7 : 5,
+      r = 14 + ((i * 17) % 72);
+    const ix = x + w / 2 + Math.cos(a) * r * 1.9,
+      iy = y + h / 2 + Math.sin(a) * r;
+    const fx = x + (holding ? w * 0.77 : w * 0.28) + Math.cos(a) * r * 0.65,
+      fy = y + h / 2 + Math.sin(a) * r;
+    dot(
+      mix(ix, fx, p),
+      mix(iy, fy, p),
+      i % 9 === 0 ? 6 : 4.5,
       holding ? C.orange : C.green,
     );
   }
   ctx.globalAlpha = p;
-  ctx.strokeStyle = "#8fa989";
-  ctx.lineWidth = 1.5;
-  ctx.setLineDash([5, 9]);
-  ctx.beginPath();
-  ctx.moveTo(1032, 370);
-  ctx.bezierCurveTo(1000, 452, 1055, 520, 1034, 594);
-  ctx.stroke();
+  ctx.setLineDash([5, 7]);
+  line(x + w * 0.54, y + 10, x + w * 0.54, y + h - 10, "#8fa3af", 1);
   ctx.setLineDash([]);
   ctx.globalAlpha = 1;
-  circle(716, 636, 4, C.green);
-  txt("Empty gripper", 729, 641, 13, C.muted, 400, "DM Sans");
-  circle(863, 636, 4, C.orange);
-  txt("Holding towel", 876, 641, 13, C.muted, 400, "DM Sans");
-  txt(
-    "Schematic illustration",
-    1342,
-    641,
-    12,
-    C.muted,
-    400,
-    "DM Sans",
-    "right",
-  );
 }
-function sceneRefine(t) {
-  heading(
-    "Let experience refine the concept.",
-    "The inner loop learns visual predicates. The outer loop improves the hypotheses.",
+function sceneLearn(t) {
+  base(
+    "TRAINING: ONE BILEVEL LOOP",
+    "Propose effects. Learn classifiers. Refine with feedback.",
+    "Supervision comes from demonstrated transitions, without ground-truth labels for the atoms.",
   );
-  round(72, 265, 565, 398);
-  round(100, 302, 215, 80, 10, "#2b4533");
-  txt("LLM hypotheses", 207, 349, 20, C.text, 600, "Manrope", "center");
-  round(374, 302, 235, 80, 10, "#2b4533");
-  txt("Neural classifiers", 492, 349, 20, C.text, 600, "Manrope", "center");
-  arrow(325, 342, 363, 342, C.green);
-  ctx.strokeStyle = C.orange;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(492, 390);
-  ctx.lineTo(492, 431);
-  ctx.lineTo(207, 431);
-  ctx.lineTo(207, 393);
-  ctx.stroke();
-  arrow(207, 412, 207, 393, C.orange);
-  const f = (t * 0.2) % 1;
-  circle(lerp(492, 207, f), 431, 5, C.orange);
-  txt(
-    "Training + validation feedback",
-    350,
-    466,
-    15,
-    C.orange,
-    400,
-    "DM Sans",
-    "center",
-  );
+  const names = ["Empty", "Empty", "Holding towel", "Empty"];
   for (let i = 0; i < 4; i++) {
-    const x = 100 + i * 131;
-    photo(assets["state" + i], x, 490, 112, 104, 8);
-    txt(
-      i === 2 ? "Holding" : "Empty",
-      x + 56,
-      621,
-      13,
+    const x = 176 + i * 283;
+    box(x, 214, 232, 177, "#fafbfc");
+    imageFit(assets["state" + i], x + 8, 222, 216, 132);
+    text(
+      "State " + i + " · " + names[i],
+      x + 116,
+      377,
+      16,
       i === 2 ? C.orange : C.muted,
       400,
-      "DM Sans",
       "center",
     );
   }
-  scatter(t);
-}
-function scenePlan(t) {
-  heading(
-    "Now the robot can plan.",
-    "At test time: ground the scene, compose existing skills, and observe the result.",
-  );
-  round(72, 265, 565, 398);
-  label("ILLUSTRATIVE SYMBOLIC STATE", 98, 305, C.green);
-  ["OnTable(toy)", "HandEmpty(robot)"].forEach((s, i) => {
-    round(98, 330 + i * 54, 510, 43, 7, "#254336");
-    txt("✓", 118, 359 + i * 54, 19, C.green);
-    txt(s, 155, 359 + i * 54, 20, C.text, 400, "DM Sans");
+  box(48, 421, 370, 275, "#f7f9fb");
+  text("1  LLM effect proposal", 70, 458, 22, C.ink, 500);
+  text("Example: HandEmpty(robot)", 70, 494, 19, C.blue);
+  [
+    ["Pick", "−1  delete"],
+    ["Place", "+1  add"],
+    ["Unaffected action", "0  unchanged"],
+  ].forEach(([a, b], i) => {
+    const y = 537 + i * 45;
+    line(70, y - 25, 395, y - 25);
+    text(a, 70, y, 18, C.muted);
+    text(b, 394, y, 18, C.ink, 400, "right");
   });
-  label("ILLUSTRATIVE SKILL SEQUENCE", 98, 477, C.green);
-  ["Pick", "Place", "Wipe"].forEach((s, i) => {
-    let x = 98 + i * 178;
-    round(x, 495, 151, 61, 8, i === Math.floor(t / 2.33) ? C.green : "#294638");
-    txt(
-      s,
-      x + 75,
-      534,
-      21,
-      i === Math.floor(t / 2.33) ? C.bg : C.text,
-      600,
-      "Manrope",
-      "center",
-    );
-    if (i < 2) arrow(x + 157, 526, x + 173, 526, "#6e905e", 1.5);
-  });
-  ctx.strokeStyle = C.line;
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(118, 574);
-  ctx.lineTo(118, 601);
-  ctx.lineTo(588, 601);
-  ctx.lineTo(588, 574);
-  ctx.stroke();
-  txt(
-    "Re-observe after every controller. Replan if needed.",
-    354,
-    637,
-    16,
+  arrow(432, 546, 469, 546);
+  box(483, 421, 388, 275, "#f7f9fb");
+  text("2  Transition supervision", 505, 458, 22, C.ink, 500);
+  text("Before     — Pick →     After", 505, 502, 20, C.blue);
+  text("empty                    not empty", 505, 536, 19, C.muted);
+  lines(
+    "Changed atoms follow add/delete effects.\nUnaffected atoms stay consistent.",
+    505,
+    581,
+    17,
     C.muted,
+    29,
+  );
+  text("Object crops → DINOv3 → MLP", 505, 665, 18, C.blue);
+  arrow(885, 546, 917, 546);
+  box(932, 421, 460, 275, "#fcfdfd");
+  text("3  Learned representation", 954, 458, 22, C.ink, 500);
+  scatter(t, 945, 478, 432, 165);
+  dot(963, 673, 4, C.green);
+  text("Empty", 974, 678, 14, C.muted);
+  dot(1053, 673, 4, C.orange);
+  text("Holding", 1064, 678, 14, C.muted);
+  text("Schematic", 1370, 678, 12, C.muted, 400, "right");
+  line(1170, 705, 1170, 729, C.blue, 2);
+  line(1170, 729, 231, 729, C.blue, 2);
+  arrow(231, 729, 231, 705);
+  box(475, 711, 455, 31, "white", null, 0);
+  text(
+    "Training + validation loss → next effect proposal",
+    701,
+    733,
+    17,
+    C.blue,
     400,
-    "DM Sans",
     "center",
   );
-  photo(robot, 673, 265, 695, 391, 12);
-  round(687, 281, 208, 31, 4, "#102b29dd");
-  txt("REAL ROBOT · TABLE CLEAN", 701, 302, 11, C.text, 500, "DM Sans");
+}
+function scenePlanning(t) {
+  base(
+    "INFERENCE: CONSTRUCT A VALID PLAN",
+    "Why clear the toys before wiping?",
+    "The planner combines the goal, the current ground atoms, and learned operator preconditions.",
+  );
+  imageFit(assets.overhead, 48, 220, 330, 248);
+  text("Top-down RGB observation", 213, 494, 16, C.muted, 400, "center");
+  arrow(390, 339, 435, 339);
+  box(452, 236, 403, 227);
+  text("Grounded symbolic state", 474, 275, 23, C.ink, 500);
+  text("HandEmpty(robot)", 474, 321, 20, C.blue);
+  text("OnTable(toy₁, table)", 474, 360, 20, C.blue);
+  text("OnTable(toy₂, table)", 474, 399, 20, C.blue);
+  text("…", 474, 437, 20, C.muted);
+  arrow(869, 339, 909, 339);
+  box(928, 236, 464, 227);
+  text("Goal + preconditions", 951, 275, 23, C.ink, 500);
+  lines(
+    "Goal: toys stored and table clean.\nWipe requires all toys to be cleared.\nThe towel must be grasped first.",
+    951,
+    322,
+    20,
+    C.muted,
+    45,
+  );
+  const names = ["Clear toys", "Grasp towel", "Wipe table"];
+  for (let i = 0; i < 3; i++) {
+    let x = 229 + i * 353;
+    box(
+      x,
+      550,
+      299,
+      88,
+      i === Math.min(2, Math.floor(t / 2)) ? "#eaf2f7" : "#f7f9fb",
+    );
+    text(names[i], x + 149, 602, 27, C.ink, 500, "center");
+    if (i < 2) arrow(x + 310, 594, x + 339, 594);
+  }
+  text(
+    "A simplified skill sequence; the full real-robot run follows.",
+    720,
+    697,
+    20,
+    C.muted,
+    400,
+    "center",
+  );
+  footer(
+    "After each controller: re-observe → update atoms → replan when needed.",
+  );
+}
+function executionLayout() {
+  base(
+    "REAL ROBOT: COMPLETE DEMONSTRATION",
+    "Table cleaning with three toys",
+    "The full recorded run is shown below, including the robot’s pauses between actions.",
+  );
+  text("Goal", 48, 249, 24, C.ink, 500);
+  lines(
+    "Store all toys in the box.\nClean the tabletop.",
+    48,
+    285,
+    20,
+    C.muted,
+    31,
+  );
+  line(48, 334, 400, 334);
+  text("Plan structure", 48, 377, 24, C.ink, 500);
+  [
+    ["1", "Clear every toy", "Pick and place into the box."],
+    ["2", "Grasp the towel", "Prepare the wiping skill."],
+    ["3", "Wipe the table", "Remove the remaining debris."],
+  ].forEach(([n, title, desc], i) => {
+    let y = 429 + i * 89;
+    dot(62, y - 5, 13, "#e6eff5");
+    text(n, 62, y, 13, C.blue, 500, "center");
+    text(title, 88, y, 20, C.ink, 500);
+    text(desc, 88, y + 29, 15, C.muted);
+  });
+  box(432, 208, 960, 540, "#f0f2f4");
+  footer(
+    "Complete 46-second source clip · original footage at 3× speed · plan structure is explanatory, not an execution log.",
+  );
 }
 async function render(t) {
-  t = Math.max(0, Math.min(27.999, t));
-  if (t >= 21) {
-    let target = 12 + t - 21;
-    if (Math.abs(robot.currentTime - target) > 0.015) {
-      await new Promise((resolve) => {
-        robot.addEventListener("seeked", resolve, { once: true });
-        robot.currentTime = target;
-      });
-    }
-  }
   ctx.globalAlpha = 1;
-  base(t);
-  const scene = Math.floor(t / 7),
-    local = t % 7;
-  [sceneIntro, scenePropose, sceneRefine, scenePlan][scene](local);
-  const boundary = Math.min(local, 7 - local);
-  if (boundary < 0.24) {
-    ctx.fillStyle = C.bg;
-    ctx.globalAlpha = 1 - ease(boundary / 0.24);
-    ctx.fillRect(0, 96, W, 620);
-    ctx.globalAlpha = 1;
-  }
+  if (t < 6) sceneObserve(t);
+  else if (t < 20) sceneLearn(t - 6);
+  else if (t < 26) scenePlanning(t - 20);
+  else executionLayout();
 }
 window.filmReady = (async () => {
   await Promise.all([
-    document.fonts.load("600 49px Manrope"),
     document.fonts.load('400 24px "DM Sans"'),
-    document.fonts.load('500 12px "DM Sans"'),
+    document.fonts.load('500 24px "DM Sans"'),
   ]);
   await Promise.all(
     [
-      ["table", "../static/images/posters/main_demo_1.jpg"],
+      ["overhead", "../static/images/method/observation-top-down.png"],
       ...[0, 1, 2, 3].map((i) => [
         "state" + i,
         `../static/images/method/state-${i}.png`,
@@ -452,11 +358,8 @@ window.filmReady = (async () => {
         }),
     ),
   );
-  if (robot.readyState < 2)
-    await new Promise((resolve) =>
-      robot.addEventListener("loadeddata", resolve, { once: true }),
-    );
   await render(3);
   return true;
 })();
 window.renderFilm = render;
+window.renderExecution = executionLayout;

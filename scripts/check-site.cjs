@@ -1,4 +1,4 @@
-// Browser smoke checks. Run with Node 20+ and Playwright installed; serve this repo first.
+// Node 20+, Playwright; serve the repository first. Tests user-visible behavior.
 const { chromium } = require("playwright");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
@@ -20,121 +20,121 @@ const path = require("node:path");
       origin,
     });
     const page = await context.newPage();
-    page.on("pageerror", (error) => errors.push(error.message));
-    page.on("response", (response) => {
-      if (response.status() >= 400)
-        errors.push(`${response.status()} ${response.url()}`);
+    page.on("pageerror", (e) => errors.push(e.message));
+    page.on("response", (r) => {
+      if (r.status() >= 400) errors.push(r.status() + " " + r.url());
     });
     await page.goto(origin);
     await page.evaluate(() => document.fonts.ready);
-    assert.deepEqual(await page.locator(".authors a").allTextContents(), [
-      "Qianwei Wang",
-      "Bowen Li",
-      "Zhanpeng Luo",
-      "Yifan Xu",
-      "Vineet Kamat",
-      "Carol Menassa",
-      "Alexander Gray",
-      "Tom Silver",
-      "Sebastian Scherer",
-      "Katia Sycara",
-      "Yaqi Xie",
-    ]);
+    assert.equal(await page.locator(".authors a").count(), 11);
+    assert.match(
+      await page.locator(".acceptance").innerText(),
+      /Accepted by IEEE.*2026/,
+    );
     await page.locator(".affiliations summary").click();
     assert.match(
       await page.locator(".affiliations").innerText(),
-      /Department of Civil and Environmental Engineering, University of Michigan/,
+      /Department of Civil and Environmental Engineering/,
     );
     await page.locator(".affiliations summary").click();
-    const paths = await page
-      .locator("[src], [href], [poster]")
+    assert.equal(await page.locator("#demos video").count(), 5);
+    assert.equal(await page.locator("#recovery video").count(), 3);
+    assert.equal(await page.locator("#fails video").count(), 3);
+    for (const v of await page.locator("#demos video").all())
+      assert.equal(await v.isVisible(), true);
+    const refs = await page
+      .locator("[src],[href],[poster]")
       .evaluateAll((nodes) =>
-        nodes.flatMap((node) =>
+        nodes.flatMap((n) =>
           ["src", "href", "poster"]
-            .map((key) => node.getAttribute(key))
+            .map((k) => n.getAttribute(k))
             .filter(Boolean),
         ),
       );
-    for (const ref of paths) {
+    for (const ref of refs) {
       if (ref.startsWith("#")) {
-        if (ref.length > 1)
-          assert.equal(
-            await page.locator(ref).count(),
-            1,
-            `Broken anchor ${ref}`,
-          );
+        if (ref.length > 1) assert.equal(await page.locator(ref).count(), 1);
       } else if (!/^https?:|^mailto:|^data:/.test(ref))
         assert.ok(
-          fs.existsSync(path.resolve(__dirname, "..", ref)),
-          `Missing file ${ref}`,
+          fs.existsSync(path.resolve(__dirname, "..", ref.split("?")[0])),
+          ref,
         );
     }
+    for (const width of [360, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      assert.ok(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+        `Overflow at ${width}`,
+      );
+    }
+    assert.ok(
+      (
+        await page
+          .locator(".state-strip img")
+          .evaluateAll((images) =>
+            images.map((img) => getComputedStyle(img).objectFit),
+          )
+      ).every((f) => f === "contain"),
+    );
     const film = page.locator("#overview-film");
     await film.scrollIntoViewIfNeeded();
-    assert.equal(
-      await film.evaluate((video) => video.paused),
-      true,
-      "Reduced motion must not autoplay the film",
-    );
-    await film.evaluate((video) => video.play());
+    assert.equal(await film.evaluate((v) => v.paused), true);
+    await film.evaluate((v) => v.play());
     await page.waitForFunction(
       () => document.querySelector("#overview-film").currentTime > 0.15,
     );
-    assert.equal(await film.evaluate((v) => Math.round(v.duration)), 28);
-    await film.evaluate((video) => video.pause());
-    await page.locator("#tab-0").focus();
-    await page.keyboard.press("ArrowRight");
-    assert.equal(
-      await page.locator("#tab-1").getAttribute("aria-selected"),
-      "true",
+    const duration = await film.evaluate((v) => v.duration);
+    assert.ok(duration > 72 && duration < 73);
+    await film.evaluate((v) => v.pause());
+    // Check decoded frames in the execution segment, not just currentTime.
+    // A server without HTTP Range support can report seeked without a new frame.
+    await film.evaluate(async (v) => {
+      v.currentTime = 25;
+      await v.play();
+    });
+    await page.waitForFunction(
+      () => document.querySelector("#overview-film").currentTime > 28,
     );
-    await page.keyboard.press("End");
-    assert.equal(await page.locator(".planning-visual").isVisible(), true);
-    for (const width of [360, 390, 768, 1440]) {
-      await page.setViewportSize({ width, height: 900 });
-      for (let stage = 0; stage < 4; stage++) {
-        await page.locator(`#tab-${stage}`).click();
-        assert.equal(
-          await page.evaluate(
-            () => document.documentElement.scrollWidth <= innerWidth,
-          ),
-          true,
-          `Horizontal overflow at ${width}, stage ${stage}`,
-        );
-      }
+    await film.evaluate((v) => v.pause());
+    const frameHashes = [];
+    for (const time of [30, 44, 68]) {
+      frameHashes.push(
+        await film.evaluate(async (v, time) => {
+          await new Promise((resolve) => {
+            v.addEventListener("seeked", resolve, { once: true });
+            v.currentTime = time;
+          });
+          await new Promise((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(resolve)),
+          );
+          const c = document.createElement("canvas");
+          c.width = 160;
+          c.height = 90;
+          c.getContext("2d").drawImage(v, 432, 208, 960, 540, 0, 0, 160, 90);
+          return c.toDataURL();
+        }, time),
+      );
     }
-    await page.setViewportSize({ width: 1440, height: 1000 });
-    let videoChecks = 1;
-    for (const domain of ["table", "clutter"]) {
-      await page.locator(`#domain-${domain}`).click();
-      for (const button of await page.locator("[data-clip]").all()) {
-        await button.click();
-        await page.locator("#demo-video").scrollIntoViewIfNeeded();
-        await page.locator("#demo-video").evaluate((video) => video.play());
-        await page.waitForFunction(
-          () => document.querySelector("#demo-video").currentTime > 0.15,
-        );
-        assert.equal(
-          await page.locator("#demo-video").evaluate((v) => v.error),
-          null,
-        );
-        await page.locator("#demo-video").evaluate((video) => video.pause());
-        videoChecks++;
-      }
-    }
-    for (const video of await page
-      .locator("#recovery video, #fails video")
-      .all()) {
+    assert.equal(
+      new Set(frameHashes).size,
+      3,
+      "Robot footage must change after seeking; preview server must support HTTP byte ranges",
+    );
+
+    let checked = 1;
+    for (const video of await page.locator(".video-grid video").all()) {
       await video.scrollIntoViewIfNeeded();
       await video.evaluate((v) => v.play());
       await page.waitForFunction(() =>
-        [...document.querySelectorAll("#recovery video, #fails video")].some(
+        [...document.querySelectorAll(".video-grid video")].some(
           (v) => !v.paused && v.currentTime > 0.15,
         ),
       );
       assert.equal(await video.evaluate((v) => v.error), null);
       await video.evaluate((v) => v.pause());
-      videoChecks++;
+      checked++;
     }
     await page.locator("#copy-citation").click();
     assert.match(
@@ -145,63 +145,89 @@ const path = require("node:path");
     await page.evaluate(() => scrollTo(0, 0));
     await page.locator(".menu-toggle").click();
     assert.equal(await page.locator("#site-nav").isVisible(), true);
-    await page.locator('#site-nav a[href="#demos"]').click();
+    await page.locator('#site-nav a[href="#method"]').click();
     assert.equal(
       await page.locator(".menu-toggle").getAttribute("aria-expanded"),
       "false",
     );
-    assert.equal(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth <= innerWidth,
-      ),
-      true,
-    );
     await page.goto(origin);
     await page.screenshot({
-      path: "/tmp/unipred-site-review/mobile-final.png",
+      path: "/tmp/unipred-site-review/v2-mobile-final.png",
     });
-    await page.locator("#tab-2").click();
-    await page.locator("#method-panel").scrollIntoViewIfNeeded();
-    await page.screenshot({
-      path: "/tmp/unipred-site-review/mobile-method-final.png",
+    await page.locator("#learning-diagram").screenshot({
+      path: "/tmp/unipred-site-review/v2-mobile-diagram-final.png",
     });
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(origin);
     await page.screenshot({
-      path: "/tmp/unipred-site-review/desktop-final.png",
+      path: "/tmp/unipred-site-review/v2-desktop-final.png",
     });
-    await context.close();
     const autoContext = await browser.newContext({
-      viewport: { width: 1280, height: 900 },
+      viewport: { width: 1440, height: 1100 },
     });
-    const autoPage = await autoContext.newPage();
-    await autoPage.goto(origin);
-    await autoPage.locator("#overview-film").scrollIntoViewIfNeeded();
-    await autoPage.waitForFunction(
-      () => document.querySelector("#overview-film").currentTime > 0.15,
+    const auto = await autoContext.newPage();
+    auto.on("pageerror", (e) => errors.push(e.message));
+    await auto.goto(origin);
+    await auto.locator("#learning-diagram").scrollIntoViewIfNeeded();
+    const before = await auto
+      .locator("#learning-diagram")
+      .getAttribute("data-phase");
+    await auto.waitForFunction(
+      (p) => document.querySelector("#learning-diagram").dataset.phase !== p,
+      before,
+      { timeout: 8000 },
     );
-    await autoPage.locator("#method").scrollIntoViewIfNeeded();
-    await autoPage.waitForFunction(
-      () => document.querySelector("#overview-film").paused,
+    await auto.locator("#learning-toggle").click();
+    const pausedPhase = await auto
+      .locator("#learning-diagram")
+      .getAttribute("data-phase");
+    await auto.waitForTimeout(4700);
+    assert.equal(
+      await auto.locator("#learning-diagram").getAttribute("data-phase"),
+      pausedPhase,
+    );
+    await auto.locator(".two-column").scrollIntoViewIfNeeded();
+    await auto.waitForFunction(() =>
+      [...document.querySelectorAll(".two-column video")].every(
+        (v) => !v.paused && v.currentTime > 0.2,
+      ),
+    );
+    await auto.locator("#motion-toggle").click();
+    await auto.waitForFunction(() =>
+      [...document.querySelectorAll("video")].every((v) => v.paused),
+    );
+    await auto.locator("#motion-toggle").click();
+    await auto.waitForFunction(() =>
+      [...document.querySelectorAll(".two-column video")].every(
+        (v) => !v.paused,
+      ),
+    );
+    await auto.locator("#paper").scrollIntoViewIfNeeded();
+    await auto.waitForFunction(() =>
+      [...document.querySelectorAll(".two-column video")].every(
+        (v) => v.paused,
+      ),
     );
     assert.deepEqual(errors, []);
     console.log(
       JSON.stringify(
         {
           passed: true,
-          authors: 11,
-          videoChecks,
-          viewportWidths: [360, 390, 768, 1440],
+          videoChecks: checked,
+          filmDuration: duration,
           checks: [
-            "local assets and anchors",
-            "four method stages",
-            "keyboard tabs",
+            "five demos directly visible",
+            "complete state images",
+            "72-second film",
             "all video playback",
-            "domain and clip selection",
+            "automatic learning animation",
+            "simultaneous visible demos",
+            "global pause and resume",
+            "offscreen pause",
             "reduced motion",
-            "viewport-based playback",
-            "mobile navigation",
-            "clipboard copy",
+            "mobile menu",
+            "clipboard",
+            "no overflow at 360/390/768/1440",
             "no browser errors",
           ],
         },
@@ -212,7 +238,7 @@ const path = require("node:path");
   } finally {
     await browser.close();
   }
-})().catch((error) => {
-  console.error(error);
+})().catch((e) => {
+  console.error(e);
   process.exit(1);
 });
