@@ -37,6 +37,7 @@ const path = require("node:path");
       /Department of Civil and Environmental Engineering/,
     );
     await page.locator(".affiliations summary").click();
+    assert.equal(await page.locator(".planning-section").count(), 0);
     assert.equal(await page.locator("#demos video").count(), 5);
     assert.equal(await page.locator("#recovery video").count(), 3);
     assert.equal(await page.locator("#fails video").count(), 3);
@@ -64,7 +65,10 @@ const path = require("node:path");
       await page.setViewportSize({ width, height: 1000 });
       for (let step = 0; step < 4; step++) {
         await page.locator(`[data-step="${step}"]`).click();
-        assert.equal(await page.locator(".story-scene:visible").count(), 1);
+        assert.equal(
+          await page.locator(".story-scene:visible").count(),
+          step + 1,
+        );
         assert.equal(
           await page.locator(`#learning-scene-${step}`).isVisible(),
           true,
@@ -77,12 +81,38 @@ const path = require("node:path");
         );
         assert.ok(
           await page
-            .locator(".story-scene:visible")
+            .locator(".story-scene.is-focused")
             .evaluate((scene) => scene.scrollHeight <= scene.clientHeight + 1),
           `Scene overflow at ${width}, step ${step}`,
         );
       }
     }
+    await page.locator("#learning-overview").click();
+    assert.equal(
+      await page.locator(".story-scene.is-docked:visible").count(),
+      4,
+    );
+    assert.equal(
+      await page.locator("#learning-toggle").innerText(),
+      "Replay ↻",
+    );
+    assert.ok(
+      await page.locator(".story-stage").evaluate((stage) => {
+        const b = stage.getBoundingClientRect();
+        return [...stage.querySelectorAll(".story-scene")].every((s, i) => {
+          const r = s.getBoundingClientRect();
+          const column = r.x > b.x + b.width / 2 ? 1 : 0;
+          const row = r.y > b.y + b.height / 2 ? 1 : 0;
+          return (
+            column === i % 2 &&
+            row === Math.floor(i / 2) &&
+            r.right <= b.right + 1 &&
+            r.bottom <= b.bottom + 1
+          );
+        });
+      }),
+      "Completed panels must occupy four separate quadrants",
+    );
     assert.ok(
       (
         await page
@@ -100,20 +130,20 @@ const path = require("node:path");
       () => document.querySelector("#overview-film").currentTime > 0.15,
     );
     const duration = await film.evaluate((v) => v.duration);
-    assert.ok(duration > 82 && duration < 83);
+    assert.ok(duration > 86 && duration < 87);
     await film.evaluate((v) => v.pause());
     // Check decoded frames in the execution segment, not just currentTime.
     // A server without HTTP Range support can report seeked without a new frame.
     await film.evaluate(async (v) => {
-      v.currentTime = 35;
+      v.currentTime = 39;
       await v.play();
     });
     await page.waitForFunction(
-      () => document.querySelector("#overview-film").currentTime > 38,
+      () => document.querySelector("#overview-film").currentTime > 42,
     );
     await film.evaluate((v) => v.pause());
     const frameHashes = [];
-    for (const time of [40, 54, 78]) {
+    for (const time of [44, 58, 82]) {
       frameHashes.push(
         await film.evaluate(async (v, time) => {
           await new Promise((resolve) => {
@@ -183,13 +213,40 @@ const path = require("node:path");
     auto.on("pageerror", (e) => errors.push(e.message));
     await auto.goto(origin);
     await auto.locator("#learning-diagram").scrollIntoViewIfNeeded();
-    const before = await auto
-      .locator("#learning-diagram")
-      .getAttribute("data-phase");
+    // With no interaction, all four scenes play and collect into one figure.
     await auto.waitForFunction(
-      (p) => document.querySelector("#learning-diagram").dataset.phase !== p,
-      before,
-      { timeout: 8000 },
+      () => document.querySelector(".story-scene.is-docking"),
+      null,
+      { timeout: 9000 },
+    );
+    const dockingTransform = await auto
+      .locator(".story-scene.is-docking")
+      .evaluate((s) => s.style.transform);
+    await auto.waitForTimeout(180);
+    assert.notEqual(
+      await auto
+        .locator(".story-scene.is-docking")
+        .evaluate((s) => s.style.transform),
+      dockingTransform,
+    );
+    await auto.waitForFunction(
+      () => document.querySelector("#learning-diagram").dataset.phase === "4",
+      null,
+      { timeout: 35000 },
+    );
+    assert.equal(
+      await auto.locator(".story-scene.is-docked:visible").count(),
+      4,
+    );
+    await auto.waitForTimeout(600);
+    assert.equal(
+      await auto.locator("#learning-diagram").getAttribute("data-phase"),
+      "4",
+    );
+    await auto.locator("#learning-toggle").click(); // Replay
+    assert.equal(
+      await auto.locator("#learning-diagram").getAttribute("data-phase"),
+      "0",
     );
     await auto.locator("#learning-toggle").click();
     const pausedPhase = await auto
@@ -254,10 +311,12 @@ const path = require("node:path");
           checks: [
             "five demos directly visible",
             "complete state images",
-            "82-second film",
+            "86-second film",
             "all video playback",
             "automatic learning animation",
-            "one visible scene at each step",
+            "focused scene docks into its quadrant",
+            "all four scenes autoplay into a persistent completed figure",
+            "replay restarts the sequence",
             "manual and keyboard scene selection",
             "pause freezes feedback motion",
             "simultaneous visible demos",

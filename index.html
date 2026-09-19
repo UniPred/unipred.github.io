@@ -15,7 +15,7 @@
     />
     <meta
       property="og:image"
-      content="https://unipred.github.io/static/images/posters/unipred-overview.jpg?v=tro2026-r4"
+      content="https://unipred.github.io/static/images/posters/unipred-overview.jpg?v=tro2026-r5"
     />
     <meta property="og:url" content="https://unipred.github.io/" />
     <title>UniPred | IEEE T-RO 2026</title>
@@ -24,8 +24,8 @@
       href="static/images/unipred-mark.svg"
       type="image/svg+xml"
     />
-    <link rel="stylesheet" href="static/css/index.css?v=tro2026-r4" />
-    <script src="static/js/index.js?v=tro2026-r4" defer></script>
+    <link rel="stylesheet" href="static/css/index.css?v=tro2026-r5" />
+    <script src="static/js/index.js?v=tro2026-r5" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -175,17 +175,17 @@
           playsinline
           preload="metadata"
           data-autoplay
-          poster="static/images/posters/unipred-overview.jpg?v=tro2026-r4"
+          poster="static/images/posters/unipred-overview.jpg?v=tro2026-r5"
           aria-label="UniPred method followed by a complete table-cleaning demonstration"
           aria-describedby="film-caption"
         >
           <source
-            src="static/videos/unipred-overview.mp4?v=tro2026-r4"
+            src="static/videos/unipred-overview.mp4?v=tro2026-r5"
             type="video/mp4"
           />
           <track
             kind="captions"
-            src="static/videos/unipred-overview.vtt?v=tro2026-r4"
+            src="static/videos/unipred-overview.vtt?v=tro2026-r5"
             srclang="en"
             label="English"
           />
@@ -212,6 +212,11 @@
             <p class="diagram-eyebrow">Training · unified bilevel learning</p>
             <div class="diagram-controls">
               <span id="learning-stage">01 / 04</span
+              ><button
+                id="learning-overview"
+                aria-label="Show the complete learning figure"
+              >
+                Full figure</button
               ><button
                 id="learning-toggle"
                 aria-pressed="false"
@@ -252,11 +257,18 @@
             </button>
           </div>
           <div class="story-stage">
+            <div class="assembly-links" aria-hidden="true">
+              <span class="link-first">→</span
+              ><span class="link-feedback">↑<small>revise</small></span
+              ><span class="link-middle">↙</span
+              ><span class="link-last">→</span>
+            </div>
             <section
               class="story-scene"
               id="learning-scene-0"
               aria-labelledby="scene-title-0"
             >
+              <p class="dock-label">01 <span>Agent</span></p>
               <h3 id="scene-title-0">Start with an LLM agent.</h3>
               <p class="scene-subtitle">
                 It proposes a concept and how actions change it.
@@ -293,6 +305,7 @@
               aria-labelledby="scene-title-1"
               hidden
             >
+              <p class="dock-label">02 <span>Demonstration</span></p>
               <h3 id="scene-title-1">Learn from what changes.</h3>
               <p class="scene-subtitle">
                 Demonstrated transitions supervise the visual classifier.
@@ -334,6 +347,7 @@
               aria-labelledby="scene-title-2"
               hidden
             >
+              <p class="dock-label">03 <span>Feedback</span></p>
               <h3 id="scene-title-2">Feedback makes it a loop.</h3>
               <p class="scene-subtitle">
                 The agent uses learning feedback to revise its next proposal.
@@ -421,6 +435,7 @@
               aria-labelledby="scene-title-3"
               hidden
             >
+              <p class="dock-label">04 <span>Concept</span></p>
               <h3 id="scene-title-3">A concept the robot can recognize.</h3>
               <p class="scene-subtitle">
                 From a symbolic proposal to a visual predicate.
@@ -485,68 +500,6 @@
           Observations from the paper. Candidate effects, feature motion, and
           predicate outputs illustrate the method.
         </p>
-        <section class="planning-section" aria-labelledby="planning-title">
-          <h3 id="planning-title">From learned concepts to a robot plan</h3>
-          <p class="section-intro">
-            Turn camera observations into facts. Use those facts to plan toward
-            a goal.
-          </p>
-          <div class="planning-observation">
-            <figure class="camera-observation">
-              <img
-                src="static/images/method/observation-top-down.png"
-                width="640"
-                height="480"
-                loading="lazy"
-                alt="Actual top-down RGB observation of the robot workspace"
-              />
-              <figcaption>Actual top-down camera observation</figcaption>
-            </figure>
-            <span class="scene-arrow" aria-hidden="true">→</span>
-            <div class="scene-facts">
-              <span class="visual-label"
-                >Learned predicates describe the scene</span
-              >
-              <p>The gripper is empty.</p>
-              <p>Toys are still on the table.</p>
-              <span class="fact-detail"
-                >The planner combines these facts with learned action
-                preconditions.</span
-              >
-            </div>
-          </div>
-          <div class="plan-goal">
-            <span class="visual-label">Goal</span
-            ><strong>Toys stored. Table clean.</strong>
-          </div>
-          <ol class="robot-plan">
-            <li>
-              <span>1</span>
-              <div>
-                <strong>Clear the toys</strong>
-                <p>Pick and place into the box.</p>
-              </div>
-            </li>
-            <li>
-              <span>2</span>
-              <div>
-                <strong>Grasp the towel</strong>
-                <p>Prepare to wipe.</p>
-              </div>
-            </li>
-            <li>
-              <span>3</span>
-              <div>
-                <strong>Wipe the table</strong>
-                <p>Remove the debris.</p>
-              </div>
-            </li>
-          </ol>
-          <p class="execution-note">
-            Wiping requires a clear table and a grasped towel. After each
-            action, observe again and replan when needed.
-          </p>
-        </section>
       </section>
       <section
         class="section-space page-width demos-section"

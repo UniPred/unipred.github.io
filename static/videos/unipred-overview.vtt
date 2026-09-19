@@ -1,19 +1,19 @@
 WEBVTT
 
-00:00.000 --> 00:07.000
-Start with an LLM agent. It proposes a concept and how actions change it. For example: the gripper is no longer empty after picking, and empty after placing.
+00:00.000 --> 00:08.000
+Start with an LLM agent. It proposes a concept and how actions change it. The completed scene moves into the first panel of the process figure.
 
-00:07.000 --> 00:14.000
-Learn from what changes. Demonstrated transitions supervise the visual classifier, without hand-labeled concept annotations.
+00:08.000 --> 00:16.000
+Learn from what changes. Demonstrated transitions supervise the visual classifier, without hand-labeled concept annotations. This scene joins the agent in the figure.
 
-00:14.000 --> 00:23.000
-Feedback makes it a loop. The agent reads learning and validation feedback, revises its next proposal, and repeats. The feature animation is schematic.
+00:16.000 --> 00:26.000
+Feedback makes it a loop. The agent reads learning and validation feedback and revises its next proposal. The feature animation is schematic.
 
-00:23.000 --> 00:29.000
-The result is a concept the robot can recognize: a visual predicate that provides facts for a planner. These outputs illustrate the concept.
+00:26.000 --> 00:34.000
+The result is a concept the robot can recognize: a visual predicate that provides facts for a planner. The concept scene completes the four-part figure.
 
-00:29.000 --> 00:36.000
-Use learned concepts to plan. To store the toys and clean the table, first clear the toys, then grasp the towel, then wipe. Learned preconditions constrain the order.
+00:34.000 --> 00:40.000
+The full process: agent proposals, learning from demonstrations, feedback-driven refinement, and learned visual concepts.
 
-00:36.000 --> 01:22.500
+00:40.000 --> 01:26.375
 Complete table-cleaning demonstration: pick and place three toys into the box, grasp the towel, then wipe away the debris. Original footage at three times recorded speed.

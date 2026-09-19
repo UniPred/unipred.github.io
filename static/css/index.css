@@ -667,103 +667,6 @@ sup {
 .state-strip .holding-result {
   color: var(--orange);
 }
-.planning-section {
-  padding-top: 48px;
-}
-.planning-section > h3 {
-  font-size: 29px;
-  letter-spacing: -0.65px;
-}
-.planning-observation {
-  display: grid;
-  grid-template-columns: 1fr 70px 1fr;
-  gap: 35px;
-  align-items: center;
-  margin: 26px auto 0;
-  max-width: 960px;
-}
-.camera-observation img {
-  width: 100%;
-  height: 275px;
-  object-fit: contain;
-}
-.camera-observation figcaption {
-  text-align: center;
-  color: var(--muted);
-  font-size: 11px;
-  margin-top: 8px;
-}
-.scene-facts p {
-  font-size: 25px;
-  line-height: 1.4;
-  margin-top: 15px;
-  letter-spacing: -0.45px;
-}
-.fact-detail {
-  display: block;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.7;
-  max-width: 350px;
-  margin-top: 24px;
-}
-.plan-goal {
-  display: flex;
-  align-items: baseline;
-  gap: 18px;
-  margin-top: 35px;
-  border-top: 1px solid var(--line);
-  padding-top: 24px;
-}
-.plan-goal .visual-label {
-  margin: 0;
-}
-.plan-goal strong {
-  font-size: 24px;
-  font-weight: 500;
-}
-.robot-plan {
-  padding: 0;
-  margin: 23px 0 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 35px;
-}
-.robot-plan li {
-  display: flex;
-  align-items: baseline;
-  gap: 15px;
-  padding: 18px 0;
-  border-top: 1px solid var(--line);
-  position: relative;
-}
-.robot-plan li:not(:last-child)::after {
-  content: "→";
-  position: absolute;
-  right: -24px;
-  top: 16px;
-  color: #8ca5b8;
-  font-size: 25px;
-}
-.robot-plan li > span {
-  color: var(--accent);
-  font-size: 18px;
-}
-.robot-plan strong {
-  font-size: 22px;
-  font-weight: 500;
-}
-.robot-plan p {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 6px;
-}
-.execution-note {
-  font-size: 13px;
-  color: var(--muted);
-  margin-top: 10px;
-}
 .domain-heading {
   display: flex;
   align-items: baseline;
@@ -942,10 +845,6 @@ footer {
   }
   .concept-proposal h4 {
     font-size: 25px;
-  }
-  .planning-observation {
-    gap: 15px;
-    grid-template-columns: 1fr 40px 1fr;
   }
   .paper-grid {
     gap: 40px;
@@ -1261,65 +1160,6 @@ footer {
   .state-strip strong {
     font-size: 18px;
   }
-  .planning-section {
-    padding-top: 36px;
-  }
-  .planning-section > h3 {
-    font-size: 25px;
-  }
-  .planning-observation {
-    grid-template-columns: 1fr;
-    gap: 15px;
-    margin-top: 22px;
-  }
-  .camera-observation img {
-    height: 240px;
-  }
-  .planning-observation > .scene-arrow {
-    transform: rotate(90deg);
-    font-size: 30px;
-    line-height: 1;
-  }
-  .scene-facts {
-    text-align: center;
-  }
-  .scene-facts p {
-    font-size: 22px;
-    margin-top: 10px;
-  }
-  .fact-detail {
-    margin: 17px auto 0;
-    font-size: 12px;
-  }
-  .plan-goal {
-    display: block;
-    margin-top: 25px;
-    padding-top: 22px;
-  }
-  .plan-goal strong {
-    font-size: 23px;
-    display: block;
-    margin-top: 6px;
-  }
-  .robot-plan {
-    grid-template-columns: 1fr;
-    gap: 0;
-    margin-top: 18px;
-  }
-  .robot-plan li {
-    gap: 18px;
-    padding: 17px 0;
-  }
-  .robot-plan li:not(:last-child)::after {
-    display: none;
-  }
-  .robot-plan strong {
-    font-size: 21px;
-  }
-  .robot-plan p,
-  .execution-note {
-    font-size: 12px;
-  }
   .domain-heading {
     display: block;
     padding-bottom: 10px;
@@ -1445,5 +1285,286 @@ footer {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+/* A central scene becomes one of four panels in the completed figure. */
+.story-stage {
+  position: relative;
+  height: 600px;
+  isolation: isolate;
+}
+.story-scene {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 530px;
+  padding: 24px 26px 42px;
+  transform-origin: 0 0;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  will-change: transform;
+}
+.story-scene.is-focused,
+.story-scene.is-docking {
+  box-shadow: 0 8px 35px #26323c0d;
+}
+.story-scene .scene-note {
+  width: calc(100% - 52px);
+  bottom: 17px;
+}
+.dock-label {
+  display: none;
+}
+.story-steps button.is-complete {
+  color: var(--accent);
+}
+.story-steps button.is-complete > span::after {
+  content: " ✓";
+}
+.story-scene.is-docked .dock-label {
+  display: block;
+  font-size: 38px;
+  font-weight: 500;
+  color: var(--accent);
+  line-height: 1.3;
+  text-align: left;
+}
+.dock-label > span {
+  color: var(--ink);
+  margin-left: 14px;
+}
+.story-scene.is-docked > h3,
+.story-scene.is-docked > .scene-subtitle,
+.story-scene.is-docked > .scene-note,
+.story-scene.is-docked .agent-portrait > span,
+.story-scene.is-docked .effect-pair,
+.story-scene.is-docked .visual-label,
+.story-scene.is-docked .learned-concept > span {
+  display: none;
+}
+.story-scene.is-docked .proposal-scene {
+  grid-template-columns: 1fr 1.2fr;
+  gap: 25px;
+  margin-top: 35px;
+}
+.story-scene.is-docked .scene-arrow {
+  display: none;
+}
+.story-scene.is-docked .agent-portrait img {
+  width: 170px;
+  height: 170px;
+}
+.story-scene.is-docked .agent-portrait strong {
+  font-size: 38px;
+}
+.story-scene.is-docked .concept-proposal h4 {
+  font-size: 39px;
+}
+.story-scene.is-docked .concept-proposal > code {
+  font-size: 24px;
+  margin-top: 18px;
+}
+.story-scene.is-docked .demonstration-scene {
+  margin-top: 25px;
+}
+.story-scene.is-docked .demonstration-scene img {
+  height: 255px;
+}
+.story-scene.is-docked .demonstration-scene figcaption > span {
+  display: none;
+}
+.story-scene.is-docked .demonstration-scene strong {
+  font-size: 36px;
+}
+.story-scene.is-docked .action-between {
+  font-size: 30px;
+}
+.story-scene.is-docked .feedback-scene {
+  display: block;
+  max-width: 590px;
+  min-height: 0;
+  margin-top: 16px;
+}
+.story-scene.is-docked .feedback-scene .agent-portrait {
+  display: none;
+}
+.story-scene.is-docked .scatter-legend {
+  font-size: 23px;
+  margin-top: 2px;
+}
+.story-scene.is-docked .feedback-return {
+  margin-top: 9px;
+  max-width: 770px;
+}
+.story-scene.is-docked .feedback-return > span {
+  font-size: 22px;
+}
+.story-scene.is-docked .learned-concept {
+  margin-top: 22px;
+}
+.story-scene.is-docked .learned-concept code {
+  font-size: 30px;
+}
+.story-scene.is-docked .state-strip {
+  margin-top: 22px;
+}
+.story-scene.is-docked .state-strip figcaption > span {
+  display: none;
+}
+.story-scene.is-docked .state-strip strong {
+  font-size: 30px;
+}
+.assembly-links {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  color: var(--accent);
+  pointer-events: none;
+}
+.assembly-links > span {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 32px;
+}
+.link-first {
+  top: 21%;
+}
+.link-middle {
+  top: 50%;
+}
+.link-last {
+  top: 79%;
+}
+.learning-diagram[data-assembled="true"] .assembly-links {
+  opacity: 1;
+}
+@media (max-width: 760px) {
+  .diagram-controls {
+    gap: 6px;
+  }
+  .diagram-controls button {
+    font-size: 9px;
+    padding: 4px 6px;
+  }
+  .diagram-eyebrow {
+    max-width: 102px;
+  }
+  .story-stage {
+    height: 690px;
+    margin-top: 20px;
+  }
+  .story-scene {
+    height: 640px;
+    padding: 18px 12px 45px;
+  }
+  .story-scene .scene-note {
+    width: calc(100% - 24px);
+    bottom: 16px;
+  }
+  .story-scene.is-docked {
+    padding: 20px 15px;
+  }
+  .story-scene.is-docked .dock-label {
+    font-size: 30px;
+  }
+  .dock-label > span {
+    margin-left: 6px;
+  }
+  .story-scene.is-docked .proposal-scene {
+    grid-template-columns: 1fr;
+    margin-top: 28px;
+    gap: 25px;
+  }
+  .story-scene.is-docked .agent-portrait img {
+    width: 140px;
+    height: 140px;
+  }
+  .story-scene.is-docked .agent-portrait strong {
+    font-size: 36px;
+  }
+  .story-scene.is-docked .concept-proposal h4 {
+    font-size: 32px;
+  }
+  .story-scene.is-docked .concept-proposal > code {
+    font-size: 20px;
+  }
+  .story-scene.is-docked .demonstration-scene {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .story-scene.is-docked .demonstration-scene img {
+    height: 160px;
+  }
+  .story-scene.is-docked .demonstration-scene strong {
+    font-size: 30px;
+  }
+  .story-scene.is-docked .demonstration-scene figcaption {
+    margin-top: 0;
+  }
+  .story-scene.is-docked .action-between {
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+  .story-scene.is-docked .action-between b {
+    transform: rotate(90deg);
+  }
+  .story-scene.is-docked .feedback-scene {
+    margin-top: 70px;
+  }
+  .story-scene.is-docked #predicate-scatter {
+    max-height: none;
+  }
+  .story-scene.is-docked .scatter-legend {
+    margin-top: 20px;
+    font-size: 22px;
+  }
+  .story-scene.is-docked .feedback-return {
+    margin-top: 32px;
+  }
+  .story-scene.is-docked .feedback-return > span {
+    font-size: 18px;
+  }
+  .story-scene.is-docked .learned-concept {
+    margin-top: 28px;
+  }
+  .story-scene.is-docked .learned-concept code {
+    font-size: 23px;
+  }
+  .story-scene.is-docked .state-strip {
+    margin-top: 30px;
+    gap: 30px 12px;
+  }
+  .story-scene.is-docked .state-strip img {
+    height: 145px;
+  }
+  .story-scene.is-docked .state-strip strong {
+    font-size: 30px;
+  }
+  .assembly-links > span {
+    font-size: 24px;
+  }
+}
+
+.assembly-links .link-feedback {
+  left: 24%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.link-feedback small {
+  font-size: 13px;
+}
+@media (max-width: 760px) {
+  .link-feedback small {
+    font-size: 10px;
   }
 }

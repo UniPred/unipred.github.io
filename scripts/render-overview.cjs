@@ -51,18 +51,19 @@ const { once } = require("node:events");
     );
     await page.evaluate(() => window.filmReady);
     if (process.argv.includes("--preview")) {
-      fs.mkdirSync("/tmp/unipred-site-review/film-v4", { recursive: true });
+      fs.mkdirSync("/tmp/unipred-site-review/film-v5", { recursive: true });
       for (const [label, t] of [
         ["agent", 4],
+        ["docking", 7.5],
         ["demonstration", 11],
         ["feedback", 21],
-        ["concept", 27],
-        ["planning", 33],
-        ["execution", 37],
+        ["concept", 29],
+        ["assembled", 37],
+        ["execution", 41],
       ]) {
         await page.evaluate((t) => window.renderFilm(t), t);
         await page.locator("canvas").screenshot({
-          path: `/tmp/unipred-site-review/film-v4/${label}.png`,
+          path: `/tmp/unipred-site-review/film-v5/${label}.png`,
         });
       }
       return;
@@ -81,7 +82,7 @@ const { once } = require("node:events");
       intro,
     ]);
     const encoderDone = complete(encoder);
-    for (let frame = 0; frame < 36 * 24; frame++) {
+    for (let frame = 0; frame < 40 * 24; frame++) {
       const data = await page.evaluate(async (t) => {
         await window.renderFilm(t);
         return document
@@ -91,7 +92,7 @@ const { once } = require("node:events");
       }, frame / 24);
       if (!encoder.stdin.write(Buffer.from(data, "base64")))
         await once(encoder.stdin, "drain");
-      if (frame % 120 === 0) console.log(`Rendered intro ${frame}/864 frames`);
+      if (frame % 120 === 0) console.log(`Rendered intro ${frame}/960 frames`);
     }
     encoder.stdin.end();
     await encoderDone;
@@ -149,7 +150,7 @@ const { once } = require("node:events");
       Buffer.from(poster, "base64"),
     );
     console.log(
-      "Exported ~82-second overview with the complete 46-second robot clip.",
+      "Exported ~86-second overview with the complete 46-second robot clip.",
     );
   } finally {
     await browser.close();

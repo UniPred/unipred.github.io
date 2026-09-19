@@ -48,20 +48,20 @@ ffmpeg -i static/videos/CLIP.mp4 -map 0:v:0 -map '0:a?' \
 
 ## Main overview film
 
-`static/videos/unipred-overview.mp4` is approximately 82 seconds of H.264 video at 1440×810 and 24 fps. The first 29 seconds tell the learning story one scene at a time: an LLM agent proposes a concept and its action effects (0–7 s), demonstrations supervise learning (7–14 s), feedback returns to the agent (14–23 s), and a learned concept recognizes observations (23–29 s). A separate scene connects learned facts and preconditions to a robot plan (29–36 s). Each scene has a single focus and enlarged visuals. The final 46 seconds include the entire `main_demo_1.mp4` robot run, preserving its original speed. It is silent, with on-screen explanations and an English `.vtt` track.
+`static/videos/unipred-overview.mp4` is approximately 86 seconds of H.264 video at 1440×810 and 24 fps. The first 34 seconds animate four scenes: an LLM agent proposes a concept (0–8 s), demonstrations supervise learning (8–16 s), feedback returns to the agent (16–26 s), and the visual concept recognizes observations (26–34 s). Each scene plays enlarged in the center, then shrinks into its own quadrant. Previously completed panels remain visible but dimmed. At 34–40 seconds, all four panels form the complete process figure. There is no separate planning explanation scene. The final 46 seconds include the entire `main_demo_1.mp4` robot run, preserving its original speed. It is silent, with on-screen explanations and an English `.vtt` track.
 
 The robot stream is composited directly with ffmpeg onto the execution layout. It is not reconstructed by seeking a browser video for each canvas frame. This preserves continuous motion through grasping, transfers, and wiping. The static plan structure explains the task; it is not presented as synchronized execution telemetry.
 
 The editable canvas animation is `scripts/overview-scene.js`; the renderer is `scripts/render-overview.html`. To export, first start the static server. Use Node 20+, Playwright, Chrome/Chromium, and ffmpeg:
 
 ```sh
-node scripts/render-overview.cjs --preview  # six PNG keyframes in /tmp/unipred-site-review/film-v4
+node scripts/render-overview.cjs --preview  # seven PNG keyframes in /tmp/unipred-site-review/film-v5
 node scripts/render-overview.cjs            # overwrite MP4 and JPEG poster
 ```
 
 Optional environment variables: `NODE_PATH` for the Playwright installation, `CHROME_PATH` for the browser executable, `FFMPEG_PATH`, and `OVERVIEW_ORIGIN` (default `http://127.0.0.1:8007`). Update the `.vtt` file when changing scene timing or narration text.
 
-All visible videos play independently, muted and looping, unless reduced motion or a pause control is active. Native controls remain available. Clips pause offscreen; manually paused clips stay paused when brought back into view. The learning story starts with the agent and advances while at least half of it is visible. Each of the four steps shows only one scene. Selecting a step pauses on that scene; Play resumes. The pause button freezes both the scene clock and feature/feedback motion. Reduced-motion visitors get manual scene navigation by default. The navigation’s motion control pauses or resumes all motion.
+All visible videos play independently, muted and looping, unless reduced motion or a pause control is active. Native controls remain available. Clips pause offscreen; manually paused clips stay paused when brought back into view. The learning story starts automatically with the agent when its stage enters view (20% intersection). Each scene plays centrally and then docks into a quadrant over 1.2 seconds. All completed scenes persist; after the fourth docks, the full figure stays on screen until Replay or a scene button is selected. Full figure jumps to the assembled view. Selecting a step pauses on its enlarged scene, with preceding panels collected; Play resumes. Pause freezes both the scene/docking clock and feature/feedback motion. Reduced-motion visitors see the completed static figure by default and can explicitly replay. The standalone “From learned concepts to a robot plan” section has been removed. The navigation’s motion control pauses or resumes all motion.
 
 ## Validation
 
@@ -71,4 +71,4 @@ With the preview server running and Node 20+/Playwright available:
 node scripts/check-site.cjs
 ```
 
-The smoke check verifies author count, affiliation and acceptance notices, local assets and anchors, all 12 video files, the 82-second film, direct visibility of all five demos, uncropped state images, single-scene visibility and layout at every step, keyboard scene selection, automatic learning animation, feedback animation pausing, simultaneous demo playback, global motion controls, clipboard copying, mobile navigation, reduced-motion behavior, and offscreen pausing. It checks page overflow at 360, 390, 768, and 1440 px and saves desktop/mobile screenshots under `/tmp/unipred-site-review/`. Use `SITE_ORIGIN` and `CHROME_PATH` to override the defaults.
+The smoke check verifies author count, affiliation and acceptance notices, local assets and anchors, all 12 video files, the 86-second film, direct visibility of all five demos, uncropped state images, focused-scene layout and accumulated panels at every step, keyboard scene selection, automatic completion of all four scenes, docking transforms, four-quadrant geometry, persistent completed figure, replay, feedback animation pausing, simultaneous demo playback, global motion controls, clipboard copying, mobile navigation, reduced-motion behavior, and offscreen pausing. It checks page overflow at 360, 390, 768, and 1440 px and saves desktop/mobile screenshots under `/tmp/unipred-site-review/`. Use `SITE_ORIGIN` and `CHROME_PATH` to override the defaults.

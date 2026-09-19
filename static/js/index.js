@@ -38,10 +38,14 @@ const points = Array.from({ length: 44 }, (_, i) => {
 const storyScenes = [...document.querySelectorAll(".story-scene")];
 const storySteps = [...document.querySelectorAll(".story-steps button")];
 const stageDuration = [6000, 6500, 8000, 6500];
+const dockingDuration = 1200;
+const storyStage = document.querySelector(".story-stage");
+const overviewButton = document.querySelector("#learning-overview");
+const easeStory = (t) => t * t * (3 - 2 * t);
 const feedbackRoute = document.querySelector("#feedback-route");
 const feedbackSignal = document.querySelector("#feedback-signal");
 const feedbackLength = feedbackRoute.getTotalLength();
-let phase = 0,
+let phase = reducedMotion.matches ? 4 : 0,
   phaseElapsed = 0,
   lastFrame = null;
 function renderFeedback(progress) {
@@ -66,20 +70,60 @@ function renderFeedback(progress) {
         ? "Read the learning feedback."
         : "Revise the next proposal.";
 }
+function paintStory() {
+  const width = storyStage.clientWidth;
+  const height = storyStage.clientHeight;
+  const baseHeight = innerWidth <= 760 ? 640 : 530;
+  const gap = innerWidth <= 760 ? 20 : 56;
+  const dockScale = (width - gap) / (2 * width);
+  const focusScale = innerWidth <= 760 ? 1 : 0.94;
+  const focus = {
+    x: (width * (1 - focusScale)) / 2,
+    y: (height - baseHeight * focusScale) / 2,
+  };
+  diagram.dataset.assembled = String(phase === 4);
+  storyScenes.forEach((scene, i) => {
+    const done = i < phase;
+    const docking =
+      i === phase
+        ? Math.max(
+            0,
+            Math.min(1, (phaseElapsed - stageDuration[i]) / dockingDuration),
+          )
+        : 0;
+    const dock = {
+      x: i % 2 ? width - width * dockScale : 0,
+      y: i < 2 ? 0 : height - baseHeight * dockScale,
+    };
+    scene.hidden = i > phase;
+    scene.classList.toggle("is-docked", done);
+    scene.classList.toggle("is-focused", i === phase && docking === 0);
+    scene.classList.toggle("is-docking", i === phase && docking > 0);
+    if (scene.hidden) return;
+    const p = done ? 1 : easeStory(docking);
+    const scale = focusScale + (dockScale - focusScale) * p;
+    const x = focus.x + (dock.x - focus.x) * p;
+    const y = focus.y + (dock.y - focus.y) * p;
+    scene.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+    scene.style.zIndex = done ? "1" : "3";
+    scene.style.opacity = done ? (phase === 4 ? "1" : ".28") : "1";
+  });
+}
 function drawLearning(next) {
   phase = next;
   phaseElapsed = 0;
   diagram.dataset.phase = String(phase);
-  document.querySelector("#learning-stage").textContent = `0${phase + 1} / 04`;
-  storyScenes.forEach((scene, i) => {
-    scene.hidden = i !== phase;
+  document.querySelector("#learning-stage").textContent =
+    phase === 4 ? "Complete" : `0${phase + 1} / 04`;
+  storySteps.forEach((button, i) => {
+    button.setAttribute("aria-pressed", String(i === phase));
+    button.classList.toggle("is-complete", i < phase);
   });
-  storySteps.forEach((button, i) =>
-    button.setAttribute("aria-pressed", String(i === phase)),
-  );
-  renderFeedback(reducedMotion.matches ? 1 : 0);
+  renderFeedback(phase > 2 || reducedMotion.matches ? 1 : 0);
+  paintStory();
 }
 drawLearning(phase);
+new ResizeObserver(paintStory).observe(storyStage);
 let diagramVisible = false,
   diagramPaused = false,
   diagramTimer = null;
@@ -105,8 +149,15 @@ function playVideo(video) {
 function advanceStory(now) {
   if (lastFrame !== null) phaseElapsed += Math.min(now - lastFrame, 100);
   lastFrame = now;
-  if (phaseElapsed >= stageDuration[phase]) drawLearning((phase + 1) % 4);
+  if (phaseElapsed >= stageDuration[phase] + dockingDuration) {
+    drawLearning(phase + 1);
+    if (phase === 4) {
+      updateDiagram();
+      return;
+    }
+  }
   if (phase === 2) renderFeedback(Math.min(1, phaseElapsed / 7200));
+  paintStory();
   diagramTimer = requestAnimationFrame(advanceStory);
 }
 function updateDiagram() {
@@ -114,24 +165,36 @@ function updateDiagram() {
   diagramTimer = null;
   lastFrame = null;
   const paused = diagramPaused || motionPaused;
-  learningButton.textContent = paused ? "Play ▶" : "Pause Ⅱ";
+  const complete = phase === 4;
+  learningButton.textContent = complete
+    ? "Replay ↻"
+    : paused
+      ? "Play ▶"
+      : "Pause Ⅱ";
   learningButton.setAttribute(
     "aria-label",
-    paused ? "Play learning animation" : "Pause learning animation",
+    complete
+      ? "Replay learning animation"
+      : paused
+        ? "Play learning animation"
+        : "Pause learning animation",
   );
-  learningButton.setAttribute("aria-pressed", String(paused));
-  if (diagramVisible && !paused && !document.hidden)
+  learningButton.setAttribute("aria-pressed", String(!complete && paused));
+  if (diagramVisible && !paused && !complete && !document.hidden)
     diagramTimer = requestAnimationFrame(advanceStory);
 }
 storySteps.forEach((button) =>
   button.addEventListener("click", () => {
     drawLearning(Number(button.dataset.step));
     diagramPaused = true;
-    // A manually selected scene remains available to read until Play is pressed.
     if (phase === 2) renderFeedback(1);
     updateDiagram();
   }),
 );
+overviewButton.addEventListener("click", () => {
+  drawLearning(4);
+  updateDiagram();
+});
 function updateMotion() {
   motionButton.textContent = motionPaused ? "Play motion" : "Pause motion";
   motionButton.setAttribute("aria-pressed", String(motionPaused));
@@ -148,7 +211,12 @@ motionButton.addEventListener("click", () => {
   updateMotion();
 });
 learningButton.addEventListener("click", () => {
-  if (motionPaused) {
+  if (phase === 4) {
+    drawLearning(0);
+    diagramPaused = false;
+    motionPaused = false;
+    updateMotion();
+  } else if (motionPaused) {
     motionPaused = false;
     diagramPaused = false;
     updateMotion();
@@ -186,11 +254,11 @@ if ("IntersectionObserver" in window) {
   new IntersectionObserver(
     (entries) => {
       diagramVisible =
-        entries[0].isIntersecting && entries[0].intersectionRatio >= 0.5;
+        entries[0].isIntersecting && entries[0].intersectionRatio >= 0.2;
       updateDiagram();
     },
-    { threshold: [0, 0.5] },
-  ).observe(diagram);
+    { threshold: [0, 0.2] },
+  ).observe(storyStage);
 }
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) videos.forEach(pauseVideo);
