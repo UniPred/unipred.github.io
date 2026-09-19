@@ -1,395 +1,360 @@
-/* Scientific overview: 40 s explanation, followed by the complete robot video.
-   The film export composites the robot stream directly with ffmpeg so no
-   browser seek or canvas snapshot can freeze the execution footage. */
+/* Narrated film. All learning/graph motion is schematic. Execution footage is
+   composited directly from the original video by ffmpeg, never seeked frames. */
 "use strict";
-const canvas = document.querySelector("#film");
-const ctx = canvas.getContext("2d");
+const canvas = document.querySelector("#film"),
+  ctx = canvas.getContext("2d");
+const V = window.UniPredVisuals,
+  assets = {};
 const C = {
-  bg: "#ffffff",
-  ink: "#26323c",
-  muted: "#657783",
-  line: "#d8e0e6",
-  blue: "#3c799c",
-  green: "#518871",
-  orange: "#cf8a59",
-  soft: "#f5f8fa",
+  bg: "#fafbf7",
+  ink: "#26343c",
+  muted: "#7b8589",
+  line: "#d8dedc",
+  dark: "#17272e",
 };
-const assets = {};
-const clamp = (v) => Math.max(0, Math.min(1, v));
-const ease = (v) => {
-  v = clamp(v);
-  return v * v * (3 - 2 * v);
-};
-const mix = (a, b, t) => a + (b - a) * t;
-function box(x, y, w, h, fill = C.soft, stroke = C.line, r = 8) {
-  ctx.beginPath();
-  ctx.roundRect(x, y, w, h, r);
-  ctx.fillStyle = fill;
-  ctx.fill();
-  if (stroke) {
-    ctx.strokeStyle = stroke;
-    ctx.lineWidth = 1;
-    ctx.stroke();
-  }
-}
-function text(s, x, y, size = 24, color = C.ink, weight = 400, align = "left") {
-  ctx.font = `${weight} ${size}px "DM Sans"`;
-  ctx.fillStyle = color;
-  ctx.textAlign = align;
-  ctx.fillText(s, x, y);
-  ctx.textAlign = "left";
-}
-function lines(s, x, y, size = 22, color = C.muted, gap = 32) {
-  s.split("\n").forEach((line, i) => text(line, x, y + i * gap, size, color));
-}
-function line(x1, y1, x2, y2, color = C.line, width = 1) {
-  ctx.beginPath();
-  ctx.moveTo(x1, y1);
-  ctx.lineTo(x2, y2);
-  ctx.strokeStyle = color;
-  ctx.lineWidth = width;
-  ctx.stroke();
-}
-function arrow(x1, y1, x2, y2, color = C.blue) {
-  line(x1, y1, x2, y2, color, 2);
-  const a = Math.atan2(y2 - y1, x2 - x1);
-  line(
-    x2,
-    y2,
-    x2 - 10 * Math.cos(a - 0.5),
-    y2 - 10 * Math.sin(a - 0.5),
+let cues = [];
+const label = (
+  s,
+  x,
+  y,
+  size = 24,
+  color = C.ink,
+  align = "left",
+  weight = 400,
+) => V.label(ctx, s, x, y, size, color, align, weight);
+const line = (x1, y1, x2, y2, color = C.line, width = 1) =>
+  V.path(
+    ctx,
+    [
+      [x1, y1],
+      [x2, y2],
+    ],
     color,
-    2,
+    width,
   );
-  line(
-    x2,
-    y2,
-    x2 - 10 * Math.cos(a + 0.5),
-    y2 - 10 * Math.sin(a + 0.5),
-    color,
-    2,
-  );
-}
-function dot(x, y, r, color) {
-  ctx.beginPath();
-  ctx.arc(x, y, r, 0, Math.PI * 2);
+const fit = (img, x, y, w, h) => V.fit(ctx, img, x, y, w, h);
+const dot = (x, y, r, color) => V.dot(ctx, x, y, r, color);
+function pill(s, x, y, w, color = "#e7eee7") {
   ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, 43, 22);
   ctx.fill();
+  label(s, x + w / 2, y + 28, 17, C.ink, "center");
 }
-function imageFit(img, x, y, w, h) {
-  const iw = img.naturalWidth,
-    ih = img.naturalHeight;
-  const s = Math.min(w / iw, h / ih);
-  ctx.drawImage(
-    img,
-    x + (w - iw * s) / 2,
-    y + (h - ih * s) / 2,
-    iw * s,
-    ih * s,
-  );
-}
-function base(section, title, subtitle, compact = false) {
+function base(kicker, title, chapter) {
   ctx.fillStyle = C.bg;
   ctx.fillRect(0, 0, 1440, 810);
-  imageFit(assets.mark, 48, 19, 36, 36);
-  text("UniPred", 94, 46, 21, C.ink, 500);
-  text(
-    "IEEE Transactions on Robotics · 2026",
-    1390,
-    46,
-    16,
-    C.muted,
-    400,
-    "right",
-  );
-  line(48, 67, 1392, 67);
-  text(section, 48, 108, 15, C.blue, 500);
-  text(title, 48, compact ? 151 : 165, compact ? 38 : 44, C.ink, 500);
-  if (subtitle)
-    text(subtitle, 48, compact ? 185 : 209, compact ? 19 : 24, C.muted);
+  fit(assets.mark, 65, 27, 31, 31);
+  label("UniPred", 107, 49, 20, C.ink, "left", 500);
+  label("IEEE TRANSACTIONS ON ROBOTICS · 2026", 1376, 47, 12, C.muted, "right");
+  label(kicker, 66, 114, 13, "#719184", "left", 500);
+  label(title, 63, 173, 48, C.ink, "left", 500);
+  line(66, 734, 1374, 734);
+  const names = [
+    "Agent",
+    "Demonstration",
+    "Feedback",
+    "Concept",
+    "Plan",
+    "Action",
+  ];
+  names.forEach((s, i) => {
+    let x = 66 + i * 222;
+    label(`0${i + 1}`, x, 776, 12, i === chapter ? "#638b78" : "#a3aca7");
+    label(s, x + 31, 778, 18, i === chapter ? C.ink : "#929c96");
+    if (i === chapter) line(x, 734, x + 160, 734, "#789a86", 3);
+  });
 }
-function footer(s) {
-  line(48, 757, 1392, 757);
-  text(s, 48, 786, 17, C.muted);
-}
-function agentPortrait(cx, cy, subtitle) {
-  imageFit(assets.mark, cx - 90, cy - 130, 180, 180);
-  text("LLM agent", cx, cy + 96, 38, C.blue, 500, "center");
-  text(subtitle, cx, cy + 137, 20, C.muted, 400, "center");
-}
-function sceneAgent(t) {
-  base(
-    "01 / 04 · AGENT",
-    "Start with an LLM agent.",
-    "It proposes a concept and how actions change it.",
-  );
-  agentPortrait(352, 395, "Prior knowledge + learning history");
-  ctx.globalAlpha = ease((t - 0.7) / 0.8);
-  arrow(572, 426, 705, 426);
-  ctx.globalAlpha = ease((t - 1.1) / 0.9);
-  text("CANDIDATE CONCEPT", 790, 306, 17, C.muted, 500);
-  text("Is the gripper empty?", 790, 368, 39, C.ink, 500);
-  text("HandEmpty(robot)", 790, 411, 24, C.muted);
-  line(790, 452, 1310, 452);
-  text("Pick", 790, 506, 29, C.ink, 500);
-  text("→ not empty", 952, 506, 29, C.muted);
-  text("Place", 790, 566, 29, C.ink, 500);
-  text("→ empty", 952, 566, 29, C.muted);
-  ctx.globalAlpha = 1;
-  footer(
-    "The proposal specifies action effects. Its visual meaning is learned from demonstrations.",
-  );
-}
-function sceneDemonstration(t) {
-  base(
-    "02 / 04 · DEMONSTRATION",
-    "Learn from what changes.",
-    "Demonstrated transitions supervise the visual classifier.",
-  );
-  text("BEFORE", 401, 255, 17, C.muted, 500, "center");
-  imageFit(assets.state1, 236, 277, 330, 315);
-  text("Empty", 401, 650, 33, C.green, 500, "center");
-  text("Pick", 720, 408, 27, C.blue, 500, "center");
-  arrow(634, 447, 806, 447);
-  ctx.globalAlpha = ease((t - 0.7) / 0.9);
-  text("AFTER", 1039, 255, 17, C.muted, 500, "center");
-  imageFit(assets.state2, 874, 277, 330, 315);
-  text("Not empty", 1039, 650, 33, C.orange, 500, "center");
-  ctx.globalAlpha = 1;
-  footer(
-    "No hand-labeled concept annotations are needed. Real observation crops from the paper.",
-  );
-}
-function scatter(progress, x, y, w, h) {
-  const p = ease(progress);
-  for (let gx = x + 20; gx < x + w; gx += 32)
-    for (let gy = y + 16; gy < y + h; gy += 32) dot(gx, gy, 0.9, "#dbe2e7");
-  for (let i = 0; i < 44; i++) {
-    const holding = i % 4 === 2,
-      a = i * 2.39996,
-      r = 15 + ((i * 17) % 77);
-    const ix = x + w / 2 + (Math.cos(a) * r * w) / 240;
-    const iy = y + h / 2 + (Math.sin(a) * r * h) / 215;
-    const fx =
-      x + (holding ? w * 0.77 : w * 0.28) + (Math.cos(a) * r * w) / 560;
-    dot(mix(ix, fx, p), iy, i % 9 === 0 ? 8 : 6, holding ? C.orange : C.green);
-  }
-  ctx.globalAlpha = p;
-  ctx.setLineDash([6, 9]);
-  line(x + w * 0.54, y + 10, x + w * 0.54, y + h - 10, "#8fa3af", 1.5);
-  ctx.setLineDash([]);
-  ctx.globalAlpha = 1;
-}
-function sceneFeedback(t) {
-  base(
-    "03 / 04 · FEEDBACK",
-    "Feedback makes it a loop.",
-    "The agent uses learning feedback to revise its next proposal.",
-  );
-  agentPortrait(
-    352,
-    365,
-    t < 3
-      ? "Propose a candidate."
-      : t < 6
-        ? "Read the learning feedback."
-        : "Revise the next proposal.",
-  );
-  arrow(564, 426, 679, 426);
-  text("Neural concept learning", 1020, 265, 24, C.ink, 500, "center");
-  scatter(clamp(t / 8), 734, 288, 575, 298);
-  dot(915, 622, 6, C.green);
-  text("Empty", 932, 629, 21, C.muted);
-  dot(1065, 622, 6, C.orange);
-  text("Holding", 1082, 629, 21, C.muted);
-  line(1020, 650, 1020, 710, C.blue, 2);
-  line(1020, 710, 352, 710, C.blue, 2);
-  arrow(352, 710, 352, 575);
-  const distance = clamp((t - 1) / 7) * 863;
-  const x =
-    distance < 60 ? 1020 : distance < 728 ? 1020 - (distance - 60) : 352;
-  const y =
-    distance < 60
-      ? 650 + distance
-      : distance < 728
-        ? 710
-        : 710 - (distance - 728);
-  dot(x, y, 6, C.blue);
-  text("Learning & validation feedback", 688, 691, 22, C.blue, 400, "center");
-  footer(
-    "Propose → learn → evaluate → revise. Repeat. Feature positions are schematic.",
-  );
-}
-function sceneConcept(t) {
-  base(
-    "04 / 04 · CONCEPT",
-    "A concept the robot can recognize.",
-    "From a symbolic proposal to a visual predicate.",
-  );
-  text("HandEmpty(robot)", 720, 277, 34, C.blue, 500, "center");
-  for (let i = 0; i < 4; i++) {
-    const x = 95 + i * 320;
-    imageFit(assets["state" + i], x, 320, 290, 255);
-    text("State " + i, x + 145, 618, 17, C.muted, 400, "center");
-    ctx.globalAlpha = ease((t - 0.4 - i * 0.28) / 0.7);
-    text(
-      i === 2 ? "False" : "True",
-      x + 145,
-      663,
-      31,
-      i === 2 ? C.orange : C.green,
-      500,
-      "center",
-    );
-    ctx.globalAlpha = 1;
-  }
-  footer(
-    "Learned predicates provide facts for a planner. The outputs shown here illustrate the concept.",
-  );
-}
-const scenePainters = [
-  sceneAgent,
-  sceneDemonstration,
-  sceneFeedback,
-  sceneConcept,
-];
-const sceneHolds = [7, 7, 9, 7];
-const sceneStarts = [0, 8, 16, 26];
-const sceneFrames = [];
-const activeFrame = document.createElement("canvas");
-activeFrame.width = 1344;
-activeFrame.height = 640;
-function captureScene(target) {
-  target.getContext("2d").drawImage(canvas, 48, 86, 1344, 640, 0, 0, 1344, 640);
-}
-function compositionBase() {
-  ctx.fillStyle = C.bg;
+function opening(t, d) {
+  ctx.fillStyle = C.dark;
   ctx.fillRect(0, 0, 1440, 810);
-  imageFit(assets.mark, 48, 19, 36, 36);
-  text("UniPred", 94, 46, 21, C.ink, 500);
-  text(
-    "IEEE Transactions on Robotics · 2026",
-    1390,
-    46,
-    16,
-    C.muted,
-    400,
-    "right",
-  );
-  line(48, 67, 1392, 67);
-  text(
-    "Concept learning with an agent in the loop",
-    720,
-    108,
-    30,
-    C.ink,
-    500,
-    "center",
-  );
-  text(
-    "Illustrative concepts, feature positions, and predicate outputs.",
-    720,
-    799,
-    14,
-    C.muted,
-    400,
-    "center",
-  );
-}
-function paintFrame(frame, x, y, width, alpha = 1) {
-  const height = (width * 640) / 1344;
+  label("UNIPRED / ROBOT LEARNING", 74, 75, 14, "#b8c5c7", "left", 500);
+  label("IEEE T-RO · 2026", 1364, 75, 14, "#b8c5c7", "right");
+  const p = V.ease(t / 2.5);
+  for (let x = 756; x < 1350; x += 30)
+    for (let y = 173; y < 635; y += 30) dot(x, y, 0.65, "#35464c");
   ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.drawImage(frame, x + 12, y + 6, width - 24, height - 12);
-  box(x, y, width, height, "rgba(255,255,255,0)", C.line, 6);
+  ctx.globalAlpha = V.ease(t / 0.6);
+  label("UniPred", 70, 348, 112, "#f2f5ef", "left", 500);
+  label("A language for", 76, 427, 43, "#c7d2cf");
+  label("robot action.", 76, 480, 43, "#c7d2cf");
+  ctx.restore();
+  ctx.save();
+  ctx.translate(1035, 385);
+  ctx.rotate((1 - p) * -0.12);
+  V.network(ctx, -210, -210, 420, p, true);
+  ctx.restore();
+  label(
+    "Human demonstrations → long-horizon manipulation",
+    78,
+    584,
+    21,
+    "#98acae",
+  );
+  line(76, 690, 1364, 690, "#43575d");
+  ["Demonstrations", "Concepts", "Planning", "Action"].forEach((s, i) => {
+    const alpha = V.ease((t - 0.35 - i * 0.38) / 0.65);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    dot(82 + i * 329, 735, 4, V.colors[i]);
+    label(s, 99 + i * 329, 742, 18, "#d8e2de");
+    ctx.restore();
+  });
+  V.path(
+    ctx,
+    [
+      [76, 690],
+      [1364, 690],
+    ],
+    "#a6b9b4",
+    1,
+    (t / d) % 1,
+  );
+}
+function agentScene(t, d) {
+  base("01 / CANDIDATE CONCEPT", "Propose a useful concept.", 0);
+  V.agent(ctx, assets.agent, 215, 300, 200, t);
+  label("LLM agent", 315, 567, 29, C.ink, "center", 500);
+  label("Prior knowledge + learning history", 315, 609, 18, C.muted, "center");
+  V.path(
+    ctx,
+    [
+      [470, 411],
+      [669, 411],
+    ],
+    "#a9c3bf",
+    2,
+    (t * 0.32) % 1,
+  );
+  ctx.save();
+  ctx.globalAlpha = V.ease(t / 0.65);
+  label("Is the gripper empty?", 756, 325, 26, C.muted);
+  label("HandEmpty(robot)", 754, 393, 43, C.ink, "left", 500);
+  dot(716, 380, 8, V.colors[0]);
+  line(756, 438, 1304, 438);
+  label("Pick", 756, 493, 23);
+  label("→ false", 938, 493, 23, V.colors[1]);
+  label("Place", 756, 547, 23);
+  label("→ true", 938, 547, 23, V.colors[2]);
+  label("Proposed action effects", 756, 605, 17, C.muted);
   ctx.restore();
 }
-function sceneAssembly(t) {
-  let phase = 4;
-  for (let i = 0; i < 4; i++) {
-    if (t < sceneStarts[i] + sceneHolds[i] + 1) {
-      phase = i;
-      break;
-    }
-  }
-  let local = 0;
-  if (phase < 4) {
-    local = t - sceneStarts[phase];
-    scenePainters[phase](Math.min(local, sceneHolds[phase]));
-    captureScene(activeFrame);
-  }
-  compositionBase();
-  const positions = [
-    { x: 40, y: 132 },
-    { x: 754, y: 132 },
-    { x: 40, y: 466 },
-    { x: 754, y: 466 },
-  ];
-  for (let i = 0; i < phase; i++)
-    paintFrame(
-      sceneFrames[i],
-      positions[i].x,
-      positions[i].y,
-      646,
-      phase === 4 ? 1 : 0.25,
+function demonstrationScene(t, d) {
+  base("02 / DEMONSTRATED TRANSITIONS", "Connect a proposal to experience.", 1);
+  fit(assets.overhead, 67, 254, 502, 374);
+  label("Actual top-down observation", 318, 668, 18, C.muted, "center");
+  ctx.save();
+  ctx.globalAlpha = V.ease(t / 0.5);
+  fit(assets.state1, 685, 300, 228, 236);
+  label("Before", 799, 585, 17, C.muted, "center");
+  label("Empty", 799, 624, 26, V.colors[2], "center");
+  ctx.restore();
+  V.path(
+    ctx,
+    [
+      [948, 414],
+      [1037, 414],
+    ],
+    V.colors[0],
+    2,
+    (t * 0.35) % 1,
+  );
+  label("pick", 993, 385, 18, C.muted, "center");
+  ctx.save();
+  ctx.globalAlpha = V.ease((t - 0.5) / 0.6);
+  fit(assets.state2, 1080, 300, 228, 236);
+  label("After", 1194, 585, 17, C.muted, "center");
+  label("Holding", 1194, 624, 26, V.colors[1], "center");
+  ctx.restore();
+}
+function feedbackScene(t, d) {
+  base("03 / THE LEARNING LOOP", "Propose. Learn. Evaluate. Revise.", 2);
+  V.agent(ctx, assets.agent, 190, 322, 170, t);
+  label("LLM agent", 275, 542, 28, C.ink, "center", 500);
+  const progress = V.clamp(t / (d - 0.8));
+  const loop = (t / 3.3) % 1;
+  V.path(
+    ctx,
+    [
+      [408, 415],
+      [648, 415],
+    ],
+    V.colors[0],
+    2,
+    loop,
+  );
+  label("proposal + effects", 528, 385, 17, C.muted, "center");
+  label("Neural concept learning", 1000, 280, 25, C.ink, "center");
+  V.scatter(ctx, 719, 308, 570, 252, progress, t);
+  dot(875, 599, 5, V.colors[2]);
+  label("Empty", 891, 606, 18, C.muted);
+  dot(1082, 599, 5, V.colors[1]);
+  label("Holding", 1098, 606, 18, C.muted);
+  V.path(
+    ctx,
+    [
+      [1000, 632],
+      [1000, 679],
+      [274, 679],
+      [274, 587],
+    ],
+    "#769883",
+    2,
+    (t / 4.5) % 1,
+  );
+  ctx.fillStyle = C.bg;
+  ctx.fillRect(470, 657, 402, 40);
+  label("Learning & validation feedback", 671, 683, 21, "#638b78", "center");
+  label(
+    t < 3.5
+      ? "Propose a candidate"
+      : t < 8.5
+        ? "Learn from demonstrations"
+        : "Use feedback to revise",
+    275,
+    580,
+    18,
+    C.muted,
+    "center",
+  );
+  label("Illustrative feature space", 1287, 636, 12, C.muted, "right");
+}
+function conceptScene(t, d) {
+  base("04 / LEARNED PREDICATES", "Concepts grounded in observation.", 3);
+  // UniPred’s node language now represents the learned vocabulary, never the agent.
+  V.network(ctx, 120, 269, 300, V.clamp(t / 2));
+  label("A learned vocabulary", 270, 653, 21, C.muted, "center");
+  const names = ["HandEmpty", "Holding", "Clear"];
+  names.forEach((name, i) => {
+    const y = 294 + i * 111;
+    ctx.save();
+    ctx.globalAlpha = V.ease((t - 0.15 - i * 0.2) / 0.6);
+    dot(585, y + 6, 10, V.colors[i]);
+    label(name, 614, y + 15, 31, C.ink, "left", 500);
+    label(
+      ["Is the gripper empty?", "Is an object held?", "Is the surface clear?"][
+        i
+      ],
+      915,
+      y + 12,
+      22,
+      C.muted,
     );
-  if (phase < 4) {
-    const p = ease(clamp(local - sceneHolds[phase]));
-    const pos = positions[phase];
-    paintFrame(
-      activeFrame,
-      mix(100, pos.x, p),
-      mix(162, pos.y, p),
-      mix(1240, 646, p),
-    );
-  } else {
-    arrow(697, 285, 739, 285);
-    arrow(738, 447, 701, 460);
-    arrow(350, 462, 350, 445);
-    text("revise", 369, 459, 13, C.blue);
-    arrow(697, 620, 739, 620);
-  }
+    ctx.restore();
+  });
+  line(584, 619, 1295, 619);
+  label(
+    "Visual predicates turn camera observations into facts.",
+    584,
+    659,
+    22,
+    C.muted,
+  );
+}
+function stateScene(t, d) {
+  base("04 / FROM FACTS TO A STATE", "A state is a set of facts.", 3);
+  fit(assets.overhead, 67, 274, 436, 326);
+  label("Camera observation", 285, 654, 21, C.muted, "center");
+  V.path(
+    ctx,
+    [
+      [540, 432],
+      [631, 432],
+    ],
+    "#a9c3bf",
+    2,
+    (t * 0.3) % 1,
+  );
+  const labels = ["Gripper empty", "Toys remain", "Table not yet clean"];
+  labels.forEach((s, i) => {
+    const y = 354 + i * 80;
+    dot(698, y - 7, 7, V.colors[i]);
+    label(s, 721, y, 23);
+    const p = V.ease((t - 0.6 - i * 0.3) / 1.8);
+    dot(V.mix(942, 1170, p), V.mix(y - 7, 425, p), 5, V.colors[i]);
+  });
+  V.state(ctx, 1190, 425, 78, [1, 1, 1], true);
+  label("Current state", 1190, 558, 27, C.ink, "center", 500);
+  label("Grounded predicate values", 1190, 596, 17, C.muted, "center");
+}
+function planScene(t, d) {
+  base("05 / SYMBOLIC PLANNING", "Find a path to the goal.", 4);
+  pill("Goal: toys stored · table clean", 65, 225, 348);
+  V.graph(ctx, 85, 260, 1240, 330, V.ease(t / (d - 1.2)));
+  label("pick & place", 388, 651, 20, C.muted, "center");
+  label("grasp towel", 751, 651, 20, C.muted, "center");
+  label("wipe", 1110, 651, 20, C.muted, "center");
+  label(
+    "Each node is a state. Edges are possible actions. Highlighted path: an illustrative plan.",
+    720,
+    704,
+    16,
+    C.muted,
+    "center",
+  );
 }
 function executionLayout() {
-  base(
-    "REAL ROBOT: COMPLETE DEMONSTRATION",
-    "Table cleaning with three toys",
-    "The full recorded run is shown below, including the robot’s pauses between actions.",
-    true,
-  );
-  text("Goal", 48, 249, 24, C.ink, 500);
-  lines(
-    "Store all toys in the box.\nClean the tabletop.",
-    48,
-    285,
-    20,
-    C.muted,
-    31,
-  );
-  line(48, 334, 400, 334);
-  text("Plan structure", 48, 377, 24, C.ink, 500);
+  base("06 / REAL ROBOT", "From a plan to physical action.", 5);
+  label("TABLE CLEANING", 66, 266, 13, "#719184", "left", 500);
+  label("Toys stored.", 65, 315, 29, C.ink, "left", 500);
+  label("Table clean.", 65, 354, 29, C.ink, "left", 500);
   [
-    ["1", "Clear every toy", "Pick and place into the box."],
-    ["2", "Grasp the towel", "Prepare the wiping skill."],
-    ["3", "Wipe the table", "Remove the remaining debris."],
-  ].forEach(([n, title, desc], i) => {
-    let y = 429 + i * 89;
-    dot(62, y - 5, 13, "#e6eff5");
-    text(n, 62, y, 13, C.blue, 500, "center");
-    text(title, 88, y, 20, C.ink, 500);
-    text(desc, 88, y + 29, 15, C.muted);
+    ["01", "Clear the toys", "Pick and place into the box."],
+    ["02", "Grasp the towel", "Prepare to wipe."],
+    ["03", "Wipe the table", "Remove the debris."],
+  ].forEach(([n, a, b], i) => {
+    const y = 430 + i * 83;
+    label(n, 66, y, 13, "#7d9b88");
+    label(a, 104, y, 22);
+    label(b, 104, y + 27, 16, C.muted);
   });
-  box(432, 208, 960, 540, "#f0f2f4");
-  footer(
-    "Complete 46-second source clip · original footage at 3× speed · plan structure is explanatory, not an execution log.",
+  label("Observe again after each action.", 66, 707, 16, C.muted);
+  // The exporter overlays the complete source at these exact coordinates.
+  ctx.fillStyle = "#e9ece7";
+  ctx.fillRect(432, 208, 960, 540);
+  ctx.fillStyle = C.bg;
+  ctx.fillRect(0, 749, 1440, 61);
+  label("COMPLETE RECORDED RUN", 66, 784, 12, C.muted, "left", 500);
+  label(
+    "Original footage at 3× speed · plan structure shown schematically",
+    1375,
+    784,
+    16,
+    C.muted,
+    "right",
   );
 }
-async function render(t) {
+const scenes = {
+  opening,
+  agent: agentScene,
+  demonstration: demonstrationScene,
+  feedback: feedbackScene,
+  concept: conceptScene,
+  state: stateScene,
+  plan: planScene,
+  action: executionLayout,
+};
+function render(t) {
   ctx.globalAlpha = 1;
-  if (t < 40) sceneAssembly(t);
-  else executionLayout();
+  let i = cues.findIndex(
+    (c, j) => t >= c.start && (j === cues.length - 1 || t < cues[j + 1].start),
+  );
+  if (i < 0) i = 0;
+  const cue = cues[i],
+    local = t - cue.start;
+  scenes[cue.id](local, cue.duration);
+  // Subtle editorial dissolve, with no tiled or shrunken end frames.
+  if (i > 0 && cue.id !== "action" && local < 0.23) {
+    ctx.save();
+    ctx.globalAlpha = 1 - V.ease(local / 0.23);
+    scenes[cues[i - 1].id](cues[i - 1].duration, cues[i - 1].duration);
+    ctx.restore();
+  }
 }
 window.filmReady = (async () => {
+  cues = await fetch("../static/audio/overview-timing.json").then((r) =>
+    r.json(),
+  );
   await Promise.all([
     document.fonts.load('400 24px "DM Sans"'),
     document.fonts.load('500 24px "DM Sans"'),
@@ -397,6 +362,7 @@ window.filmReady = (async () => {
   await Promise.all(
     [
       ["mark", "../static/images/unipred-mark.svg"],
+      ["agent", "../static/images/agent.svg"],
       ["overhead", "../static/images/method/observation-top-down.png"],
       ...[0, 1, 2, 3].map((i) => [
         "state" + i,
@@ -415,15 +381,8 @@ window.filmReady = (async () => {
         }),
     ),
   );
-  scenePainters.forEach((paint, i) => {
-    paint(sceneHolds[i]);
-    const frame = document.createElement("canvas");
-    frame.width = 1344;
-    frame.height = 640;
-    captureScene(frame);
-    sceneFrames.push(frame);
-  });
-  await render(3);
+  window.filmIntroDuration = cues.find((c) => c.id === "action").start;
+  render(2.5);
   return true;
 })();
 window.renderFilm = render;

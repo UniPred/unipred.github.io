@@ -63,15 +63,17 @@ const path = require("node:path");
     }
     for (const width of [360, 390, 768, 1440]) {
       await page.setViewportSize({ width, height: 1000 });
-      for (let step = 0; step < 4; step++) {
+      await page.locator("#concept-flow").scrollIntoViewIfNeeded();
+      for (let step = 0; step < 6; step++) {
         await page.locator(`[data-step="${step}"]`).click();
         assert.equal(
-          await page.locator(".story-scene:visible").count(),
-          step + 1,
+          await page.locator("#learning-diagram").getAttribute("data-phase"),
+          String(step),
         );
-        assert.equal(
-          await page.locator(`#learning-scene-${step}`).isVisible(),
-          true,
+        await page.waitForFunction(
+          () =>
+            document.querySelector("#learning-diagram").dataset.playing ===
+            "true",
         );
         assert.ok(
           await page.evaluate(
@@ -79,49 +81,15 @@ const path = require("node:path");
           ),
           `Overflow at ${width}, step ${step}`,
         );
-        assert.ok(
-          await page
-            .locator(".story-scene.is-focused")
-            .evaluate((scene) => scene.scrollHeight <= scene.clientHeight + 1),
-          `Scene overflow at ${width}, step ${step}`,
-        );
       }
     }
-    await page.locator("#learning-overview").click();
     assert.equal(
-      await page.locator(".story-scene.is-docked:visible").count(),
-      4,
+      await page.locator(".story-scene").count(),
+      0,
+      "No four-quadrant assembly",
     );
-    assert.equal(
-      await page.locator("#learning-toggle").innerText(),
-      "Replay ↻",
-    );
-    assert.ok(
-      await page.locator(".story-stage").evaluate((stage) => {
-        const b = stage.getBoundingClientRect();
-        return [...stage.querySelectorAll(".story-scene")].every((s, i) => {
-          const r = s.getBoundingClientRect();
-          const column = r.x > b.x + b.width / 2 ? 1 : 0;
-          const row = r.y > b.y + b.height / 2 ? 1 : 0;
-          return (
-            column === i % 2 &&
-            row === Math.floor(i / 2) &&
-            r.right <= b.right + 1 &&
-            r.bottom <= b.bottom + 1
-          );
-        });
-      }),
-      "Completed panels must occupy four separate quadrants",
-    );
-    assert.ok(
-      (
-        await page
-          .locator(".state-strip img")
-          .evaluateAll((images) =>
-            images.map((img) => getComputedStyle(img).objectFit),
-          )
-      ).every((f) => f === "contain"),
-    );
+    assert.equal(await page.locator("#method-action").isVisible(), false);
+    await page.locator("#motion-toggle").click();
     const film = page.locator("#overview-film");
     await film.scrollIntoViewIfNeeded();
     assert.equal(await film.evaluate((v) => v.paused), true);
@@ -130,20 +98,20 @@ const path = require("node:path");
       () => document.querySelector("#overview-film").currentTime > 0.15,
     );
     const duration = await film.evaluate((v) => v.duration);
-    assert.ok(duration > 86 && duration < 87);
+    assert.ok(duration > 90 && duration < 91);
     await film.evaluate((v) => v.pause());
     // Check decoded frames in the execution segment, not just currentTime.
     // A server without HTTP Range support can report seeked without a new frame.
     await film.evaluate(async (v) => {
-      v.currentTime = 39;
+      v.currentTime = 43;
       await v.play();
     });
     await page.waitForFunction(
-      () => document.querySelector("#overview-film").currentTime > 42,
+      () => document.querySelector("#overview-film").currentTime > 46,
     );
     await film.evaluate((v) => v.pause());
     const frameHashes = [];
-    for (const time of [44, 58, 82]) {
+    for (const time of [48, 62, 86]) {
       frameHashes.push(
         await film.evaluate(async (v, time) => {
           await new Promise((resolve) => {
@@ -167,6 +135,23 @@ const path = require("node:path");
       "Robot footage must change after seeking; preview server must support HTTP byte ranges",
     );
 
+    await page.locator("#narration-toggle").click();
+    await page.waitForFunction(
+      () => !document.querySelector("#overview-film").paused,
+    );
+    assert.equal(await film.evaluate((v) => v.muted), false);
+    assert.ok(
+      (await film.evaluate((v) => v.currentTime)) < 2,
+      "First narration activation restarts the film",
+    );
+    await page.waitForFunction(
+      () =>
+        document.querySelector("#overview-film").webkitAudioDecodedByteCount >
+        0,
+    );
+    await page.locator("#narration-toggle").click();
+    assert.equal(await film.evaluate((v) => v.muted), true);
+    await film.evaluate((v) => v.pause());
     let checked = 1;
     for (const video of await page.locator(".video-grid video").all()) {
       await video.scrollIntoViewIfNeeded();
@@ -196,15 +181,15 @@ const path = require("node:path");
     );
     await page.goto(origin);
     await page.screenshot({
-      path: "/tmp/unipred-site-review/v2-mobile-final.png",
+      path: "/tmp/unipred-site-review/r6-mobile-final.png",
     });
     await page.locator("#learning-diagram").screenshot({
-      path: "/tmp/unipred-site-review/v2-mobile-diagram-final.png",
+      path: "/tmp/unipred-site-review/r6-mobile-diagram-final.png",
     });
     await page.setViewportSize({ width: 1440, height: 1000 });
     await page.goto(origin);
     await page.screenshot({
-      path: "/tmp/unipred-site-review/v2-desktop-final.png",
+      path: "/tmp/unipred-site-review/r6-desktop-final.png",
     });
     const autoContext = await browser.newContext({
       viewport: { width: 1440, height: 1100 },
@@ -213,72 +198,51 @@ const path = require("node:path");
     auto.on("pageerror", (e) => errors.push(e.message));
     await auto.goto(origin);
     await auto.locator("#learning-diagram").scrollIntoViewIfNeeded();
-    // With no interaction, all four scenes play and collect into one figure.
+    // No click required: progress through every phase and begin another cycle.
     await auto.waitForFunction(
-      () => document.querySelector(".story-scene.is-docking"),
+      () => document.querySelector("#learning-diagram").dataset.phase === "1",
       null,
-      { timeout: 9000 },
-    );
-    const dockingTransform = await auto
-      .locator(".story-scene.is-docking")
-      .evaluate((s) => s.style.transform);
-    await auto.waitForTimeout(180);
-    assert.notEqual(
-      await auto
-        .locator(".story-scene.is-docking")
-        .evaluate((s) => s.style.transform),
-      dockingTransform,
+      { timeout: 6000 },
     );
     await auto.waitForFunction(
-      () => document.querySelector("#learning-diagram").dataset.phase === "4",
+      () => document.querySelector("#learning-diagram").dataset.phase === "5",
       null,
-      { timeout: 35000 },
+      { timeout: 24000 },
     );
-    assert.equal(
-      await auto.locator(".story-scene.is-docked:visible").count(),
-      4,
+    await auto.waitForFunction(
+      () => document.querySelector("#method-action").currentTime > 0.2,
     );
-    await auto.waitForTimeout(600);
-    assert.equal(
-      await auto.locator("#learning-diagram").getAttribute("data-phase"),
-      "4",
-    );
-    await auto.locator("#learning-toggle").click(); // Replay
-    assert.equal(
-      await auto.locator("#learning-diagram").getAttribute("data-phase"),
-      "0",
-    );
-    await auto.locator("#learning-toggle").click();
-    const pausedPhase = await auto
-      .locator("#learning-diagram")
-      .getAttribute("data-phase");
-    await auto.waitForTimeout(4700);
-    assert.equal(
-      await auto.locator("#learning-diagram").getAttribute("data-phase"),
-      pausedPhase,
+    await auto.waitForFunction(
+      () => document.querySelector("#learning-diagram").dataset.phase === "0",
+      null,
+      { timeout: 8000 },
     );
     await auto.locator('[data-step="2"]').click();
-    await auto.locator("#learning-toggle").click();
-    const signalPosition = () =>
-      auto.locator("#feedback-signal").getAttribute("cx");
-    const signalStart = await signalPosition();
-    await auto.waitForTimeout(1000);
+    const canvasHash = () =>
+      auto.locator("#concept-flow").evaluate((c) => c.toDataURL());
+    const moving = await canvasHash();
+    await auto.waitForTimeout(600);
     assert.notEqual(
-      await signalPosition(),
-      signalStart,
-      "Feedback should animate when playing",
+      await canvasHash(),
+      moving,
+      "Feedback animation changes without a play click",
     );
     await auto.locator("#learning-toggle").click();
-    const signalPaused = await signalPosition();
-    await auto.waitForTimeout(700);
-    assert.equal(
-      await signalPosition(),
-      signalPaused,
-      "Pause must freeze the feedback animation",
-    );
-    await auto.locator('[data-step="3"]').focus();
+    const frozen = await canvasHash();
+    await auto.waitForTimeout(450);
+    assert.equal(await canvasHash(), frozen, "Pause freezes the drawing");
+    await auto.locator('[data-step="4"]').focus();
     await auto.keyboard.press("Enter");
-    assert.equal(await auto.locator("#learning-scene-3").isVisible(), true);
+    assert.equal(
+      await auto.locator("#learning-diagram").getAttribute("data-playing"),
+      "true",
+      "Selecting a phase continues autoplay",
+    );
+    await auto.waitForFunction(
+      () => document.querySelector("#learning-diagram").dataset.phase === "5",
+      null,
+      { timeout: 6000 },
+    );
     await auto.locator(".two-column").scrollIntoViewIfNeeded();
     await auto.waitForFunction(() =>
       [...document.querySelectorAll(".two-column video")].every(
@@ -309,24 +273,16 @@ const path = require("node:path");
           videoChecks: checked,
           filmDuration: duration,
           checks: [
-            "five demos directly visible",
-            "complete state images",
-            "86-second film",
-            "all video playback",
-            "automatic learning animation",
-            "focused scene docks into its quadrant",
-            "all four scenes autoplay into a persistent completed figure",
-            "replay restarts the sequence",
-            "manual and keyboard scene selection",
-            "pause freezes feedback motion",
-            "simultaneous visible demos",
-            "global pause and resume",
-            "offscreen pause",
-            "reduced motion",
-            "mobile menu",
-            "clipboard",
-            "no overflow at 360/390/768/1440",
-            "no browser errors",
+            "11 authors, affiliations, acceptance unchanged",
+            "five demos directly visible; all video playback",
+            "90-second film and changing real-robot frames",
+            "decoded audio and user-activated narration",
+            "six phases autoplay and loop without a click",
+            "step selection keeps playing; pause freezes canvas",
+            "compact mobile and desktop diagram",
+            "simultaneous demos, global motion controls, offscreen pause",
+            "reduced motion, mobile menu, clipboard, local assets",
+            "no overflow at 360/390/768/1440; no browser errors",
           ],
         },
         null,

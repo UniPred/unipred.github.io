@@ -1,0 +1,66 @@
+[
+  {
+    "id": "opening",
+    "start": 0,
+    "duration": 4.753,
+    "voiceStart": 0.18,
+    "voiceEnd": 4.373,
+    "text": "From demonstrations, to concepts, to action. This is UniPred."
+  },
+  {
+    "id": "agent",
+    "start": 4.753,
+    "duration": 4.82,
+    "voiceStart": 4.933,
+    "voiceEnd": 9.193,
+    "text": "An LLM agent proposes a concept, and how actions should change it."
+  },
+  {
+    "id": "demonstration",
+    "start": 9.573,
+    "duration": 5.401,
+    "voiceStart": 9.753,
+    "voiceEnd": 14.593,
+    "text": "Human demonstrations connect that proposal to what the robot actually sees."
+  },
+  {
+    "id": "feedback",
+    "start": 14.973,
+    "duration": 12.9,
+    "voiceStart": 15.153,
+    "voiceEnd": 27.493,
+    "text": "The proposal becomes supervision for a visual classifier. Learning and validation feedback return to the agent, which revises its next proposal. Propose, learn, evaluate, revise."
+  },
+  {
+    "id": "concept",
+    "start": 27.873,
+    "duration": 5.177,
+    "voiceStart": 28.053,
+    "voiceEnd": 32.671,
+    "text": "The result is a set of learned predicates: concepts grounded in observation."
+  },
+  {
+    "id": "state",
+    "start": 33.051,
+    "duration": 4.55,
+    "voiceStart": 33.231,
+    "voiceEnd": 37.221,
+    "text": "Together, their truth values describe a symbolic state of the world."
+  },
+  {
+    "id": "plan",
+    "start": 37.601,
+    "duration": 6.426,
+    "voiceStart": 37.781,
+    "voiceEnd": 43.647,
+    "text": "A planner searches between these states, using learned action preconditions and effects, to reach a goal."
+  },
+  {
+    "id": "action",
+    "start": 44.027,
+    "duration": 10.436,
+    "voiceStart": 44.207,
+    "voiceEnd": 54.083,
+    "text": "Now the robot follows the plan: store the toys, grasp the towel, and wipe the table. After each action, it observes again, and can replan when needed."
+  }
+]

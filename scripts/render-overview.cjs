@@ -50,20 +50,23 @@ const { once } = require("node:events");
         "/scripts/render-overview.html",
     );
     await page.evaluate(() => window.filmReady);
+    const introDuration = await page.evaluate(() => window.filmIntroDuration);
+    const frames = Math.round(introDuration * 24);
     if (process.argv.includes("--preview")) {
-      fs.mkdirSync("/tmp/unipred-site-review/film-v5", { recursive: true });
+      fs.mkdirSync("/tmp/unipred-site-review/film-v6", { recursive: true });
       for (const [label, t] of [
-        ["agent", 4],
-        ["docking", 7.5],
-        ["demonstration", 11],
-        ["feedback", 21],
-        ["concept", 29],
-        ["assembled", 37],
-        ["execution", 41],
+        ["opening", 3],
+        ["agent", 7],
+        ["demonstration", 12],
+        ["feedback", 23],
+        ["concept", 31],
+        ["state", 36],
+        ["plan", 42],
+        ["execution", 46],
       ]) {
         await page.evaluate((t) => window.renderFilm(t), t);
         await page.locator("canvas").screenshot({
-          path: `/tmp/unipred-site-review/film-v5/${label}.png`,
+          path: `/tmp/unipred-site-review/film-v6/${label}.png`,
         });
       }
       return;
@@ -82,7 +85,7 @@ const { once } = require("node:events");
       intro,
     ]);
     const encoderDone = complete(encoder);
-    for (let frame = 0; frame < 40 * 24; frame++) {
+    for (let frame = 0; frame < frames; frame++) {
       const data = await page.evaluate(async (t) => {
         await window.renderFilm(t);
         return document
@@ -92,7 +95,8 @@ const { once } = require("node:events");
       }, frame / 24);
       if (!encoder.stdin.write(Buffer.from(data, "base64")))
         await once(encoder.stdin, "drain");
-      if (frame % 120 === 0) console.log(`Rendered intro ${frame}/960 frames`);
+      if (frame % 120 === 0)
+        console.log(`Rendered intro ${frame}/${frames} frames`);
     }
     encoder.stdin.end();
     await encoderDone;
@@ -134,10 +138,36 @@ const { once } = require("node:events");
         "copy",
         "-movflags",
         "+faststart",
+        path.join(work, "silent.mp4"),
+      ]),
+    );
+    await complete(
+      ffmpeg([
+        "-i",
+        path.join(work, "silent.mp4"),
+        "-i",
+        path.join(root, "static/audio/overview-narration.wav"),
+        "-map",
+        "0:v:0",
+        "-map",
+        "1:a:0",
+        "-c:v",
+        "copy",
+        "-c:a",
+        "aac",
+        "-b:a",
+        "96k",
+        "-af",
+        "loudnorm=I=-18:TP=-1.5:LRA=11,apad=pad_dur=60",
+        "-ar",
+        "48000",
+        "-shortest",
+        "-movflags",
+        "+faststart",
         path.join(root, "static/videos/unipred-overview.mp4"),
       ]),
     );
-    await page.evaluate(() => window.renderFilm(4));
+    await page.evaluate(() => window.renderFilm(3));
     const poster = await page.evaluate(
       () =>
         document
@@ -150,7 +180,7 @@ const { once } = require("node:events");
       Buffer.from(poster, "base64"),
     );
     console.log(
-      "Exported ~86-second overview with the complete 46-second robot clip.",
+      "Exported narrated overview with the complete 46-second robot clip.",
     );
   } finally {
     await browser.close();

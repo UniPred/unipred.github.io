@@ -15,7 +15,7 @@
     />
     <meta
       property="og:image"
-      content="https://unipred.github.io/static/images/posters/unipred-overview.jpg?v=tro2026-r5"
+      content="https://unipred.github.io/static/images/posters/unipred-overview.jpg?v=tro2026-r6"
     />
     <meta property="og:url" content="https://unipred.github.io/" />
     <title>UniPred | IEEE T-RO 2026</title>
@@ -24,8 +24,9 @@
       href="static/images/unipred-mark.svg"
       type="image/svg+xml"
     />
-    <link rel="stylesheet" href="static/css/index.css?v=tro2026-r5" />
-    <script src="static/js/index.js?v=tro2026-r5" defer></script>
+    <link rel="stylesheet" href="static/css/index.css?v=tro2026-r6" />
+    <script src="static/js/concept-visuals.js?v=tro2026-r6"></script>
+    <script src="static/js/index.js?v=tro2026-r6" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -47,7 +48,7 @@
       <nav id="site-nav" aria-label="Main navigation">
         <a href="#method">Method</a><a href="#demos">Demos</a
         ><a href="#recovery">Recovery</a><a href="#paper">Paper</a
-        ><button id="motion-toggle" aria-pressed="false">Pause motion</button>
+        ><button id="motion-toggle" aria-pressed="false">Motion on</button>
       </nav>
     </header>
     <main id="main">
@@ -175,25 +176,34 @@
           playsinline
           preload="metadata"
           data-autoplay
-          poster="static/images/posters/unipred-overview.jpg?v=tro2026-r5"
+          poster="static/images/posters/unipred-overview.jpg?v=tro2026-r6"
           aria-label="UniPred method followed by a complete table-cleaning demonstration"
           aria-describedby="film-caption"
         >
           <source
-            src="static/videos/unipred-overview.mp4?v=tro2026-r5"
+            src="static/videos/unipred-overview.mp4?v=tro2026-r6"
             type="video/mp4"
           />
           <track
             kind="captions"
-            src="static/videos/unipred-overview.vtt?v=tro2026-r5"
+            src="static/videos/unipred-overview.vtt?v=tro2026-r6"
             srclang="en"
             label="English"
           />
         </video>
+        <div class="film-toolbar">
+          <span class="film-label"
+            >THE UNIPRED FILM <span>Learning → planning → execution</span></span
+          >
+          <button id="narration-toggle" aria-pressed="false">
+            <span aria-hidden="true">▷</span> Watch with narration
+          </button>
+        </div>
         <p id="film-caption" class="figure-caption">
           <strong>From agent-guided learning to robot planning.</strong> Watch
           the proposal–learning–feedback loop, then a complete table-cleaning
-          run: store the toys, pick up the towel, and wipe the table.
+          run: store the toys, pick up the towel, and wipe the table. English
+          narration uses an AI voice.
           <a href="#demos">All demonstrations ↓</a>
         </p>
       </section>
@@ -202,303 +212,60 @@
         id="method"
         aria-labelledby="method-title"
       >
-        <h2 id="method-title">Concept learning with an agent in the loop</h2>
-        <p class="section-intro">
-          The agent proposes. Demonstrations provide feedback. Concepts take
-          shape.
-        </p>
+        <div class="method-heading">
+          <div>
+            <p class="method-kicker">THE IDEA, AT A GLANCE</p>
+            <h2 id="method-title">Learn concepts. Connect states. Act.</h2>
+          </div>
+          <div class="playback-state">
+            <span id="learning-status">Auto-playing</span
+            ><button
+              id="learning-toggle"
+              aria-label="Pause concept animation"
+              aria-pressed="false"
+            >
+              Ⅱ
+            </button>
+          </div>
+        </div>
         <div class="learning-diagram" id="learning-diagram" data-phase="0">
-          <div class="diagram-heading">
-            <p class="diagram-eyebrow">Training · unified bilevel learning</p>
-            <div class="diagram-controls">
-              <span id="learning-stage">01 / 04</span
-              ><button
-                id="learning-overview"
-                aria-label="Show the complete learning figure"
-              >
-                Full figure</button
-              ><button
-                id="learning-toggle"
-                aria-pressed="false"
-                aria-label="Pause learning animation"
-              >
-                Pause Ⅱ
-              </button>
-            </div>
+          <div class="flow-steps" aria-label="Explore the process">
+            <button data-step="0" aria-pressed="true">Agent</button>
+            <button data-step="1" aria-pressed="false">Demonstration</button>
+            <button data-step="2" aria-pressed="false">Feedback</button>
+            <button data-step="3" aria-pressed="false">Concept</button>
+            <button data-step="4" aria-pressed="false">Plan</button>
+            <button data-step="5" aria-pressed="false">Action</button>
           </div>
-          <div class="story-steps" aria-label="Learning story steps">
-            <button
-              data-step="0"
-              aria-controls="learning-scene-0"
-              aria-pressed="true"
-            >
-              <span>01</span> Agent
-            </button>
-            <button
-              data-step="1"
-              aria-controls="learning-scene-1"
-              aria-pressed="false"
-            >
-              <span>02</span> Demonstration
-            </button>
-            <button
-              data-step="2"
-              aria-controls="learning-scene-2"
-              aria-pressed="false"
-            >
-              <span>03</span> Feedback
-            </button>
-            <button
-              data-step="3"
-              aria-controls="learning-scene-3"
-              aria-pressed="false"
-            >
-              <span>04</span> Concept
-            </button>
-          </div>
-          <div class="story-stage">
-            <div class="assembly-links" aria-hidden="true">
-              <span class="link-first">→</span
-              ><span class="link-feedback">↑<small>revise</small></span
-              ><span class="link-middle">↙</span
-              ><span class="link-last">→</span>
-            </div>
-            <section
-              class="story-scene"
-              id="learning-scene-0"
-              aria-labelledby="scene-title-0"
-            >
-              <p class="dock-label">01 <span>Agent</span></p>
-              <h3 id="scene-title-0">Start with an LLM agent.</h3>
-              <p class="scene-subtitle">
-                It proposes a concept and how actions change it.
-              </p>
-              <div class="proposal-scene">
-                <div class="agent-portrait">
-                  <img
-                    src="static/images/unipred-mark.svg"
-                    width="148"
-                    height="148"
-                    alt=""
-                  /><strong>LLM agent</strong
-                  ><span>Prior knowledge + learning history</span>
-                </div>
-                <span class="scene-arrow" aria-hidden="true">→</span>
-                <div class="concept-proposal">
-                  <span class="visual-label">Candidate concept</span>
-                  <h4>Is the gripper empty?</h4>
-                  <code>HandEmpty(robot)</code>
-                  <div class="effect-pair">
-                    <p><b>Pick</b><span>→ not empty</span></p>
-                    <p><b>Place</b><span>→ empty</span></p>
-                  </div>
-                </div>
-              </div>
-              <p class="scene-note">
-                The proposal specifies action effects; the visual meaning is
-                learned.
-              </p>
-            </section>
-            <section
-              class="story-scene"
-              id="learning-scene-1"
-              aria-labelledby="scene-title-1"
-              hidden
-            >
-              <p class="dock-label">02 <span>Demonstration</span></p>
-              <h3 id="scene-title-1">Learn from what changes.</h3>
-              <p class="scene-subtitle">
-                Demonstrated transitions supervise the visual classifier.
-              </p>
-              <div class="demonstration-scene">
-                <figure>
-                  <img
-                    src="static/images/method/state-1.png"
-                    width="158"
-                    height="162"
-                    alt="State 1: empty gripper before picking"
-                  />
-                  <figcaption>
-                    <span>Before</span><strong>Empty</strong>
-                  </figcaption>
-                </figure>
-                <div class="action-between">
-                  <span>Pick</span><b aria-hidden="true">→</b>
-                </div>
-                <figure>
-                  <img
-                    src="static/images/method/state-2.png"
-                    width="158"
-                    height="136"
-                    alt="State 2: gripper holding a towel after picking"
-                  />
-                  <figcaption>
-                    <span>After</span><strong>Not empty</strong>
-                  </figcaption>
-                </figure>
-              </div>
-              <p class="scene-note">
-                No hand-labeled concept annotations are needed.
-              </p>
-            </section>
-            <section
-              class="story-scene"
-              id="learning-scene-2"
-              aria-labelledby="scene-title-2"
-              hidden
-            >
-              <p class="dock-label">03 <span>Feedback</span></p>
-              <h3 id="scene-title-2">Feedback makes it a loop.</h3>
-              <p class="scene-subtitle">
-                The agent uses learning feedback to revise its next proposal.
-              </p>
-              <div class="feedback-scene">
-                <div class="agent-portrait">
-                  <img
-                    src="static/images/unipred-mark.svg"
-                    width="136"
-                    height="136"
-                    alt=""
-                  /><strong>LLM agent</strong
-                  ><span id="agent-action"
-                    >Read feedback. Revise the proposal.</span
-                  >
-                </div>
-                <span class="scene-arrow" aria-hidden="true">→</span>
-                <div class="concept-learning">
-                  <span class="visual-label" id="feature-stage"
-                    >Neural concept learning</span
-                  >
-                  <svg
-                    id="predicate-scatter"
-                    viewBox="0 0 420 225"
-                    role="img"
-                    aria-label="Schematic feature space separating empty and holding observations"
-                  >
-                    <defs>
-                      <pattern
-                        id="plot-grid"
-                        width="25"
-                        height="25"
-                        patternUnits="userSpaceOnUse"
-                      >
-                        <circle cx="1" cy="1" r=".8" fill="#d9dfe5" />
-                      </pattern>
-                    </defs>
-                    <rect width="420" height="225" fill="url(#plot-grid)" />
-                    <path
-                      id="decision-boundary"
-                      d="M225 18 Q205 100 225 204"
-                      stroke="#748c9a"
-                      stroke-dasharray="5 6"
-                      fill="none"
-                    />
-                    <g id="scatter-points"></g>
-                  </svg>
-                  <div class="scatter-legend">
-                    <span><i class="empty-dot"></i>Empty</span
-                    ><span><i class="holding-dot"></i>Holding</span>
-                  </div>
-                </div>
-              </div>
-              <div class="feedback-return">
-                <svg viewBox="0 0 800 48" aria-hidden="true">
-                  <path
-                    id="feedback-route"
-                    d="M785 2 V28 Q785 40 773 40 H27 Q15 40 15 28 V2"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                  />
-                  <path
-                    d="m8 10 7-8 7 8"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                  />
-                  <circle
-                    id="feedback-signal"
-                    cx="785"
-                    cy="2"
-                    r="4"
-                    fill="currentColor"
-                  /></svg
-                ><span>Learning &amp; validation feedback</span>
-              </div>
-              <p class="scene-note">
-                Propose → learn → evaluate → revise. Repeat.
-              </p>
-            </section>
-            <section
-              class="story-scene"
-              id="learning-scene-3"
-              aria-labelledby="scene-title-3"
-              hidden
-            >
-              <p class="dock-label">04 <span>Concept</span></p>
-              <h3 id="scene-title-3">A concept the robot can recognize.</h3>
-              <p class="scene-subtitle">
-                From a symbolic proposal to a visual predicate.
-              </p>
-              <div class="learned-concept">
-                <code>HandEmpty(robot)</code><span>Is the gripper empty?</span>
-              </div>
-              <div class="state-strip">
-                <figure>
-                  <img
-                    src="static/images/method/state-0.png"
-                    width="157"
-                    height="154"
-                    alt="State 0: empty gripper"
-                  />
-                  <figcaption>
-                    <span>State 0</span><strong>True</strong>
-                  </figcaption>
-                </figure>
-                <figure>
-                  <img
-                    src="static/images/method/state-1.png"
-                    width="158"
-                    height="162"
-                    alt="State 1: empty gripper"
-                  />
-                  <figcaption>
-                    <span>State 1</span><strong>True</strong>
-                  </figcaption>
-                </figure>
-                <figure>
-                  <img
-                    src="static/images/method/state-2.png"
-                    width="158"
-                    height="136"
-                    alt="State 2: holding a towel"
-                  />
-                  <figcaption>
-                    <span>State 2</span
-                    ><strong class="holding-result">False</strong>
-                  </figcaption>
-                </figure>
-                <figure>
-                  <img
-                    src="static/images/method/state-3.png"
-                    width="161"
-                    height="163"
-                    alt="State 3: empty gripper"
-                  />
-                  <figcaption>
-                    <span>State 3</span><strong>True</strong>
-                  </figcaption>
-                </figure>
-              </div>
-              <p class="scene-note">
-                Learned predicates provide the facts a planner needs.
-              </p>
-            </section>
+          <canvas
+            id="concept-flow"
+            width="1100"
+            height="340"
+            role="img"
+            aria-label="An LLM agent learns visual predicates through demonstration and feedback. Predicates ground observations into facts; sets of facts define states. A planner searches action transitions between states, then the robot executes the plan."
+          ></canvas>
+          <video
+            id="method-action"
+            muted
+            loop
+            playsinline
+            preload="none"
+            hidden
+            aria-hidden="true"
+          >
+            <source src="static/videos/web/main_demo_1.mp4" type="video/mp4" />
+          </video>
+          <div class="flow-caption">
+            <span id="flow-number">01 / 06</span>
+            <p id="flow-description">
+              An LLM agent proposes concepts and their action effects.
+            </p>
+            <span class="flow-progress" aria-hidden="true"><i></i></span>
           </div>
         </div>
         <p class="figure-caption">
-          Observations from the paper. Candidate effects, feature motion, and
-          predicate outputs illustrate the method.
+          Illustrative learning and planning process. Camera observations and
+          robot footage are from our experiments.
         </p>
       </section>
       <section

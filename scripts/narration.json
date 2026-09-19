@@ -1,0 +1,36 @@
+[
+  {
+    "id": "opening",
+    "text": "From demonstrations, to concepts, to action. This is UniPred.",
+    "spoken": "From demonstrations, to concepts, to action. This is Uni Pred."
+  },
+  {
+    "id": "agent",
+    "text": "An LLM agent proposes a concept, and how actions should change it.",
+    "spoken": "An L M agent proposes a concept, and how actions should change it."
+  },
+  {
+    "id": "demonstration",
+    "text": "Human demonstrations connect that proposal to what the robot actually sees."
+  },
+  {
+    "id": "feedback",
+    "text": "The proposal becomes supervision for a visual classifier. Learning and validation feedback return to the agent, which revises its next proposal. Propose, learn, evaluate, revise."
+  },
+  {
+    "id": "concept",
+    "text": "The result is a set of learned predicates: concepts grounded in observation."
+  },
+  {
+    "id": "state",
+    "text": "Together, their truth values describe a symbolic state of the world."
+  },
+  {
+    "id": "plan",
+    "text": "A planner searches between these states, using learned action preconditions and effects, to reach a goal."
+  },
+  {
+    "id": "action",
+    "text": "Now the robot follows the plan: store the toys, grasp the towel, and wipe the table. After each action, it observes again, and can replan when needed."
+  }
+]

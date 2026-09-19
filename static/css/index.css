@@ -351,322 +351,6 @@ sup {
   white-space: nowrap;
   margin-left: 5px;
 }
-.learning-diagram {
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  padding: 24px 32px 28px;
-  background: white;
-}
-.diagram-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-.diagram-eyebrow {
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-}
-.diagram-controls {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  color: var(--muted);
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-}
-.diagram-controls button {
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 5px 11px;
-  font-size: 11px;
-  color: var(--muted);
-}
-.story-steps {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-bottom: 1px solid var(--line);
-  gap: 20px;
-}
-.story-steps button {
-  position: relative;
-  background: none;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  padding: 10px 0 14px;
-  color: var(--muted);
-  font-size: 14px;
-  text-align: left;
-}
-.story-steps button > span {
-  font-size: 11px;
-  margin-right: 10px;
-  opacity: 0.7;
-}
-.story-steps button[aria-pressed="true"] {
-  border-color: var(--accent);
-  color: var(--accent);
-  font-weight: 500;
-}
-.story-stage {
-  height: 490px;
-  margin-top: 28px;
-}
-.story-scene {
-  height: 100%;
-  position: relative;
-  padding-bottom: 38px;
-}
-.story-scene h3 {
-  font-size: 34px;
-  line-height: 1.25;
-  letter-spacing: -0.8px;
-  text-align: center;
-}
-.scene-subtitle {
-  text-align: center;
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: 16px;
-}
-.scene-note {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  color: var(--muted);
-  text-align: center;
-  font-size: 13px;
-}
-.proposal-scene,
-.feedback-scene {
-  display: grid;
-  grid-template-columns: 1fr 65px 1.2fr;
-  align-items: center;
-  gap: 26px;
-  max-width: 880px;
-  margin: 35px auto 0;
-  min-height: 300px;
-}
-.agent-portrait {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 9px;
-}
-.agent-portrait img {
-  width: 140px;
-  height: 140px;
-}
-.agent-portrait strong {
-  font-size: 30px;
-  font-weight: 500;
-  color: var(--accent);
-  letter-spacing: -0.6px;
-}
-.agent-portrait > span {
-  font-size: 12px;
-  color: var(--muted);
-}
-.scene-arrow {
-  color: #8ca5b8;
-  font-size: 38px;
-  text-align: center;
-}
-.visual-label {
-  display: block;
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 12px;
-}
-.concept-proposal h4 {
-  font-size: 28px;
-  font-weight: 500;
-  letter-spacing: -0.7px;
-}
-.concept-proposal > code {
-  display: block;
-  color: var(--muted);
-  font-size: 15px;
-  margin-top: 7px;
-}
-.effect-pair {
-  margin-top: 27px;
-  border-top: 1px solid var(--line);
-  padding-top: 16px;
-  display: flex;
-  gap: 35px;
-}
-.effect-pair p {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 18px;
-}
-.effect-pair b {
-  font-weight: 500;
-}
-.effect-pair span {
-  font-size: 15px;
-  color: var(--muted);
-}
-.demonstration-scene {
-  display: grid;
-  grid-template-columns: 1fr 110px 1fr;
-  gap: 25px;
-  max-width: 760px;
-  margin: 28px auto 0;
-  align-items: center;
-  text-align: center;
-}
-.demonstration-scene img {
-  width: 100%;
-  height: 248px;
-  object-fit: contain;
-}
-.demonstration-scene figcaption {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  align-items: baseline;
-  margin-top: 10px;
-  font-size: 14px;
-  color: var(--muted);
-}
-.demonstration-scene strong {
-  font-size: 22px;
-  color: var(--ink);
-  font-weight: 500;
-}
-.action-between {
-  color: var(--accent);
-  font-size: 20px;
-  display: grid;
-}
-.action-between b {
-  font-size: 40px;
-  font-weight: 400;
-}
-.feedback-scene {
-  min-height: 260px;
-  margin-top: 23px;
-}
-.feedback-scene .agent-portrait img {
-  width: 122px;
-  height: 122px;
-}
-.concept-learning .visual-label {
-  text-align: center;
-  font-size: 15px;
-}
-#predicate-scatter {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.scatter-point {
-  stroke: white;
-  stroke-width: 1.2;
-}
-#decision-boundary {
-  opacity: 0;
-}
-.scatter-legend {
-  display: flex;
-  gap: 25px;
-  justify-content: center;
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 10px;
-}
-.scatter-legend > span {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.scatter-legend i {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-.empty-dot {
-  background: var(--green);
-}
-.holding-dot {
-  background: var(--orange);
-}
-.feedback-return {
-  position: relative;
-  color: var(--accent);
-  max-width: 770px;
-  margin: 13px auto 0;
-  text-align: center;
-  height: 47px;
-}
-.feedback-return svg {
-  width: 100%;
-  height: 47px;
-  display: block;
-}
-.feedback-return > span {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 13px;
-  white-space: nowrap;
-}
-.learned-concept {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  justify-content: center;
-  margin-top: 27px;
-}
-.learned-concept code {
-  font-size: 22px;
-  color: var(--accent);
-}
-.learned-concept > span {
-  font-size: 15px;
-  color: var(--muted);
-}
-.state-strip {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 22px;
-  margin: 24px auto 0;
-  max-width: 910px;
-}
-.state-strip img {
-  display: block;
-  width: 100%;
-  height: 188px;
-  object-fit: contain;
-}
-.state-strip figcaption {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  margin-top: 10px;
-}
-.state-strip figcaption > span {
-  font-size: 11px;
-  color: var(--muted);
-}
-.state-strip strong {
-  font-size: 21px;
-  font-weight: 500;
-  color: var(--green);
-}
-.state-strip .holding-result {
-  color: var(--orange);
-}
 .domain-heading {
   display: flex;
   align-items: baseline;
@@ -839,13 +523,6 @@ footer {
   display: none;
 }
 @media (max-width: 1000px) {
-  .proposal-scene,
-  .feedback-scene {
-    gap: 16px;
-  }
-  .concept-proposal h4 {
-    font-size: 25px;
-  }
   .paper-grid {
     gap: 40px;
   }
@@ -966,200 +643,6 @@ footer {
     margin-top: 11px;
     margin-bottom: 18px;
   }
-  .learning-diagram {
-    padding: 16px 14px 22px;
-  }
-  .diagram-heading {
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-  .diagram-eyebrow {
-    font-size: 8px;
-    max-width: 145px;
-  }
-  .diagram-controls {
-    gap: 9px;
-    font-size: 10px;
-  }
-  .diagram-controls button {
-    padding: 4px 8px;
-    font-size: 10px;
-  }
-  .story-steps {
-    gap: 8px;
-  }
-  .story-steps button {
-    font-size: 10px;
-    padding: 9px 0 11px;
-  }
-  .story-steps button > span {
-    display: block;
-    margin: 0 0 4px;
-    font-size: 9px;
-  }
-  .story-stage {
-    height: 600px;
-    margin-top: 24px;
-  }
-  .story-scene h3 {
-    font-size: 26px;
-    letter-spacing: -0.65px;
-    max-width: 330px;
-    margin: auto;
-  }
-  .scene-subtitle {
-    font-size: 13px;
-    margin: 10px auto 0;
-    max-width: 320px;
-  }
-  .scene-note {
-    font-size: 12px;
-  }
-  .proposal-scene {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin-top: 24px;
-    min-height: 0;
-    text-align: center;
-  }
-  .agent-portrait img {
-    width: 102px;
-    height: 102px;
-  }
-  .agent-portrait strong {
-    font-size: 25px;
-  }
-  .agent-portrait > span {
-    font-size: 11px;
-  }
-  .proposal-scene > .scene-arrow {
-    transform: rotate(90deg);
-    line-height: 1;
-    font-size: 28px;
-  }
-  .concept-proposal h4 {
-    font-size: 23px;
-  }
-  .concept-proposal > code {
-    font-size: 13px;
-  }
-  .visual-label {
-    font-size: 11px;
-    margin-bottom: 8px;
-  }
-  .effect-pair {
-    max-width: 260px;
-    margin: 16px auto 0;
-    padding-top: 12px;
-    justify-content: center;
-    gap: 40px;
-  }
-  .effect-pair p {
-    font-size: 17px;
-  }
-  .effect-pair span {
-    font-size: 13px;
-  }
-  .demonstration-scene {
-    grid-template-columns: 1fr 40px 1fr;
-    gap: 8px;
-    margin-top: 75px;
-  }
-  .demonstration-scene img {
-    height: 190px;
-  }
-  .demonstration-scene figcaption {
-    flex-direction: column;
-    gap: 6px;
-    align-items: center;
-    font-size: 12px;
-  }
-  .demonstration-scene strong {
-    font-size: 20px;
-  }
-  .action-between {
-    font-size: 14px;
-  }
-  .action-between b {
-    font-size: 30px;
-  }
-  .feedback-scene {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    min-height: 0;
-    margin-top: 20px;
-  }
-  .feedback-scene .agent-portrait {
-    display: grid;
-    grid-template-columns: 68px 1fr;
-    grid-template-rows: auto auto;
-    text-align: left;
-    column-gap: 14px;
-    row-gap: 0;
-    max-width: 290px;
-    margin: auto;
-  }
-  .feedback-scene .agent-portrait img {
-    width: 68px;
-    height: 68px;
-    grid-row: 1/3;
-  }
-  .feedback-scene .agent-portrait strong {
-    font-size: 24px;
-  }
-  .feedback-scene .agent-portrait > span {
-    font-size: 11px;
-  }
-  .feedback-scene > .scene-arrow {
-    transform: rotate(90deg);
-    line-height: 1;
-    font-size: 25px;
-  }
-  .concept-learning .visual-label {
-    font-size: 12px;
-  }
-  #predicate-scatter {
-    max-height: 195px;
-  }
-  .scatter-legend {
-    font-size: 11px;
-  }
-  .feedback-return {
-    margin-top: 19px;
-    height: 42px;
-  }
-  .feedback-return > span {
-    font-size: 10px;
-    top: 2px;
-  }
-  .learned-concept {
-    flex-direction: column;
-    gap: 6px;
-    margin-top: 23px;
-  }
-  .learned-concept code {
-    font-size: 20px;
-  }
-  .learned-concept > span {
-    font-size: 13px;
-  }
-  .state-strip {
-    grid-template-columns: 1fr 1fr;
-    gap: 20px 12px;
-    margin-top: 23px;
-  }
-  .state-strip img {
-    height: 115px;
-  }
-  .state-strip figcaption {
-    margin-top: 6px;
-    flex-direction: row;
-    justify-content: center;
-    gap: 12px;
-  }
-  .state-strip strong {
-    font-size: 18px;
-  }
   .domain-heading {
     display: block;
     padding-bottom: 10px;
@@ -1272,9 +755,6 @@ footer {
   .two-column {
     grid-template-columns: repeat(2, 1fr);
   }
-  .state-strip img {
-    height: 130px;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -1288,283 +768,247 @@ footer {
   }
 }
 
-/* A central scene becomes one of four panels in the completed figure. */
-.story-stage {
-  position: relative;
-  height: 600px;
-  isolation: isolate;
+/* One continuous visual language: agent, learned concepts, state search. */
+:root {
+  --ink: #26343c;
+  --muted: #69777e;
+  --accent: #467686;
+  --line: #dfe4e2;
 }
-.story-scene {
+body {
+  background: #fdfdfb;
+}
+.film-section {
+  max-width: 1160px;
+}
+.film-section > video {
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 15px 55px #26343c0d;
+  background: #17272e;
+}
+.film-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 17px;
+}
+.film-label {
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  font-weight: 500;
+}
+.film-label > span {
+  display: inline-block;
+  margin-left: 18px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+#narration-toggle {
+  border: 1px solid #d4dcd9;
+  background: #fff;
+  border-radius: 24px;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+#narration-toggle:hover {
+  background: #edf2ee;
+}
+#narration-toggle[aria-pressed="true"] {
+  background: #e9f0eb;
+  border-color: #acbfb3;
+}
+.method-section {
+  padding-top: 62px;
+}
+.method-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+.method-kicker {
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  color: #82918b;
+  margin-bottom: 10px;
+}
+.method-heading h2 {
+  font-size: 26px;
+  letter-spacing: -0.7px;
+}
+.playback-state {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 10px;
+  color: var(--muted);
+}
+#learning-status::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: #729681;
+  border-radius: 50%;
+  margin: 0 6px 2px 0;
+}
+#learning-toggle {
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  font-size: 12px;
+  color: var(--ink);
+}
+.learning-diagram {
+  background: #f6f7f3;
+  border: 1px solid #e3e8e1;
+  border-radius: 12px;
+  padding: 0 30px;
+  overflow: hidden;
+}
+.flow-steps {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  border-bottom: 1px solid #dce2d9;
+  gap: 20px;
+}
+.flow-steps button {
+  position: relative;
+  border: 0;
+  background: none;
+  color: #819086;
+  padding: 17px 0 15px;
+  font-size: 12px;
+}
+.flow-steps button::after {
+  content: "";
   position: absolute;
   left: 0;
-  top: 0;
-  width: 100%;
-  height: 530px;
-  padding: 24px 26px 42px;
-  transform-origin: 0 0;
-  background: white;
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  will-change: transform;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: transparent;
+  transition: background 0.3s;
 }
-.story-scene.is-focused,
-.story-scene.is-docking {
-  box-shadow: 0 8px 35px #26323c0d;
-}
-.story-scene .scene-note {
-  width: calc(100% - 52px);
-  bottom: 17px;
-}
-.dock-label {
-  display: none;
-}
-.story-steps button.is-complete {
-  color: var(--accent);
-}
-.story-steps button.is-complete > span::after {
-  content: " ✓";
-}
-.story-scene.is-docked .dock-label {
-  display: block;
-  font-size: 38px;
+.flow-steps button[aria-pressed="true"] {
+  color: #263d33;
   font-weight: 500;
-  color: var(--accent);
-  line-height: 1.3;
-  text-align: left;
 }
-.dock-label > span {
-  color: var(--ink);
-  margin-left: 14px;
+.flow-steps button[aria-pressed="true"]::after {
+  background: #729681;
 }
-.story-scene.is-docked > h3,
-.story-scene.is-docked > .scene-subtitle,
-.story-scene.is-docked > .scene-note,
-.story-scene.is-docked .agent-portrait > span,
-.story-scene.is-docked .effect-pair,
-.story-scene.is-docked .visual-label,
-.story-scene.is-docked .learned-concept > span {
-  display: none;
-}
-.story-scene.is-docked .proposal-scene {
-  grid-template-columns: 1fr 1.2fr;
-  gap: 25px;
-  margin-top: 35px;
-}
-.story-scene.is-docked .scene-arrow {
-  display: none;
-}
-.story-scene.is-docked .agent-portrait img {
-  width: 170px;
-  height: 170px;
-}
-.story-scene.is-docked .agent-portrait strong {
-  font-size: 38px;
-}
-.story-scene.is-docked .concept-proposal h4 {
-  font-size: 39px;
-}
-.story-scene.is-docked .concept-proposal > code {
-  font-size: 24px;
-  margin-top: 18px;
-}
-.story-scene.is-docked .demonstration-scene {
-  margin-top: 25px;
-}
-.story-scene.is-docked .demonstration-scene img {
-  height: 255px;
-}
-.story-scene.is-docked .demonstration-scene figcaption > span {
-  display: none;
-}
-.story-scene.is-docked .demonstration-scene strong {
-  font-size: 36px;
-}
-.story-scene.is-docked .action-between {
-  font-size: 30px;
-}
-.story-scene.is-docked .feedback-scene {
+#concept-flow {
+  width: 100%;
   display: block;
-  max-width: 590px;
-  min-height: 0;
-  margin-top: 16px;
+  aspect-ratio: 1100/340;
 }
-.story-scene.is-docked .feedback-scene .agent-portrait {
-  display: none;
+.flow-caption {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0 19px;
+  border-top: 1px solid #e0e5dc;
+  font-size: 13px;
+  min-height: 58px;
 }
-.story-scene.is-docked .scatter-legend {
-  font-size: 23px;
-  margin-top: 2px;
+#flow-number {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: #829084;
+  white-space: nowrap;
 }
-.story-scene.is-docked .feedback-return {
-  margin-top: 9px;
-  max-width: 770px;
+.flow-caption p {
+  flex: 1;
 }
-.story-scene.is-docked .feedback-return > span {
-  font-size: 22px;
+.flow-progress {
+  width: 58px;
+  height: 2px;
+  background: #d4ddd3;
 }
-.story-scene.is-docked .learned-concept {
-  margin-top: 22px;
-}
-.story-scene.is-docked .learned-concept code {
-  font-size: 30px;
-}
-.story-scene.is-docked .state-strip {
-  margin-top: 22px;
-}
-.story-scene.is-docked .state-strip figcaption > span {
-  display: none;
-}
-.story-scene.is-docked .state-strip strong {
-  font-size: 30px;
-}
-.assembly-links {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  color: var(--accent);
-  pointer-events: none;
-}
-.assembly-links > span {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 32px;
-}
-.link-first {
-  top: 21%;
-}
-.link-middle {
-  top: 50%;
-}
-.link-last {
-  top: 79%;
-}
-.learning-diagram[data-assembled="true"] .assembly-links {
-  opacity: 1;
+.flow-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #729681;
+  transform: scaleX(0);
+  transform-origin: left;
 }
 @media (max-width: 760px) {
-  .diagram-controls {
-    gap: 6px;
+  .film-section > video {
+    border-radius: 7px;
   }
-  .diagram-controls button {
+  .film-toolbar {
+    margin-top: 13px;
+    gap: 7px;
+  }
+  .film-label {
     font-size: 9px;
-    padding: 4px 6px;
+    letter-spacing: 0.7px;
   }
-  .diagram-eyebrow {
-    max-width: 102px;
+  .film-label > span {
+    display: none;
   }
-  .story-stage {
-    height: 690px;
+  #narration-toggle {
+    padding: 7px 10px;
+    font-size: 10px;
+  }
+  .method-section {
+    padding-top: 38px;
+  }
+  .method-heading {
+    align-items: start;
+    margin-bottom: 18px;
+  }
+  .method-heading h2 {
+    font-size: 21px;
+    max-width: 260px;
+  }
+  .method-kicker {
+    font-size: 8px;
+  }
+  .playback-state {
+    gap: 5px;
     margin-top: 20px;
   }
-  .story-scene {
-    height: 640px;
-    padding: 18px 12px 45px;
+  #learning-status {
+    display: none;
   }
-  .story-scene .scene-note {
-    width: calc(100% - 24px);
-    bottom: 16px;
+  .learning-diagram {
+    padding: 0 14px;
   }
-  .story-scene.is-docked {
-    padding: 20px 15px;
+  .flow-steps {
+    gap: 5px;
+    grid-template-columns: repeat(3, 1fr);
+    padding-top: 6px;
+    border-bottom: none;
   }
-  .story-scene.is-docked .dock-label {
-    font-size: 30px;
+  .flow-steps button {
+    padding: 9px 0;
+    font-size: 11px;
   }
-  .dock-label > span {
-    margin-left: 6px;
+  #concept-flow {
+    aspect-ratio: 420/310;
   }
-  .story-scene.is-docked .proposal-scene {
-    grid-template-columns: 1fr;
-    margin-top: 28px;
-    gap: 25px;
+  .flow-caption {
+    gap: 10px;
+    font-size: 12px;
+    min-height: 82px;
   }
-  .story-scene.is-docked .agent-portrait img {
-    width: 140px;
-    height: 140px;
-  }
-  .story-scene.is-docked .agent-portrait strong {
-    font-size: 36px;
-  }
-  .story-scene.is-docked .concept-proposal h4 {
-    font-size: 32px;
-  }
-  .story-scene.is-docked .concept-proposal > code {
-    font-size: 20px;
-  }
-  .story-scene.is-docked .demonstration-scene {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin-top: 20px;
-  }
-  .story-scene.is-docked .demonstration-scene img {
-    height: 160px;
-  }
-  .story-scene.is-docked .demonstration-scene strong {
-    font-size: 30px;
-  }
-  .story-scene.is-docked .demonstration-scene figcaption {
-    margin-top: 0;
-  }
-  .story-scene.is-docked .action-between {
-    font-size: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-  }
-  .story-scene.is-docked .action-between b {
-    transform: rotate(90deg);
-  }
-  .story-scene.is-docked .feedback-scene {
-    margin-top: 70px;
-  }
-  .story-scene.is-docked #predicate-scatter {
-    max-height: none;
-  }
-  .story-scene.is-docked .scatter-legend {
-    margin-top: 20px;
-    font-size: 22px;
-  }
-  .story-scene.is-docked .feedback-return {
-    margin-top: 32px;
-  }
-  .story-scene.is-docked .feedback-return > span {
-    font-size: 18px;
-  }
-  .story-scene.is-docked .learned-concept {
-    margin-top: 28px;
-  }
-  .story-scene.is-docked .learned-concept code {
-    font-size: 23px;
-  }
-  .story-scene.is-docked .state-strip {
-    margin-top: 30px;
-    gap: 30px 12px;
-  }
-  .story-scene.is-docked .state-strip img {
-    height: 145px;
-  }
-  .story-scene.is-docked .state-strip strong {
-    font-size: 30px;
-  }
-  .assembly-links > span {
-    font-size: 24px;
+  .flow-progress {
+    width: 26px;
   }
 }
 
-.assembly-links .link-feedback {
-  left: 24%;
-  top: 50%;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.link-feedback small {
-  font-size: 13px;
-}
-@media (max-width: 760px) {
-  .link-feedback small {
-    font-size: 10px;
-  }
+#method-action[hidden] {
+  display: none;
 }

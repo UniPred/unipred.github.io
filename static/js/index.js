@@ -21,119 +21,35 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-// This is an explanatory feature-space animation, not a measured embedding trace.
+const V = window.UniPredVisuals;
 const diagram = document.querySelector("#learning-diagram");
-const points = Array.from({ length: 44 }, (_, i) => {
-  const circle = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "circle",
-  );
-  const holding = i % 4 === 2;
-  circle.classList.add("scatter-point");
-  circle.setAttribute("r", i % 9 === 0 ? "5.5" : "4");
-  circle.setAttribute("fill", holding ? "#cc885c" : "#50846e");
-  document.querySelector("#scatter-points").append(circle);
-  return { circle, holding, i };
-});
-const storyScenes = [...document.querySelectorAll(".story-scene")];
-const storySteps = [...document.querySelectorAll(".story-steps button")];
-const stageDuration = [6000, 6500, 8000, 6500];
-const dockingDuration = 1200;
-const storyStage = document.querySelector(".story-stage");
-const overviewButton = document.querySelector("#learning-overview");
-const easeStory = (t) => t * t * (3 - 2 * t);
-const feedbackRoute = document.querySelector("#feedback-route");
-const feedbackSignal = document.querySelector("#feedback-signal");
-const feedbackLength = feedbackRoute.getTotalLength();
+const flowCanvas = document.querySelector("#concept-flow");
+const flowContext = flowCanvas.getContext("2d");
+const learningButton = document.querySelector("#learning-toggle");
+const motionButton = document.querySelector("#motion-toggle");
+const storySteps = [...document.querySelectorAll(".flow-steps button")];
+const flowDurations = [2600, 3400, 7500, 3600, 4700, 5800];
+const descriptions = [
+  "An LLM agent proposes concepts and their action effects.",
+  "Demonstrated action transitions provide supervision.",
+  "Learning and validation feedback guide the agent’s next proposal.",
+  "Learned predicates turn observations into facts that describe a state.",
+  "The planner searches action transitions between symbolic states.",
+  "The robot executes the plan, observes again, and replans when needed.",
+];
+const flowAssets = {};
 let phase = reducedMotion.matches ? 4 : 0,
   phaseElapsed = 0,
   lastFrame = null;
-function renderFeedback(progress) {
-  const p = progress * progress * (3 - 2 * progress);
-  points.forEach(({ circle, holding, i }) => {
-    const a = i * 2.39996,
-      r = 15 + ((i * 17) % 77);
-    const ix = 210 + Math.cos(a) * r * 1.8,
-      iy = 107 + Math.sin(a) * r;
-    const fx = (holding ? 319 : 115) + Math.cos(a) * r * 0.75;
-    circle.setAttribute("cx", String(ix + (fx - ix) * p));
-    circle.setAttribute("cy", String(iy));
-  });
-  document.querySelector("#decision-boundary").style.opacity = String(p);
-  const point = feedbackRoute.getPointAtLength(feedbackLength * progress);
-  feedbackSignal.setAttribute("cx", point.x);
-  feedbackSignal.setAttribute("cy", point.y);
-  document.querySelector("#agent-action").textContent =
-    progress < 0.35
-      ? "Propose a candidate."
-      : progress < 0.7
-        ? "Read the learning feedback."
-        : "Revise the next proposal.";
-}
-function paintStory() {
-  const width = storyStage.clientWidth;
-  const height = storyStage.clientHeight;
-  const baseHeight = innerWidth <= 760 ? 640 : 530;
-  const gap = innerWidth <= 760 ? 20 : 56;
-  const dockScale = (width - gap) / (2 * width);
-  const focusScale = innerWidth <= 760 ? 1 : 0.94;
-  const focus = {
-    x: (width * (1 - focusScale)) / 2,
-    y: (height - baseHeight * focusScale) / 2,
-  };
-  diagram.dataset.assembled = String(phase === 4);
-  storyScenes.forEach((scene, i) => {
-    const done = i < phase;
-    const docking =
-      i === phase
-        ? Math.max(
-            0,
-            Math.min(1, (phaseElapsed - stageDuration[i]) / dockingDuration),
-          )
-        : 0;
-    const dock = {
-      x: i % 2 ? width - width * dockScale : 0,
-      y: i < 2 ? 0 : height - baseHeight * dockScale,
-    };
-    scene.hidden = i > phase;
-    scene.classList.toggle("is-docked", done);
-    scene.classList.toggle("is-focused", i === phase && docking === 0);
-    scene.classList.toggle("is-docking", i === phase && docking > 0);
-    if (scene.hidden) return;
-    const p = done ? 1 : easeStory(docking);
-    const scale = focusScale + (dockScale - focusScale) * p;
-    const x = focus.x + (dock.x - focus.x) * p;
-    const y = focus.y + (dock.y - focus.y) * p;
-    scene.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
-    scene.style.zIndex = done ? "1" : "3";
-    scene.style.opacity = done ? (phase === 4 ? "1" : ".28") : "1";
-  });
-}
-function drawLearning(next) {
-  phase = next;
-  phaseElapsed = 0;
-  diagram.dataset.phase = String(phase);
-  document.querySelector("#learning-stage").textContent =
-    phase === 4 ? "Complete" : `0${phase + 1} / 04`;
-  storySteps.forEach((button, i) => {
-    button.setAttribute("aria-pressed", String(i === phase));
-    button.classList.toggle("is-complete", i < phase);
-  });
-  renderFeedback(phase > 2 || reducedMotion.matches ? 1 : 0);
-  paintStory();
-}
-drawLearning(phase);
-new ResizeObserver(paintStory).observe(storyStage);
 let diagramVisible = false,
   diagramPaused = false,
   diagramTimer = null;
 let motionPaused = reducedMotion.matches;
-const motionButton = document.querySelector("#motion-toggle");
-const learningButton = document.querySelector("#learning-toggle");
+const actionVideo = document.querySelector("#method-action");
 const videos = [...document.querySelectorAll("video[data-autoplay]")];
-const visibleVideos = new Set();
-const userPaused = new WeakSet();
-const autoPausing = new WeakSet();
+const visibleVideos = new Set(),
+  userPaused = new WeakSet(),
+  autoPausing = new WeakSet();
 function pauseVideo(video) {
   if (!video.paused) {
     autoPausing.add(video);
@@ -146,18 +62,171 @@ function playVideo(video) {
     video.play().catch(() => {});
   }
 }
+function drawPanel(c, panel, active, x, y, scale, t) {
+  c.save();
+  c.translate(x, y);
+  c.scale(scale, scale);
+  c.globalAlpha = active ? 1 : 0.7;
+  const p = V.clamp(phaseElapsed / flowDurations[phase]),
+    progress = phase === 2 ? p : 1;
+  if (panel === 0) {
+    if (phase === 1) {
+      V.fit(c, flowAssets.state1, 14, 44, 122, 134);
+      V.fit(c, flowAssets.state2, 195, 44, 122, 134);
+      V.label(c, "pick →", 168, 113, 16, V.ink);
+      V.label(c, "Before", 76, 207, 15, V.muted);
+      V.label(c, "After", 255, 207, 15, V.muted);
+    } else {
+      V.agent(c, flowAssets.agent, 13, 80, 77, t);
+      V.label(c, "LLM agent", 52, 186, 15, V.ink);
+      V.path(
+        c,
+        [
+          [107, 115],
+          [162, 115],
+        ],
+        V.colors[0],
+        1.5,
+        (t * 0.32) % 1,
+      );
+      if (phase === 0) {
+        V.dot(c, 246, 114, 9, V.colors[0]);
+        V.label(c, "HandEmpty?", 246, 162, 18, V.ink);
+        V.label(c, "candidate concept", 246, 187, 13, V.muted);
+      } else {
+        V.scatter(c, 177, 60, 144, 110, progress, t);
+        V.label(c, "Learn", 248, 194, 15, V.ink);
+      }
+      V.path(
+        c,
+        [
+          [248, 211],
+          [248, 233],
+          [51, 233],
+          [51, 205],
+        ],
+        V.colors[2],
+        1.5,
+        (t * 0.24) % 1,
+      );
+      V.label(c, "feedback", 150, 255, 12, V.muted);
+    }
+  } else if (panel === 1) {
+    V.network(c, 104, 49, 139, phase === 3 ? V.clamp(p * 2) : 1);
+    const labels = [
+      ["HandEmpty", 33, 57, 0],
+      ["Holding", 288, 106, 1],
+      ["Clear", 68, 206, 2],
+    ];
+    labels.forEach(([s, x, y, i]) => {
+      V.dot(c, x, y - 20, 4, V.colors[i]);
+      V.label(c, s, x, y + 2, 14, V.ink);
+    });
+    V.label(c, "Predicates → facts → state", 173, 253, 14, V.muted);
+    V.path(
+      c,
+      [
+        [170, 193],
+        [170, 214],
+      ],
+      V.line,
+      1,
+    );
+    V.state(c, 170, 224, 14, [1, 0, 1], true);
+  } else if (phase === 5 && actionVideo.readyState >= 2) {
+    V.fit(c, actionVideo, 6, 32, 326, 184);
+    V.label(c, "Actual robot · table cleaning", 168, 251, 14, V.muted);
+  } else {
+    V.graph(c, 9, 26, 322, 166, phase === 4 ? p : 1);
+    V.label(c, "Action transitions connect states", 170, 268, 14, V.muted);
+  }
+  c.restore();
+}
+function paintFlow() {
+  if (!flowAssets.agent || !flowAssets.state1 || !flowAssets.state2) return;
+  const mobile = innerWidth <= 760,
+    width = mobile ? 420 : 1100,
+    height = mobile ? 310 : 340;
+  const ratio = Math.min(devicePixelRatio || 1, 2);
+  if (
+    flowCanvas.width !== Math.round(width * ratio) ||
+    flowCanvas.height !== Math.round(height * ratio)
+  ) {
+    flowCanvas.width = Math.round(width * ratio);
+    flowCanvas.height = Math.round(height * ratio);
+  }
+  const c = flowContext;
+  c.setTransform(ratio, 0, 0, ratio, 0, 0);
+  c.clearRect(0, 0, width, height);
+  const t = phaseElapsed / 1000;
+  const activePanel = phase < 3 ? 0 : phase === 3 ? 1 : 2;
+  if (mobile) {
+    drawPanel(c, activePanel, true, 12, 0, 1.17, t);
+  } else {
+    ["01 / LEARN", "02 / REPRESENT", "03 / PLAN & ACT"].forEach((s, i) => {
+      V.label(
+        c,
+        s,
+        30 + i * 370,
+        30,
+        11,
+        activePanel === i ? V.ink : V.muted,
+        "left",
+        500,
+      );
+      drawPanel(c, i, activePanel === i, 5 + i * 370, 40, 1, t);
+    });
+    V.path(
+      c,
+      [
+        [353, 129],
+        [372, 129],
+      ],
+      V.line,
+      1.5,
+    );
+    V.path(
+      c,
+      [
+        [723, 129],
+        [742, 129],
+      ],
+      V.line,
+      1.5,
+    );
+  }
+  document.querySelector(".flow-progress i").style.transform =
+    `scaleX(${V.clamp(phaseElapsed / flowDurations[phase])})`;
+}
+function setPhase(next) {
+  phase = next;
+  phaseElapsed = 0;
+  diagram.dataset.phase = String(phase);
+  storySteps.forEach((b, i) =>
+    b.setAttribute("aria-pressed", String(i === phase)),
+  );
+  document.querySelector("#flow-number").textContent = `0${phase + 1} / 06`;
+  document.querySelector("#flow-description").textContent = descriptions[phase];
+  paintFlow();
+  syncAction();
+}
+function syncAction() {
+  if (
+    phase === 5 &&
+    diagramVisible &&
+    !diagramPaused &&
+    !motionPaused &&
+    !document.hidden
+  ) {
+    actionVideo.preload = "auto";
+    actionVideo.play().catch(() => {});
+  } else actionVideo.pause();
+}
 function advanceStory(now) {
   if (lastFrame !== null) phaseElapsed += Math.min(now - lastFrame, 100);
   lastFrame = now;
-  if (phaseElapsed >= stageDuration[phase] + dockingDuration) {
-    drawLearning(phase + 1);
-    if (phase === 4) {
-      updateDiagram();
-      return;
-    }
-  }
-  if (phase === 2) renderFeedback(Math.min(1, phaseElapsed / 7200));
-  paintStory();
+  if (phaseElapsed >= flowDurations[phase]) setPhase((phase + 1) % 6);
+  paintFlow();
   diagramTimer = requestAnimationFrame(advanceStory);
 }
 function updateDiagram() {
@@ -165,58 +234,36 @@ function updateDiagram() {
   diagramTimer = null;
   lastFrame = null;
   const paused = diagramPaused || motionPaused;
-  const complete = phase === 4;
-  learningButton.textContent = complete
-    ? "Replay ↻"
-    : paused
-      ? "Play ▶"
-      : "Pause Ⅱ";
+  learningButton.textContent = paused ? "▶" : "Ⅱ";
   learningButton.setAttribute(
     "aria-label",
-    complete
-      ? "Replay learning animation"
-      : paused
-        ? "Play learning animation"
-        : "Pause learning animation",
+    paused ? "Play concept animation" : "Pause concept animation",
   );
-  learningButton.setAttribute("aria-pressed", String(!complete && paused));
-  if (diagramVisible && !paused && !complete && !document.hidden)
+  learningButton.setAttribute("aria-pressed", String(paused));
+  document.querySelector("#learning-status").textContent = paused
+    ? "Motion off"
+    : "Auto-playing";
+  diagram.dataset.playing = String(
+    !paused && diagramVisible && !document.hidden,
+  );
+  if (!paused && diagramVisible && !document.hidden)
     diagramTimer = requestAnimationFrame(advanceStory);
+  syncAction();
+  paintFlow();
 }
-storySteps.forEach((button) =>
-  button.addEventListener("click", () => {
-    drawLearning(Number(button.dataset.step));
-    diagramPaused = true;
-    if (phase === 2) renderFeedback(1);
-    updateDiagram();
-  }),
-);
-overviewButton.addEventListener("click", () => {
-  drawLearning(4);
-  updateDiagram();
-});
 function updateMotion() {
-  motionButton.textContent = motionPaused ? "Play motion" : "Pause motion";
+  motionButton.textContent = motionPaused ? "Motion off" : "Motion on";
+  motionButton.setAttribute(
+    "aria-label",
+    motionPaused ? "Enable automatic motion" : "Pause automatic motion",
+  );
   motionButton.setAttribute("aria-pressed", String(motionPaused));
   if (motionPaused) videos.forEach(pauseVideo);
   else visibleVideos.forEach(playVideo);
   updateDiagram();
 }
-motionButton.addEventListener("click", () => {
-  motionPaused = !motionPaused;
-  if (!motionPaused) {
-    diagramPaused = false;
-    videos.forEach((v) => userPaused.delete(v));
-  }
-  updateMotion();
-});
 learningButton.addEventListener("click", () => {
-  if (phase === 4) {
-    drawLearning(0);
-    diagramPaused = false;
-    motionPaused = false;
-    updateMotion();
-  } else if (motionPaused) {
+  if (motionPaused) {
     motionPaused = false;
     diagramPaused = false;
     updateMotion();
@@ -224,6 +271,22 @@ learningButton.addEventListener("click", () => {
     diagramPaused = !diagramPaused;
     updateDiagram();
   }
+});
+storySteps.forEach((button) =>
+  button.addEventListener("click", () => {
+    setPhase(Number(button.dataset.step));
+    diagramPaused = false;
+    motionPaused = false;
+    updateMotion();
+  }),
+);
+motionButton.addEventListener("click", () => {
+  motionPaused = !motionPaused;
+  if (!motionPaused) {
+    diagramPaused = false;
+    videos.forEach((v) => userPaused.delete(v));
+  }
+  updateMotion();
 });
 videos.forEach((video) => {
   video.addEventListener("pause", () => {
@@ -233,10 +296,10 @@ videos.forEach((video) => {
   video.addEventListener("play", () => userPaused.delete(video));
 });
 if ("IntersectionObserver" in window) {
-  const mediaObserver = new IntersectionObserver(
+  const observer = new IntersectionObserver(
     (entries) =>
       entries.forEach(({ target, isIntersecting, intersectionRatio }) => {
-        if (isIntersecting && intersectionRatio >= 0.25) {
+        if (isIntersecting && intersectionRatio >= 0.2) {
           if (target.preload === "none") {
             target.preload = "metadata";
             if (target.paused) target.load();
@@ -248,9 +311,9 @@ if ("IntersectionObserver" in window) {
           pauseVideo(target);
         }
       }),
-    { threshold: [0, 0.25] },
+    { threshold: [0, 0.2] },
   );
-  videos.forEach((video) => mediaObserver.observe(video));
+  videos.forEach((video) => observer.observe(video));
   new IntersectionObserver(
     (entries) => {
       diagramVisible =
@@ -258,7 +321,10 @@ if ("IntersectionObserver" in window) {
       updateDiagram();
     },
     { threshold: [0, 0.2] },
-  ).observe(storyStage);
+  ).observe(flowCanvas);
+} else {
+  diagramVisible = true;
+  videos.forEach((v) => visibleVideos.add(v));
 }
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) videos.forEach(pauseVideo);
@@ -269,6 +335,63 @@ reducedMotion.addEventListener("change", (event) => {
   motionPaused = event.matches;
   updateMotion();
 });
+new ResizeObserver(paintFlow).observe(flowCanvas);
+Promise.all(
+  [
+    ["agent", "static/images/agent.svg"],
+    ["state1", "static/images/method/state-1.png"],
+    ["state2", "static/images/method/state-2.png"],
+  ].map(
+    ([key, src]) =>
+      new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          flowAssets[key] = img;
+          resolve();
+        };
+        img.onerror = reject;
+        img.src = src;
+      }),
+  ),
+)
+  .then(() => document.fonts.ready)
+  .then(() => {
+    setPhase(phase);
+    updateMotion();
+  })
+  .catch(() => {
+    document.querySelector("#flow-description").textContent =
+      "Learn visual predicates from demonstrations and feedback, then plan and execute with them.";
+  });
+const overviewFilm = document.querySelector("#overview-film");
+const narrationButton = document.querySelector("#narration-toggle");
+let narrationStarted = false;
+function updateNarration() {
+  const enabled = !overviewFilm.muted && overviewFilm.volume > 0;
+  narrationButton.textContent = enabled
+    ? "Sound on · mute"
+    : "▷ Watch with narration";
+  narrationButton.setAttribute("aria-pressed", String(enabled));
+  narrationButton.setAttribute(
+    "aria-label",
+    enabled ? "Mute narration" : "Play film with English narration",
+  );
+}
+narrationButton.addEventListener("click", () => {
+  if (overviewFilm.muted || overviewFilm.volume === 0) {
+    overviewFilm.muted = false;
+    overviewFilm.volume = 1;
+    if (!narrationStarted) {
+      overviewFilm.currentTime = 0;
+      narrationStarted = true;
+    }
+    userPaused.delete(overviewFilm);
+    overviewFilm.play().catch(() => {});
+  } else overviewFilm.muted = true;
+  updateNarration();
+});
+overviewFilm.addEventListener("volumechange", updateNarration);
+updateNarration();
 updateMotion();
 
 document.querySelector("#copy-citation").addEventListener("click", async () => {
