@@ -91,7 +91,8 @@ function imageFit(img, x, y, w, h) {
 function base(section, title, subtitle) {
   ctx.fillStyle = C.bg;
   ctx.fillRect(0, 0, 1440, 810);
-  text("UniPred", 48, 46, 21, C.ink, 500);
+  imageFit(assets.mark, 48, 19, 36, 36);
+  text("UniPred", 94, 46, 21, C.ink, 500);
   text(
     "IEEE Transactions on Robotics · 2026",
     1390,
@@ -112,7 +113,7 @@ function footer(s) {
 }
 function sceneObserve(t) {
   base(
-    "ROBOT OBSERVATIONS",
+    "AGENTIC CONCEPT LEARNING → LONG-HORIZON MANIPULATION",
     "Table cleaning as a long-horizon task",
     "Goal: put every toy in the box and wipe away the tabletop debris.",
   );
@@ -142,7 +143,7 @@ function sceneObserve(t) {
     ctx.globalAlpha = 1;
   });
   footer(
-    "Predicate names are illustrative. The observation is taken from the paper.",
+    "Learn concepts from human demonstrations, then use them to plan. Predicate names are illustrative.",
   );
 }
 function scatter(t, x, y, w, h) {
@@ -152,11 +153,11 @@ function scatter(t, x, y, w, h) {
   for (let i = 0; i < 44; i++) {
     const holding = i % 4 === 2,
       a = i * 2.39996,
-      r = 14 + ((i * 17) % 72);
+      r = 15 + ((i * 17) % 77);
     const ix = x + w / 2 + Math.cos(a) * r * 1.9,
-      iy = y + h / 2 + Math.sin(a) * r;
+      iy = y + h / 2 + Math.sin(a) * r * (h / 180);
     const fx = x + (holding ? w * 0.77 : w * 0.28) + Math.cos(a) * r * 0.65,
-      fy = y + h / 2 + Math.sin(a) * r;
+      fy = y + h / 2 + Math.sin(a) * r * (h / 180);
     dot(
       mix(ix, fx, p),
       mix(iy, fy, p),
@@ -172,9 +173,9 @@ function scatter(t, x, y, w, h) {
 }
 function sceneLearn(t) {
   base(
-    "TRAINING: ONE BILEVEL LOOP",
-    "Propose effects. Learn classifiers. Refine with feedback.",
-    "Supervision comes from demonstrated transitions, without ground-truth labels for the atoms.",
+    "TRAINING: AGENT IN THE LOOP · UNIFIED BILEVEL LEARNING",
+    "An agent in the loop: propose, learn, revise.",
+    "The LLM proposes predicate effects. Demonstrations train the classifiers. Learning feedback guides the next proposal.",
   );
   const names = ["Empty", "Empty", "Holding towel", "Empty"];
   for (let i = 0; i < 4; i++) {
@@ -191,54 +192,90 @@ function sceneLearn(t) {
       "center",
     );
   }
-  box(48, 421, 370, 275, "#f7f9fb");
-  text("1  LLM effect proposal", 70, 458, 22, C.ink, 500);
-  text("Example: HandEmpty(robot)", 70, 494, 19, C.blue);
+  const stage = t < 4.5 ? 0 : t < 9 ? 1 : 2;
+  box(48, 421, 370, 275, stage === 1 ? "#f7f9fb" : "#edf5f9", C.blue);
+  dot(78, 450, 14, "#d9eaf3");
+  text("↻", 78, 458, 25, C.blue, 400, "center");
+  text("1  LLM agent", 103, 458, 23, C.blue, 500);
+  text("Partial PDDL + exploration history", 70, 485, 16, C.muted);
+  text("Example: HandEmpty(robot)", 70, 521, 18, C.blue);
   [
     ["Pick", "−1  delete"],
     ["Place", "+1  add"],
     ["Unaffected action", "0  unchanged"],
   ].forEach(([a, b], i) => {
-    const y = 537 + i * 45;
-    line(70, y - 25, 395, y - 25);
-    text(a, 70, y, 18, C.muted);
-    text(b, 394, y, 18, C.ink, 400, "right");
+    const y = 558 + i * 35;
+    line(70, y - 23, 395, y - 23);
+    text(a, 70, y, 17, C.muted);
+    text(b, 394, y, 17, C.ink, 400, "right");
   });
+  dot(74, 670, 3, C.blue);
+  text(
+    [
+      "Propose a candidate effect vector",
+      "Candidate evaluated through learning",
+      "Read feedback; revise the proposal",
+    ][stage],
+    87,
+    676,
+    15,
+    C.blue,
+    500,
+  );
   arrow(432, 546, 469, 546);
   box(483, 421, 388, 275, "#f7f9fb");
-  text("2  Transition supervision", 505, 458, 22, C.ink, 500);
-  text("Before     — Pick →     After", 505, 502, 20, C.blue);
-  text("empty                    not empty", 505, 536, 19, C.muted);
+  text("2  Neural learning", 505, 458, 22, C.ink, 500);
+  text("Effect-based transition supervision", 505, 485, 16, C.muted);
+  text("Before     — Pick →     After", 505, 528, 20, C.blue);
+  text("empty                    not empty", 505, 562, 19, C.muted);
   lines(
     "Changed atoms follow add/delete effects.\nUnaffected atoms stay consistent.",
     505,
-    581,
+    604,
     17,
     C.muted,
-    29,
+    26,
   );
   text("Object crops → DINOv3 → MLP", 505, 665, 18, C.blue);
   arrow(885, 546, 917, 546);
   box(932, 421, 460, 275, "#fcfdfd");
-  text("3  Learned representation", 954, 458, 22, C.ink, 500);
-  scatter(t, 945, 478, 432, 165);
+  text("3  Evaluate the candidate", 954, 458, 22, C.ink, 500);
+  text("Training and validation feedback", 954, 485, 16, C.muted);
+  scatter(t, 945, 505, 432, 140);
   dot(963, 673, 4, C.green);
   text("Empty", 974, 678, 14, C.muted);
   dot(1053, 673, 4, C.orange);
   text("Holding", 1064, 678, 14, C.muted);
   text("Schematic", 1370, 678, 12, C.muted, 400, "right");
-  line(1170, 705, 1170, 729, C.blue, 2);
-  line(1170, 729, 231, 729, C.blue, 2);
-  arrow(231, 729, 231, 705);
-  box(475, 711, 455, 31, "white", null, 0);
+  line(1170, 705, 1170, 741, C.blue, 2);
+  line(1170, 741, 231, 741, C.blue, 2);
+  arrow(231, 741, 231, 705);
+  // The return path makes the LLM's use of feedback explicit. It is an
+  // explanatory animation, not a recorded optimization trace.
+  if (stage === 2) {
+    const progress = clamp((t - 9) / 4.3);
+    const distance = progress * 1011;
+    const x =
+      distance < 36 ? 1170 : distance < 975 ? 1170 - (distance - 36) : 231;
+    const y =
+      distance < 36
+        ? 705 + distance
+        : distance < 975
+          ? 741
+          : 741 - (distance - 975);
+    dot(x, y, 5, C.blue);
+  }
   text(
-    "Training + validation loss → next effect proposal",
+    "Learning feedback → agent history → revised proposal",
     701,
-    733,
+    729,
     17,
     C.blue,
     400,
     "center",
+  );
+  footer(
+    "Human demonstrations provide transition supervision. No ground-truth atom labels are required. Feature positions are schematic.",
   );
 }
 function scenePlanning(t) {
@@ -340,6 +377,7 @@ window.filmReady = (async () => {
   ]);
   await Promise.all(
     [
+      ["mark", "../static/images/unipred-mark.svg"],
       ["overhead", "../static/images/method/observation-top-down.png"],
       ...[0, 1, 2, 3].map((i) => [
         "state" + i,

@@ -40,9 +40,14 @@ function drawLearning(next) {
   phase = next;
   diagram.dataset.phase = String(phase);
   document.querySelector("#learning-stage").textContent = [
-    "Propose effects",
-    "Train the classifier",
-    "Feed back and refine",
+    "Agent proposes",
+    "Neural model learns",
+    "Feedback → agent revises",
+  ][phase];
+  document.querySelector("#agent-action").textContent = [
+    "Propose a candidate effect vector",
+    "Candidate evaluated through neural learning",
+    "Read feedback, update history, revise proposal",
   ][phase];
   document.querySelector("#feature-stage").textContent = [
     "Initial representation",

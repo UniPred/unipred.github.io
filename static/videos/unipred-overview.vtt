@@ -1,10 +1,10 @@
 WEBVTT
 
 00:00.000 --> 00:06.000
-The goal is to put every toy in the box and wipe the table. Learned predicates connect top-down camera observations to the symbolic state.
+An agentic approach to learning concepts from human demonstrations for long-horizon manipulation. Here, the goal is to put every toy in the box and wipe the table.
 
 00:06.000 --> 00:20.000
-The LLM proposes predicate effect vectors. Demonstrated transitions provide effect-based supervision for neural classifiers. Training and validation feedback guides the next proposal. The feature-space animation is schematic.
+An LLM agent proposes predicate effect vectors. Demonstrated transitions supervise neural classifiers. Learning and validation feedback returns to the agent's exploration history, guiding its next proposal. The agent operates in the training loop; the feature-space animation is schematic.
 
 00:20.000 --> 00:26.000
 The planner uses the goal, ground atoms, and learned preconditions. Wiping requires the toys to be cleared and the towel to be grasped first.

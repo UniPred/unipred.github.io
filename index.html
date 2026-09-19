@@ -5,28 +5,38 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
       name="description"
-      content="UniPred: Unifying Deep Predicate Invention with Pre-trained Foundation Models. Accepted by IEEE Transactions on Robotics (T-RO), 2026."
+      content="UniPred: an agentic approach to learning concepts from human demonstrations for long-horizon manipulation. Accepted by IEEE Transactions on Robotics (T-RO), 2026."
     />
     <meta name="theme-color" content="#ffffff" />
     <meta property="og:title" content="UniPred | IEEE T-RO 2026" />
     <meta
       property="og:description"
-      content="Learning neural predicates from foundation-model priors and robot demonstrations for long-horizon planning."
+      content="An agentic approach to learning concepts from human demonstrations for long-horizon manipulation. IEEE T-RO 2026."
     />
     <meta
       property="og:image"
-      content="https://unipred.github.io/static/images/posters/unipred-overview.jpg?v=tro2026-r2"
+      content="https://unipred.github.io/static/images/posters/unipred-overview.jpg?v=tro2026-r3"
     />
     <meta property="og:url" content="https://unipred.github.io/" />
     <title>UniPred | IEEE T-RO 2026</title>
-    <link rel="icon" href="static/images/favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="static/css/index.css?v=tro2026-r2" />
-    <script src="static/js/index.js?v=tro2026-r2" defer></script>
+    <link
+      rel="icon"
+      href="static/images/unipred-mark.svg"
+      type="image/svg+xml"
+    />
+    <link rel="stylesheet" href="static/css/index.css?v=tro2026-r3" />
+    <script src="static/js/index.js?v=tro2026-r3" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
-      <a class="brand" href="#" aria-label="UniPred home">UniPred</a
+      <a class="brand" href="#" aria-label="UniPred home"
+        ><img
+          src="static/images/unipred-mark.svg"
+          width="28"
+          height="28"
+          alt=""
+        />UniPred</a
       ><button
         class="menu-toggle"
         aria-expanded="false"
@@ -45,7 +55,19 @@
         <p class="acceptance">
           Accepted by IEEE Transactions on Robotics (T-RO), 2026
         </p>
-        <h1 id="hero-title">UniPred</h1>
+        <h1 id="hero-title">
+          <img
+            src="static/images/unipred-mark.svg"
+            width="72"
+            height="72"
+            alt=""
+          />UniPred
+        </h1>
+        <p class="hero-caption">
+          An <strong>agentic approach</strong> to learning concepts from human
+          demonstrations<br class="desktop-break" />
+          for long-horizon manipulation.
+        </p>
         <p class="paper-title">
           Unifying Deep Predicate Invention<br class="desktop-break" />
           with Pre-trained Foundation Models
@@ -153,25 +175,25 @@
           playsinline
           preload="metadata"
           data-autoplay
-          poster="static/images/posters/unipred-overview.jpg?v=tro2026-r2"
+          poster="static/images/posters/unipred-overview.jpg?v=tro2026-r3"
           aria-label="UniPred method followed by a complete table-cleaning demonstration"
           aria-describedby="film-caption"
         >
           <source
-            src="static/videos/unipred-overview.mp4?v=tro2026-r2"
+            src="static/videos/unipred-overview.mp4?v=tro2026-r3"
             type="video/mp4"
           />
           <track
             kind="captions"
-            src="static/videos/unipred-overview.vtt?v=tro2026-r2"
+            src="static/videos/unipred-overview.vtt?v=tro2026-r3"
             srclang="en"
             label="English"
           />
         </video>
         <p id="film-caption" class="figure-caption">
-          <strong>Learning and planning with UniPred.</strong> A visual
-          explanation followed by a complete table-cleaning run: store the toys,
-          pick up the towel, and wipe the table.
+          <strong>From agent-guided learning to robot planning.</strong> Watch
+          the proposal–learning–feedback loop, then a complete table-cleaning
+          run: store the toys, pick up the towel, and wipe the table.
           <a href="#demos">All demonstrations ↓</a>
         </p>
       </section>
@@ -180,19 +202,24 @@
         id="method"
         aria-labelledby="method-title"
       >
-        <h2 id="method-title">Learning predicates from action effects</h2>
+        <h2 id="method-title">Concept learning with an agent in the loop</h2>
         <p class="section-intro">
-          UniPred combines symbolic priors from an LLM with neural learning from
-          demonstrations. The LLM proposes
-          <strong>predicate effect vectors</strong>; action transitions induce
-          supervision for the visual classifiers, and learning feedback guides
-          the next proposal.
+          An
+          <strong
+            >LLM agent proposes and revises predicate effect vectors</strong
+          >: candidate descriptions of how actions change concepts. Human
+          demonstration transitions provide supervision for neural classifiers;
+          training and validation feedback returns to the agent to guide its
+          next proposal.
         </p>
         <div class="learning-diagram" id="learning-diagram" data-phase="0">
           <div class="diagram-heading">
-            <h3>Unified bilevel learning</h3>
+            <div>
+              <p class="diagram-eyebrow">Training · unified bilevel learning</p>
+              <h3>Propose → learn → evaluate → revise</h3>
+            </div>
             <div class="diagram-controls">
-              <span id="learning-stage">Propose effects</span
+              <span id="learning-stage">Agent proposes</span
               ><button
                 id="learning-toggle"
                 aria-pressed="false"
@@ -246,8 +273,13 @@
           </div>
           <div class="learning-grid">
             <div class="effect-panel diagram-node" data-node="0">
-              <h4>1. Propose symbolic effects</h4>
-              <p>LLM + partial PDDL + learning history</p>
+              <h4 class="agent-heading">
+                <span aria-hidden="true">↻</span> 1. LLM agent
+              </h4>
+              <p>
+                Propose predicate effects using partial PDDL and learning
+                history.
+              </p>
               <div class="effect-example">
                 <code>HandEmpty(robot)</code><span>Illustrative candidate</span>
                 <table>
@@ -273,6 +305,12 @@
                   </tbody>
                 </table>
               </div>
+              <div class="agent-state">
+                <span class="agent-state-dot" aria-hidden="true"></span
+                ><span id="agent-action"
+                  >Propose a candidate effect vector</span
+                >
+              </div>
             </div>
             <div class="supervision-panel diagram-node" data-node="1">
               <h4>2. Learn from transitions</h4>
@@ -289,7 +327,7 @@
               <p class="no-labels">No ground-truth atom labels are required.</p>
             </div>
             <div class="classifier-panel diagram-node" data-node="2">
-              <h4>3. Evaluate and refine</h4>
+              <h4>3. Evaluate the learned concepts</h4>
               <p id="feature-stage">Initial representation</p>
               <svg
                 id="predicate-scatter"
@@ -325,14 +363,16 @@
             </div>
           </div>
           <div class="feedback-path">
-            <span aria-hidden="true">↶</span> Training and validation loss →
-            update the effect proposal → retrain the classifier
+            <span aria-hidden="true">↶</span> Training &amp; validation loss →
+            <strong>agent updates its history and revises the proposal</strong>
+            → learn again
           </div>
         </div>
         <p class="figure-caption">
           The four observations are taken from the paper’s unified bilevel
-          learning figure. The animation illustrates refinement of the
-          classifier’s hidden representation; point positions are schematic.
+          learning figure. The LLM agent works in the training loop; the learned
+          concepts then support the planner below. The animated feature
+          positions and candidate example are schematic.
         </p>
         <div class="inference-heading">
           <h3>From learned predicates to a robot plan</h3>
@@ -786,7 +826,14 @@
     </main>
     <footer class="page-width">
       <div class="footer-top">
-        <a class="brand" href="#">UniPred<span class="brand-dot">.</span></a>
+        <a class="brand" href="#"
+          ><img
+            src="static/images/unipred-mark.svg"
+            width="28"
+            height="28"
+            alt=""
+          />UniPred</a
+        >
         <p>From pixels to predicates to plans.</p>
         <a href="mailto:bowenli2@andrew.cmu.edu"
           >Get in touch <span aria-hidden="true">↗</span></a

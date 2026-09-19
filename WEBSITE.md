@@ -16,6 +16,7 @@ Open `http://localhost:8007`. This server supports HTTP byte ranges, which are r
 
 - `index.html`: ordered author list, distinct UMich CSE/CEE affiliations, contribution marks, acceptance notice, sections, abstract, and all video captions. The IEEE T-RO 2026 acceptance status was supplied by the authors; no DOI or journal issue metadata has been invented.
 - `static/css/index.css`: responsive layout, locally hosted fonts, and reduced-motion styles.
+- `static/images/unipred-mark.svg`: a crisp vector reinterpretation of the original colorful node-network logo, used in the header, hero, footer, film, and favicon. The original `logo.png` remains available.
 - `static/js/index.js`: automatically animated unified learning figure, lazy video metadata loading, independent playback of visible clips, global pause/resume, mobile menu, and citation copy.
 - `static/unipred.pdf`: the September 16 manuscript snapshot from `unipred-paper/output/pdf/unipred-tro-draft.pdf`, including all 11 authors. It is copied without changing the paper. Replace it when a new manuscript is ready.
 - `static/images/method/state-{0,1,2,3}.png`: original state crops extracted from the paper's `imgs/Fig6.pdf` (the unified bilevel learning figure). State 2 holds a towel; the other states show an empty gripper.
@@ -25,6 +26,8 @@ Open `http://localhost:8007`. This server supports HTTP byte ranges, which are r
 - `static/fonts/`: self-hosted DM Sans and Manrope, with their SIL Open Font Licenses.
 
 The manuscript reports five simulated domains and two real-robot domains, ten evaluation tasks per real domain, and 20 teleoperated demonstrations per real domain. The feature-space animations and predicate examples illustrate the method; they are not logged embeddings, measurements, or a synchronized robot state trace. At test time the LLM is not directly commanding the robot. Learned predicates support a symbolic planner over a provided low-level controller library.
+
+The homepage frames this as “an agentic approach to learning concepts from human demonstrations for long-horizon manipulation.” This is website-level framing of the existing method, not a new paper claim or title. The LLM agent proposes effect vectors, receives feedback from neural learning through the exploration history, and revises subsequent proposals. The visual loop belongs to training; inference uses the learned predicates and symbolic planner. The manuscript and its abstract are unchanged.
 
 The BibTeX entry is explicitly for arXiv:2512.17992, preserving the author metadata of that published preprint. The current manuscript's 11-author list is displayed independently above it.
 
@@ -45,7 +48,7 @@ ffmpeg -i static/videos/CLIP.mp4 -map 0:v:0 -map '0:a?' \
 
 ## Main overview film
 
-`static/videos/unipred-overview.mp4` is approximately 72 seconds of H.264 video at 1440×810 and 24 fps. The first 26 seconds show the actual top-down camera image, a unified effect-proposal / transition-supervision / classifier-feedback diagram, and how goals and preconditions constrain a plan. The final 46 seconds include the entire `main_demo_1.mp4` robot run, preserving its original speed. It is silent, with on-screen explanations and an English `.vtt` track.
+`static/videos/unipred-overview.mp4` is approximately 72 seconds of H.264 video at 1440×810 and 24 fps. The first 26 seconds show the actual top-down camera image, an agent-in-the-loop effect-proposal / transition-supervision / classifier-feedback diagram, and how goals and preconditions constrain a plan. The LLM agent panel shows the propose/evaluate/revise stages and an animated return path carries learning feedback back to the agent. The final 46 seconds include the entire `main_demo_1.mp4` robot run, preserving its original speed. It is silent, with on-screen explanations and an English `.vtt` track.
 
 The robot stream is composited directly with ffmpeg onto the execution layout. It is not reconstructed by seeking a browser video for each canvas frame. This preserves continuous motion through grasping, transfers, and wiping. The static plan structure explains the task; it is not presented as synchronized execution telemetry.
 
